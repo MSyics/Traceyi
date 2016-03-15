@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{575C9E8E-9100-46CF-946A-AB14AE4F77E6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>MSyics.Traceyi</RootNamespace>
+    <AssemblyName>MSyics.Traceyi</AssemblyName>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Debug\MSyics.Traceyi.XML</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Configuration\Common\ElementCollection.cs" />
+    <Compile Include="Configuration\Common\IConfigurationMixable.cs" />
+    <Compile Include="Configuration\Common\MixableElementCollection.cs" />
+    <Compile Include="Configuration\Common\NamedElement.cs" />
+    <Compile Include="Configuration\Common\NamedElementCollection.cs" />
+    <Compile Include="Configuration\Common\TypedElement.cs" />
+    <Compile Include="Configuration\Filters\FilterElement.cs" />
+    <Compile Include="Configuration\Filters\FilterElementCollection.cs" />
+    <Compile Include="Configuration\Logs\LogElementCollection.cs" />
+    <Compile Include="Configuration\Logs\_LogElements\ConsoleLogElement.cs" />
+    <Compile Include="Configuration\Logs\_LogElements\EventLogElement.cs" />
+    <Compile Include="Configuration\Logs\_LogElements\FileLogElement.cs" />
+    <Compile Include="Configuration\Logs\_LogElements\Layouts\TextLayoutElement.cs" />
+    <Compile Include="Configuration\Logs\_LogElements\LogElement.cs" />
+    <Compile Include="Configuration\Logs\_LogElements\RotateFileLogElement.cs" />
+    <Compile Include="Configuration\Logs\_LogElements\TextWriterLogElement.cs" />
+    <Compile Include="Configuration\Logs\_ResolverElements\LogResolverElement.cs" />
+    <Compile Include="Configuration\Logs\_ResolverElements\LogResolverElementCollection.cs" />
+    <Compile Include="Configuration\TraceyiConfiguration.cs" />
+    <Compile Include="Configuration\TraceyiConfigurationSection.cs" />
+    <Compile Include="Configuration\Tracers\TracerElementCollection.cs" />
+    <Compile Include="Configuration\Tracers\_TracerElements\DefaultTracerElement.cs" />
+    <Compile Include="Configuration\Tracers\_TracerElements\TracerElement.cs" />
+    <Compile Include="Configuration\Tracers\_TracerElements\TracerElementBase.cs" />
+    <Compile Include="Configuration\Tracers\_TracerElements\_AttachedLogElements\AttachedLogElement.cs" />
+    <Compile Include="Internal\ReuseFileStream.cs" />
+    <Compile Include="Internal\ReuseFileStreamManager.cs" />
+    <Compile Include="Internal\TraceUtility.cs" />
+    <Compile Include="Layout\ILogLayout.cs" />
+    <Compile Include="Layout\TextLogLayout.cs" />
+    <Compile Include="Layout\TextLogLayoutConverter.cs" />
+    <Compile Include="Layout\TextLogLayoutFormat.cs" />
+    <Compile Include="Layout\TextLogLayoutItem.cs" />
+    <Compile Include="Logs\ConsoleLog.cs" />
+    <Compile Include="Logs\EventLog.cs" />
+    <Compile Include="Logs\FileLog.cs" />
+    <Compile Include="Logs\Log.cs" />
+    <Compile Include="Logs\RotateFileLog.cs" />
+    <Compile Include="Logs\TextWriterLog.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Trace\Traceable.cs" />
+    <Compile Include="Trace\TraceAction.cs" />
+    <Compile Include="Trace\TraceContext.cs" />
+    <Compile Include="Trace\TraceEventArg.cs" />
+    <Compile Include="Trace\TraceEventCacheData.cs" />
+    <Compile Include="Trace\TraceFilters.cs" />
+    <Compile Include="Trace\TraceOperation.cs" />
+    <Compile Include="Trace\TraceOperationScope.cs" />
+    <Compile Include="Trace\Tracer.cs" />
+    <Compile Include="Trace\TracerExtensions.cs" />
+    <Compile Include="Trace\TracerSettings.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="App.Debug.config">
+      <DependentUpon>App.config</DependentUpon>
+    </None>
+    <None Include="App.Release.config">
+      <DependentUpon>App.config</DependentUpon>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <UsingTask TaskName="TransformXml" AssemblyFile="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Web\Microsoft.Web.Publishing.Tasks.dll" />
+  <Target Name="AfterCompile" Condition="Exists('App.$(Configuration).config')">
+    <!--Generate transformed app config in the intermediate directory-->
+    <TransformXml Source="App.config" Destination="$(IntermediateOutputPath)$(TargetFileName).config" Transform="App.$(Configuration).config" />
+    <!--Force build process to use the transformed configuration file from now on.-->
+    <ItemGroup>
+      <AppConfigWithTargetPath Remove="App.config" />
+      <AppConfigWithTargetPath Include="$(IntermediateOutputPath)$(TargetFileName).config">
+        <TargetPath>$(TargetFileName).config</TargetPath>
+      </AppConfigWithTargetPath>
+    </ItemGroup>
+  </Target>
+  <!--Override After Publish to support ClickOnce AfterPublish. Target replaces the untransformed config file copied to the deployment directory with the transformed one.-->
+  <Target Name="AfterPublish">
+    <PropertyGroup>
+      <DeployedConfig>$(_DeploymentApplicationDir)$(TargetName)$(TargetExt).config$(_DeploymentFileMappingExtension)</DeployedConfig>
+    </PropertyGroup>
+    <!--Publish copies the untransformed App.config to deployment directory so overwrite it-->
+    <Copy Condition="Exists('$(DeployedConfig)')" SourceFiles="$(IntermediateOutputPath)$(TargetFileName).config" DestinationFiles="$(DeployedConfig)" />
+  </Target>
+</Project>
