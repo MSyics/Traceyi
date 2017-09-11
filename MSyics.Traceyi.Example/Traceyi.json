@@ -1,0 +1,28 @@
+﻿{
+  "tracers": [
+    {
+      "name": "default",
+      "filter": "All",
+      "logs": [ "console", "file" ]
+    }
+  ],
+  "log": {
+    "consoles": [
+      {
+        "name": "console",
+        "useGlobalLock": true,
+        "newLine": "\r\n",
+        "encoding": "shift-jis",
+        "useErrorStream": "false"
+      }
+    ],
+    "files": [
+      {
+        "name": "file",
+        "useGlobalLock": true,
+        "newLine": "\r\n",
+        "encoding": "shift-jis"
+      }
+    ]
+  }
+}

@@ -1,7 +1,11 @@
-﻿using System;
+﻿using Microsoft.Extensions.Configuration;
+using MSyics.Traceyi.Configration;
+using MSyics.Traceyi.Layout;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using MSyics.Traceyi.Configuration;
+using System.Text;
 
 namespace MSyics.Traceyi
 {
@@ -13,6 +17,25 @@ namespace MSyics.Traceyi
         private static readonly object m_thisLock = new object();
         private static Dictionary<string, Tracer> Tracers = new Dictionary<string, Tracer>();
         private static Dictionary<string, Log> Logs = new Dictionary<string, Log>();
+        private static Dictionary<string, Func<IConfiguration, IEnumerable<LogElement>>> SectionedLogElements = new Dictionary<string, Func<IConfiguration, IEnumerable<LogElement>>>();
+
+        static Traceable()
+        {
+            AddSectionedLogElement<ConsoleLogElement>("Consoles");
+            AddSectionedLogElement<FileLogElement>("Files");
+            AddSectionedLogElement<RotateFileLogElement>("RotateFiles");
+        }
+
+        /// <summary>
+        /// カスタム Log 要素を登録します。
+        /// </summary>
+        /// <typeparam name="T">カスタム Log 要素の型</typeparam>
+        /// <param name="section">セクション名</param>
+        public static void AddSectionedLogElement<T>(string section)
+            where T : LogElement
+        {
+            SectionedLogElements.Add(section.ToUpper(), (config) => config.Get<List<T>>());
+        }
 
         /// <summary>
         /// 構成ファイルで設定した Tracer オブジェクトを取得します。
@@ -35,60 +58,52 @@ namespace MSyics.Traceyi
         /// <summary>
         /// 構成ファイルで設定した Default Tracer オブジェクトを取得します。
         /// </summary>
-        public static Tracer Get()
-        {
-            return Get("Default");
-        }
+        public static Tracer Get() => Get("Default");
 
         private static Tracer Create(string name)
         {
-            if (!TraceyiConfiguration.HasRoot)
-            {
-                return CreateNullTracer();
-            }
-            else
-            {
-                var tracerElement = TraceyiConfiguration.Root.Tracers.SingleOrDefault(x => x.Name == name);
-                if (tracerElement == default(TracerElementBase))
-                {
-                    return CreateNullTracer();
-                }
-                else
-                {
-                    return new Tracer().Settings(settings =>
-                    {
-                        settings.SetProperty(
-                            tracerElement.Name,
-                            tracerElement.HasFilterName ? TraceyiConfiguration.Root.Filters.Find(tracerElement.FilterName).Value : TraceFilters.All);
+            var builder = new ConfigurationBuilder();
 
-                        foreach (var item in tracerElement)
-                        {
-                            Log log;
-                            if (!Logs.TryGetValue(item.LogName, out log))
-                            {
-                                var logElement = TraceyiConfiguration.Root.Logs.Find(item.LogName);
-                                log = logElement.GetRuntimeObject();
-                                if (string.IsNullOrEmpty(item.FilterName))
-                                {
-                                    log.Filter = TraceFilters.All;
-                                }
-                                else
-                                {
-                                    log.Filter = TraceyiConfiguration.Root.Filters.Find(item.FilterName).Value;
-                                }
-                                Logs.Add(item.LogName, log);
-                            }
-                            settings.SetListener(log);
-                        }
-                    });
+            builder.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+                   .AddJsonFile("Traceyi.json", false, true);
+            
+            var config = builder.Build();
+
+            if (!config.GetSection("Tracers").Exists()) return CreateNullTracer();
+            if (!config.GetSection("Log").Exists()) return CreateNullTracer();
+
+            // Get Tracer Element
+            var tracerElement = config.GetSection("Tracers").Get<List<TracerElement>>().FirstOrDefault(x => x.Name.ToUpper() == name.ToUpper());
+            if (tracerElement == null) return CreateNullTracer();
+
+            // Add Log RuntimeObject
+            foreach (var logSection in config.GetSection("Log").GetChildren())
+            {
+                if (!SectionedLogElements.ContainsKey(logSection.Key.ToUpper())) continue;
+                foreach (var section in SectionedLogElements[logSection.Key.ToUpper()](config.GetSection(logSection.Path)))
+                {
+                    if (string.IsNullOrWhiteSpace(section.Name)) continue;
+                    if (Logs.ContainsKey(section.Name.ToUpper())) continue;
+                    Logs.Add(section.Name.ToUpper(), section.GetRuntimeObject());
                 }
             }
+
+            // Create Tracer
+            return new Tracer()
+            {
+                Name = tracerElement.Name,
+                Filter = tracerElement.Filter,
+            }
+            .Settings(settings =>
+            {
+                foreach (var key in tracerElement.Logs)
+                {
+                    settings.SetLog(Logs[key.ToUpper()]);
+                }
+            });
         }
 
-        private static Tracer CreateNullTracer()
-        {
-            return new Tracer() { Name = "NullTracer", Filter = TraceFilters.None };
-        }
+        private static Tracer CreateNullTracer() => new Tracer() { Name = "NullTracer", Filter = TraceFilters.None };
 
         #region TraceContext
 

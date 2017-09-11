@@ -40,7 +40,7 @@ namespace MSyics.Traceyi
                     DateTime = dateTime,
                     Action = action,
                 };
-
+                
                 eh(this, data);
             }
         }

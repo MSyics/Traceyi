@@ -24,7 +24,7 @@ namespace MSyics.Traceyi
         /// <summary>
         /// トレースイベントに Log オブジェクトを関連付けます。
         /// </summary>
-        public TracerSettings SetListener(Log log)
+        public TracerSettings SetLog(Log log)
         {
             m_source.OnTrace += log.OnTrace;
             return this;
@@ -33,7 +33,7 @@ namespace MSyics.Traceyi
         /// <summary>
         /// トレースイベントに引数の Action デリゲートを関連付けます。 
         /// </summary>
-        public TracerSettings SetListener(Action<TraceEventArg> action)
+        public TracerSettings SetLog(Action<TraceEventArg> action)
         {
             m_source.OnTrace += (sender, e) => action(e);
             return this;

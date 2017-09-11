@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using MSyics.Traceyi.Configuration;
 
 namespace MSyics.Traceyi
 {
@@ -51,7 +50,7 @@ namespace MSyics.Traceyi
         /// <summary>
         /// トレースの設定を行います。
         /// </summary>
-        internal static Tracer Settings(this Tracer tracer, Action<TracerSettings> setting)
+        public static Tracer Settings(this Tracer tracer, Action<TracerSettings> setting)
         {
             setting(new TracerSettings(tracer));
             return tracer;
