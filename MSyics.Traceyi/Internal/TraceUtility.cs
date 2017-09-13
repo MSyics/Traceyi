@@ -51,7 +51,7 @@ namespace MSyics.Traceyi
                                   .Select(x => x.GetMethod())
                                   .TakeWhile(x => !TraceUtility.LoggingLibraryTypes.Any(y => y.Equals(x.ReflectedType)))
                                   .Last();
-                return method.ReflectedType.FullName + "." + method.Name;  
+                return $"{method.ReflectedType.FullName}.{method.Name}";
             }                                                  
         }                                                      
     }                                                          

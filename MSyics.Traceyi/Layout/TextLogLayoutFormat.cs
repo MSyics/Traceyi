@@ -12,7 +12,7 @@ namespace MSyics.Traceyi.Layout
         /// <summary>
         /// 書式内の区切り文字を示す固定値です。
         /// </summary>
-        public const string FormatSpecifier = "|";
+        public readonly string FormatSpecifier = "|";
 
         /// <summary>
         /// 指定した書式およびカルチャ固有の書式情報を使用して、指定したオブジェクトの値をそれと等価な文字列形式に変換します。
@@ -25,15 +25,11 @@ namespace MSyics.Traceyi.Layout
             {
                 return String.Empty;
             }
-
             if (arg is IFormattable)
             {
                 return ((IFormattable)arg).ToString(format, CultureInfo.CurrentCulture);
             }
-            else
-            {
-                return arg.ToString();
-            }
+            return arg.ToString();
         }
 
         #region IFormatProvider Members
@@ -140,7 +136,6 @@ namespace MSyics.Traceyi.Layout
                     }
                 }
             }
-
             return Format(format, arg);
         }
 

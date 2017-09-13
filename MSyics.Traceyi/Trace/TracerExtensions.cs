@@ -14,19 +14,13 @@ namespace MSyics.Traceyi
         /// </summary>
         /// <param name="target">トレースオブジェクト</param>
         /// <param name="operationId">操作ID</param>
-        public static TraceOperationScope Scope(this Tracer target, object operationId)
-        {
-            return new TraceOperationScope(target, operationId);
-        }
+        public static TraceOperationScope Scope(this Tracer target, object operationId) => new TraceOperationScope(target, operationId);
 
         /// <summary>
         /// コードブロックをトレースに参加させます。
         /// </summary>
         /// <param name="target">トレースオブジェクト</param>
-        public static TraceOperationScope Scope(this Tracer target)
-        {
-            return new TraceOperationScope(target);
-        }
+        public static TraceOperationScope Scope(this Tracer target) => new TraceOperationScope(target);
 
         /// <summary>
         /// 指定したフィルターに動作が含まれているかどうかを判定します。

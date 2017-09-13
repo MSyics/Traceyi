@@ -15,11 +15,7 @@ namespace MSyics.Traceyi.Layout
         /// <summary>
         /// TextLayout クラスのインスタンスを初期化します。
         /// </summary>
-        public TextLogLayout(string layout)
-        {
-            this.FormatProvider = new TextLogLayoutFormat();
-            this.Layout = layout;
-        }
+        public TextLogLayout(string layout) => this.Layout = layout;
 
         /// <summary>
         /// TextLayout クラスのインスタンスを初期化します。
@@ -101,7 +97,7 @@ namespace MSyics.Traceyi.Layout
         /// </summary>
         public string NewLine { get; set; }
 
-        private IFormatProvider FormatProvider { get; set; }
+        private IFormatProvider FormatProvider { get; set; } = new TextLogLayoutFormat();
         private string FormattedLayout { get; set; }
         private bool IsMakeFormattedLayout { get; set; }
     }

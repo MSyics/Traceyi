@@ -27,14 +27,8 @@ namespace MSyics.Traceyi
         /// <summary>
         /// 現在のストリームを閉じて関連付けられているリソースを解放します。
         /// </summary>
-        public void Clean()
-        {
-            base.Close();
-        }
+        public void Clean() => base.Close();
 
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
-        }
+        protected override void Dispose(bool disposing) => base.Dispose(disposing);
     }
 }

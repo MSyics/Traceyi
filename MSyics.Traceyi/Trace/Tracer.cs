@@ -60,6 +60,17 @@ namespace MSyics.Traceyi
         /// <summary>
         /// デバッグに必要なメッセージを残します。
         /// </summary>
+        public void Debug(string message)
+        {
+            if (this.Filter.Contains(TraceAction.Debug))
+            {
+                RaiseTrace(TraceAction.Debug, DateTime.Now, message);
+            }
+        }
+
+        /// <summary>
+        /// デバッグに必要なメッセージを残します。
+        /// </summary>
         public void Debug(string format, params object[] args)
         {
             if (this.Filter.Contains(TraceAction.Debug))
@@ -74,6 +85,17 @@ namespace MSyics.Traceyi
         /// 通知メッセージを残します。
         /// </summary>
         public void Information(object message)
+        {
+            if (this.Filter.Contains(TraceAction.Info))
+            {
+                RaiseTrace(TraceAction.Info, DateTime.Now, message);
+            }
+        }
+
+        /// <summary>
+        /// 通知メッセージを残します。
+        /// </summary>
+        public void Information(string message)
         {
             if (this.Filter.Contains(TraceAction.Info))
             {
@@ -108,6 +130,17 @@ namespace MSyics.Traceyi
         /// <summary>
         /// 注意メッセージを残します。
         /// </summary>
+        public void Warning(string message)
+        {
+            if (this.Filter.Contains(TraceAction.Warning))
+            {
+                RaiseTrace(TraceAction.Warning, DateTime.Now, message);
+            }
+        }
+
+        /// <summary>
+        /// 注意メッセージを残します。
+        /// </summary>
         public void Warning(string format, params object[] args)
         {
             if (this.Filter.Contains(TraceAction.Warning))
@@ -122,6 +155,17 @@ namespace MSyics.Traceyi
         /// エラーメッセージを残します。
         /// </summary>
         public void Error(object message)
+        {
+            if (this.Filter.Contains(TraceAction.Error))
+            {
+                RaiseTrace(TraceAction.Error, DateTime.Now, message);
+            }
+        }
+
+        /// <summary>
+        /// エラーメッセージを残します。
+        /// </summary>
+        public void Error(string message)
         {
             if (this.Filter.Contains(TraceAction.Error))
             {
@@ -178,6 +222,14 @@ namespace MSyics.Traceyi
         /// <summary>
         /// 操作の開始メッセージを残します。
         /// </summary>
+        public void Start(string message)
+        {
+            Start(null, message, Guid.Empty);
+        }
+
+        /// <summary>
+        /// 操作の開始メッセージを残します。
+        /// </summary>
         public void Start()
         {
             Start(null, null, Guid.Empty);
@@ -219,6 +271,14 @@ namespace MSyics.Traceyi
         /// 操作の終了メッセージを残します。
         /// </summary>
         public void Stop(object message)
+        {
+            Stop(message, Guid.Empty);
+        }
+
+        /// <summary>
+        /// 操作の終了メッセージを残します。
+        /// </summary>
+        public void Stop(string message)
         {
             Stop(message, Guid.Empty);
         }

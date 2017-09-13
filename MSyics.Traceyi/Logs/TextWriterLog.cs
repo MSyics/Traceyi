@@ -47,10 +47,7 @@ namespace MSyics.Traceyi
         /// <summary>
         /// ライターのすべてのバッファーをクリアし、基になるデバイスに書き込みます。
         /// </summary>
-        public virtual void Flush()
-        {
-            this.TextWriter.Flush();
-        }
+        public virtual void Flush() => this.TextWriter.Flush();
 
         /// <summary>
         /// 改行文字を取得または設定します。

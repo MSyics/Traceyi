@@ -1,6 +1,9 @@
 ﻿using System;
 using MSyics.Traceyi;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace MSyics.Traceyi.Example
 {
@@ -15,26 +18,50 @@ namespace MSyics.Traceyi.Example
             //    TracerManager.Default.Information("hogehoge");
             //}
 
-            Tracer.Information("test");
-            Tracer.Context.ActivityId = "0123456";
+            var pg = new Program();
+            pg.Case1();
+            pg.Case2();
+            pg.Case3();
+        }
+
+        private Tracer Tracer { get; } = Traceable.Get();
+
+        private void Case1()
+        {
+            Tracer.Information("hogehoge");
+            Tracer.Debug("hogehoge");
+            Tracer.Warning("hogehoge");
+            Tracer.Error("hogehoge");
+            Tracer.Start();
+            Tracer.Stop();
             using (Tracer.Scope())
             {
-                Tracer.Information("test");
-                Tracer.Information("test");
-                Tracer.Information("test");
-                Tracer.Information("test");
             }
         }
 
-        static Tracer Tracer = Traceable.Get();
+        private void Case2()
+        {
+            using (Tracer.Scope())
+            {
+                var act5 = new Action(() => Tracer.Information("hogehoge"));
+                var act4 = new Action(() => { using (Tracer.Scope()) { act5(); } });
+                var act3 = new Action(() => { using (Tracer.Scope()) { act4(); } });
+                var act2 = new Action(() => { using (Tracer.Scope()) { act3(); } });
+                var act1 = new Action(() => { using (Tracer.Scope()) { act2(); } });
+                act1();
+            }
+        }
+
+        private void Case3()
+        {
+            Tracer.OnTrace += (sender, e) =>
+            {
+                Console.WriteLine(e.Message);
+            };
+
+            Tracer.Information("hogehoge");
+        }
     }
 
-    static class TracerManager
-    {
-        public static Tracer Default = new Tracer().Settings(x =>
-        {
-            x.SetLog(new ConsoleLog());
-            x.SetProperty("", TraceFilters.All);
-        });
-    }
+
 }

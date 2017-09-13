@@ -16,10 +16,7 @@ namespace MSyics.Traceyi
         /// <summary>
         /// TracerSetting クラスのインスタンスを初期化します。
         /// </summary>
-        public TracerSettings(Tracer source)
-        {
-            m_source = source;
-        }
+        public TracerSettings(Tracer source) => m_source = source;
 
         /// <summary>
         /// トレースイベントに Log オブジェクトを関連付けます。

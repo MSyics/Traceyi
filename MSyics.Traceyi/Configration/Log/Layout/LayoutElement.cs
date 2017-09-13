@@ -22,9 +22,6 @@ namespace MSyics.Traceyi.Configration
         /// <summary>
         /// 実行オブジェクトを取得します。
         /// </summary>
-        public TextLogLayout GetRuntimeObject()
-        {
-            return new TextLogLayout(this.Format);
-        }
+        public TextLogLayout GetRuntimeObject() => new TextLogLayout(this.Format);
     }
 }

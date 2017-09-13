@@ -13,22 +13,9 @@ namespace MSyics.Traceyi
         private static string m_currentPath;
         private static Dictionary<string, ReuseFileStream> m_streams = new Dictionary<string, ReuseFileStream>();
 
-        public bool Exists(string path)
-        {
-            return m_streams.ContainsKey(path);
-        }
+        public bool Exists(string path) => m_streams.ContainsKey(path);
 
-        public bool TryGet(string path, out ReuseFileStream stream)
-        {
-            if (m_streams.TryGetValue(path, out stream))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
+        public bool TryGet(string path, out ReuseFileStream stream) => m_streams.TryGetValue(path, out stream);
 
         public FileStream AddOrUpdate(string path)
         {

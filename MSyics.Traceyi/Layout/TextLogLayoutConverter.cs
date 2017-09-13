@@ -14,10 +14,7 @@ namespace MSyics.Traceyi.Layout
         /// TextLogLayoutConverter クラスのインスタンスを初期化します。
         /// </summary>
         /// <param name="items">ログの記録項目</param>
-        public TextLogLayoutConverter(params TextLogLayoutItem[] items)
-        {
-            this.Items = items.ToList();
-        }
+        public TextLogLayoutConverter(params TextLogLayoutItem[] items) => this.Items = items;
 
         /// <summary>
         /// 指定されたレイアウトを認識できるフォーマットに変換します。
@@ -36,7 +33,7 @@ namespace MSyics.Traceyi.Layout
                     if (length <= 0) { throw new FormatException("入力文字列の形式が正しくありません。"); }
 
                     var convertString = layout.Substring(startIndex, length);
-                    for (int itemIndex = 0; itemIndex < this.Items.Count; itemIndex++)
+                    for (int itemIndex = 0; itemIndex < this.Items.Length; itemIndex++)
                     {
                         var item = this.Items[itemIndex];
                         if (convertString.StartsWith(item.Name, StringComparison.OrdinalIgnoreCase))
@@ -44,28 +41,22 @@ namespace MSyics.Traceyi.Layout
                             if (item.UseFormat)
                             {
                                 var formatString = convertString.Substring(item.Name.Length);
-                                sb.AppendFormat("{{{0}{1}{2}}}", itemIndex, GetSeparatorCharacter(formatString), formatString);
+                                var separator = GetSeparatorCharacter(formatString);
+                                sb.Append($"{{{itemIndex}{separator}{formatString}}}");
                             }
                             else
                             {
-                                sb.AppendFormat("{{{0}}}", itemIndex);
+                                sb.Append($"{{{itemIndex}}}");
                             }
-
                             layoutIndex = startIndex + length;
                             isContinue = true;
                             break;
                         }
                     }
-
-                    if (isContinue)
-                    {
-                        continue;
-                    }
+                    if (isContinue) { continue; }
                 }
-
                 sb.Append(layout[layoutIndex]);
             }
-
             return sb.ToString();
         }
 
@@ -74,27 +65,12 @@ namespace MSyics.Traceyi.Layout
         /// </summary>
         private string GetSeparatorCharacter(string format)
         {
-            if (format.StartsWith(":"))
-            {
-                return string.Empty;
-            }
-            else if (format.StartsWith(","))
-            {
-                return string.Empty;
-            }
-            else
-            {
-                if (string.IsNullOrEmpty(format))
-                {
-                    return string.Empty;
-                }
-                else
-                {
-                    return ":";
-                }
-            }
+            if (format.StartsWith(":")) { return string.Empty; }
+            if (format.StartsWith(",")) { return string.Empty; }
+            if (string.IsNullOrEmpty(format)) { return string.Empty; }
+            return ":";
         }
 
-        private List<TextLogLayoutItem> Items { get; set; }
+        private TextLogLayoutItem[] Items { get; set; }
     }
 }

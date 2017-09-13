@@ -79,12 +79,14 @@ namespace MSyics.Traceyi
             // Add Log RuntimeObject
             foreach (var logSection in config.GetSection("Log").GetChildren())
             {
-                if (!SectionedLogElements.ContainsKey(logSection.Key.ToUpper())) continue;
-                foreach (var section in SectionedLogElements[logSection.Key.ToUpper()](config.GetSection(logSection.Path)))
+                var logSectionName = logSection.Key.ToUpper();
+                if (!SectionedLogElements.ContainsKey(logSectionName)) continue;
+                foreach (var log in SectionedLogElements[logSectionName](config.GetSection(logSection.Path)))
                 {
-                    if (string.IsNullOrWhiteSpace(section.Name)) continue;
-                    if (Logs.ContainsKey(section.Name.ToUpper())) continue;
-                    Logs.Add(section.Name.ToUpper(), section.GetRuntimeObject());
+                    var logName = log.Name.ToUpper();
+                    if (string.IsNullOrWhiteSpace(logName)) continue;
+                    if (Logs.ContainsKey(logName)) continue;
+                    Logs.Add(logName, log.GetRuntimeObject());
                 }
             }
 
@@ -96,9 +98,10 @@ namespace MSyics.Traceyi
             }
             .Settings(settings =>
             {
-                foreach (var key in tracerElement.Logs)
+                foreach (var key in tracerElement.Logs.Select(x => x.ToUpper()))
                 {
-                    settings.SetLog(Logs[key.ToUpper()]);
+                    if (!Logs.ContainsKey(key)) { continue; }
+                    settings.SetLog(Logs[key]);
                 }
             });
         }
