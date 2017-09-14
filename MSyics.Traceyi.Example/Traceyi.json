@@ -18,7 +18,7 @@
       //         Actions    : Debug, Info, Start, Stop, Warning, Error
       //         All        : すべて
       "filter": "All",
-      "logs": [ "console", "file", "rotatefile" ]
+      "logs": [ "file" ]
     }
   ],
   "log": {
@@ -82,13 +82,10 @@
       // path  : パスを指定する。（省略：[ApplicationName].log）
       {
         "name": "file",
-        "useGlobalLock": true,
+        "useGlobalLock": false,
         "newLine": "\r\n",
         "encoding": "shift-jis",
-        "path": "",
-        "layout": {
-          "format": "{dateTime:yyyy/MM/dd}{tab}{dateTime:HH:mm:ss.ffff}{tab}{action}{tab}{operationId}{tab}{activityId}{tab}{class}{tab}{member}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}"
-        }
+        "path": "C:\\Users\\Shinich\\Desktop\\ConsoleApp4\\log\\Logs\\test3.log"
       }
     ],
     "rotatefiles": [
@@ -109,14 +106,14 @@
       // leaveFiles  : ファイルの最大バイト数を超えたファイルを残すかどうか
       {
         "name": "rotatefile",
-        "useGlobalLock": true,
+        "useGlobalLock": false,
         "newLine": "\r\n",
         "encoding": "shift-jis",
-        "pathLayout": "log\\{processId|0,4:R}{threadId|0,4:R}{dateTime:yyyyMMddHHmm}.log",
-        "maxLength": "5000",
+        "pathLayout": "C:\\Users\\Shinich\\Desktop\\ConsoleApp4\\log\\Logs\\test2.log",
+        "maxLength": "0",
         "leaveFiles": "true",
         "layout": {
-          "format": "{dateTime:yyyy/MM/dd}{tab}{dateTime:HH:mm:ss.ffff}{tab}{action}{tab}{operationId}{tab}{activityId}{tab}{class}{tab}{member}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}"
+          "format": "{message}"
         }
       }
     ]

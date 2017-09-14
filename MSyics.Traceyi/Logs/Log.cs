@@ -24,26 +24,18 @@ namespace MSyics.Traceyi
         /// </summary>
         public string Name { get; protected internal set; }
 
-        /// <summary>
-        /// 記録するトレース動作を取得または設定します。
-        /// </summary>
-        public TraceFilters Filter { get; set; } = TraceFilters.All;
-
         internal void OnTrace(object sender, TraceEventArg e)
         {
-            if (this.Filter.Contains(e.Action))
+            if (this.UseGlobalLock)
             {
-                if (this.UseGlobalLock)
-                {
-                    lock (Log.m_thisLock)
-                    {
-                        Write(e.Message, e.DateTime, e.Action);
-                    }
-                }
-                else
+                lock (Log.m_thisLock)
                 {
                     Write(e.Message, e.DateTime, e.Action);
                 }
+            }
+            else
+            {
+                Write(e.Message, e.DateTime, e.Action);
             }
         }
 
@@ -51,7 +43,7 @@ namespace MSyics.Traceyi
         /// トレースデータを書き込みます。
         /// </summary>
         public abstract void Write(object message, DateTime dateTime, TraceAction action, TraceEventCacheData cacheData);
-        
+
         /// <summary>
         /// トレースデータを書き込みます。
         /// </summary>

@@ -67,12 +67,12 @@ namespace MSyics.Traceyi
                 cacheData.ProcessName,
                 cacheData.MachineName);
 
-            if (!System.IO.Path.IsPathRooted(path))
+            if (!Path.IsPathRooted(path))
             {
-                path = System.IO.Path.GetFullPath(path);
+                path = Path.GetFullPath(path);
             }
 
-            if (!this.StreamManager.Exists(path))
+            if (!StreamManager.Exists(path))
             {
                 Directory.CreateDirectory(Path.GetDirectoryName(path));
             }
@@ -95,7 +95,6 @@ namespace MSyics.Traceyi
                 {
                     Name = this.Name,
                     NewLine = this.NewLine,
-                    Filter = this.Filter,
                     UseGlobalLock = false,
                 };
                 using (log)
@@ -151,10 +150,9 @@ namespace MSyics.Traceyi
         {
             try
             {
-                if (this.StreamManager == null) { return; }
                 try
                 {
-                    this.StreamManager.Clear();
+                    this.StreamManager?.Clear();
                 }
                 catch (Exception)
                 {

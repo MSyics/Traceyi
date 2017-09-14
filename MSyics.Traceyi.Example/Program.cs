@@ -4,6 +4,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Diagnostics;
 
 namespace MSyics.Traceyi.Example
 {
@@ -19,12 +20,54 @@ namespace MSyics.Traceyi.Example
             //}
 
             var pg = new Program();
-            pg.Case1();
-            pg.Case2();
-            pg.Case3();
+            //pg.Case1();
+            //pg.Case2();
+            //pg.Case3();
+            //pg.Case4();
+            //Console.WriteLine("----");
+            //pg.Case4();
+            pg.Case5();
         }
 
         private Tracer Tracer { get; } = Traceable.Get();
+
+        private void Case5()
+        {
+            var x = new ReuseFileStream(@"C:\Users\Shinich\Desktop\ConsoleApp4\log\Logs\test4.txt");
+            using (var writer = new StreamWriter(x))
+            {
+                //Tracer.OnTrace += (sender, e) =>
+                //{
+                //    writer.WriteLine(e.Message);
+                //};
+
+                var sw = Stopwatch.StartNew();
+                for (int i = 0; i < 10000; i++)
+                {
+                    Tracer.Information("hogehoge");
+                    //writer.WriteLine(DateTime.Now.ToString("yyyy/mm/dd"));
+                    //writer.WriteLine("{0:yyyy/mm/dd}", DateTime.Now);
+                    //writer.WriteLine("{0}", "hogehoge");
+                    //writer.WriteLine("hogehoge");
+                    //writer.
+                }
+                sw.Stop();
+                Console.WriteLine(sw.ElapsedMilliseconds);
+            }
+
+        }
+
+        private void Case4()
+        {
+            var sw = Stopwatch.StartNew();
+            for (int i = 0; i < 1000000; i++)
+            {
+                Tracer.Information("hogehoge");
+            }
+            sw.Stop();
+            Console.WriteLine(sw.ElapsedMilliseconds);
+        }
+
 
         private void Case1()
         {
@@ -63,5 +106,30 @@ namespace MSyics.Traceyi.Example
         }
     }
 
+    internal sealed class ReuseFileStream : FileStream
+    {
+        /// <summary>
+        /// ReuseFileStream クラスのインスタンスを初期化します。
+        /// </summary>
+        public ReuseFileStream(string path)
+            : base(path, FileMode.Append, FileAccess.Write, FileShare.Read)
+        {
+        }
 
+        /// <summary>
+        /// このメソッドの代わりに Clean メソッドを使用してください。
+        /// </summary>
+        public override void Close()
+        {
+            // StreamWriter を閉じてもストリームを閉じないようにするために、
+            // ここでは何もしません。
+        }
+
+        /// <summary>
+        /// 現在のストリームを閉じて関連付けられているリソースを解放します。
+        /// </summary>
+        public void Clean() => base.Close();
+
+        protected override void Dispose(bool disposing) => base.Dispose(disposing);
+    }
 }
