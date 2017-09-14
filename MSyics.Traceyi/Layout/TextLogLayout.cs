@@ -44,14 +44,14 @@ namespace MSyics.Traceyi.Layout
                     dateTime,
                     action,
                     message,
-                    cacheData.ActivityId,
-                    cacheData.OperationId,
-                    cacheData.Member.ReflectedType,
-                    cacheData.Member,
-                    cacheData.ThreadId,
-                    cacheData.ProcessId,
-                    cacheData.ProcessName,
-                    cacheData.MachineName);
+                    cacheData?.ActivityId,
+                    cacheData?.OperationId,
+                    cacheData?.Member?.ReflectedType,
+                    cacheData?.Member,
+                    cacheData?.ThreadId,
+                    cacheData?.ProcessId,
+                    cacheData?.ProcessName,
+                    cacheData?.MachineName);
         }
 
         private void SetFormattedLayout()

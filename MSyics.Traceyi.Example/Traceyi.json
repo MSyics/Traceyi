@@ -18,7 +18,7 @@
       //         Actions    : Debug, Info, Start, Stop, Warning, Error
       //         All        : すべて
       "filter": "All",
-      "logs": [ "file" ]
+      "logs": [ "file", "console" ]
     }
   ],
   "log": {
@@ -82,7 +82,7 @@
       // path  : パスを指定する。（省略：[ApplicationName].log）
       {
         "name": "file",
-        "useGlobalLock": false,
+        "useGlobalLock": true,
         "newLine": "\r\n",
         "encoding": "shift-jis",
         "path": "C:\\Users\\Shinich\\Desktop\\ConsoleApp4\\log\\Logs\\test3.log"

@@ -21,5 +21,10 @@ namespace MSyics.Traceyi
         /// トレースの動作を取得または設定します。
         /// </summary>
         public TraceAction Action { get; set; }
+
+        /// <summary>
+        /// トレースのデータを取得または設定します。
+        /// </summary>
+        public TraceEventCacheData CacheData { get; set; }
     }
 }

@@ -39,6 +39,7 @@ namespace MSyics.Traceyi
                     Message = message,
                     DateTime = dateTime,
                     Action = action,
+                    CacheData = new TraceEventCacheData(),
                 };
                 
                 eh(this, data);

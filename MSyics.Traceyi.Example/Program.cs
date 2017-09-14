@@ -25,13 +25,13 @@ namespace MSyics.Traceyi.Example
             //pg.Case3();
             //pg.Case4();
             //Console.WriteLine("----");
-            //pg.Case4();
-            pg.Case5();
+            pg.Case4();
+            //pg.Case_();
         }
 
         private Tracer Tracer { get; } = Traceable.Get();
 
-        private void Case5()
+        private void Case_()
         {
             var x = new ReuseFileStream(@"C:\Users\Shinich\Desktop\ConsoleApp4\log\Logs\test4.txt");
             using (var writer = new StreamWriter(x))
@@ -57,15 +57,25 @@ namespace MSyics.Traceyi.Example
 
         }
 
+        private void Test()
+        {
+            using (Tracer.Scope())
+            {
+                Tracer.Information("hoge");
+            }
+        }
+
         private void Case4()
         {
-            var sw = Stopwatch.StartNew();
-            for (int i = 0; i < 1000000; i++)
+            Tracer.Context.ActivityId = 1;
+            using (var scope = Tracer.Scope(1))
             {
-                Tracer.Information("hogehoge");
+                var tasks = Enumerable
+                .Range(1, 5)
+                .Select(i => Task.Factory.StartNew(() => Test()));
+
+                Task.WaitAll(tasks.ToArray());
             }
-            sw.Stop();
-            Console.WriteLine(sw.ElapsedMilliseconds);
         }
 
 
@@ -77,9 +87,6 @@ namespace MSyics.Traceyi.Example
             Tracer.Error("hogehoge");
             Tracer.Start();
             Tracer.Stop();
-            using (Tracer.Scope())
-            {
-            }
         }
 
         private void Case2()
@@ -97,12 +104,13 @@ namespace MSyics.Traceyi.Example
 
         private void Case3()
         {
-            Tracer.OnTrace += (sender, e) =>
+            using (Tracer.Scope())
             {
-                Console.WriteLine(e.Message);
-            };
-
-            Tracer.Information("hogehoge");
+                Tracer.Start();
+                Tracer.Start();
+                Tracer.Start();
+                Tracer.Start();
+            }
         }
     }
 
