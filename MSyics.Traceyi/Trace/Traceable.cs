@@ -16,14 +16,14 @@ namespace MSyics.Traceyi
     {
         private static readonly object m_thisLock = new object();
         private static Dictionary<string, Tracer> Tracers = new Dictionary<string, Tracer>();
-        private static Dictionary<string, Log> Logs = new Dictionary<string, Log>();
-        private static Dictionary<string, Func<IConfiguration, IEnumerable<LogElement>>> SectionedLogElements = new Dictionary<string, Func<IConfiguration, IEnumerable<LogElement>>>();
+        private static Dictionary<string, LoggingListener> Logs = new Dictionary<string, LoggingListener>();
+        private static Dictionary<string, Func<IConfiguration, IEnumerable<ListenerElement>>> SectionedLogElements = new Dictionary<string, Func<IConfiguration, IEnumerable<ListenerElement>>>();
 
         static Traceable()
         {
-            AddSectionedLogElement<ConsoleLogElement>("Consoles");
-            AddSectionedLogElement<FileLogElement>("Files");
-            AddSectionedLogElement<RotateFileLogElement>("RotateFiles");
+            AddSectionedLogElement<ConsoleLoggingListenerElement>("Consoles");
+            AddSectionedLogElement<FileLoggingListenerElement>("Files");
+            AddSectionedLogElement<RotateFileLoggingListenerElement>("RotateFiles");
         }
 
         /// <summary>
@@ -32,7 +32,7 @@ namespace MSyics.Traceyi
         /// <typeparam name="T">カスタム Log 要素の型</typeparam>
         /// <param name="section">セクション名</param>
         public static void AddSectionedLogElement<T>(string section)
-            where T : LogElement
+            where T : ListenerElement
         {
             SectionedLogElements.Add(section.ToUpper(), (config) => config.Get<List<T>>());
         }
@@ -66,7 +66,7 @@ namespace MSyics.Traceyi
 
             builder.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
                    .AddJsonFile("Traceyi.json", false, true);
-            
+
             var config = builder.Build();
 
             if (!config.GetSection("Tracers").Exists()) return CreateNullTracer();
@@ -92,32 +92,33 @@ namespace MSyics.Traceyi
 
             // Create Tracer
             return new Tracer()
+            .Configure(settings =>
             {
-                Name = tracerElement.Name,
-                Filter = tracerElement.Filter,
-            }
-            .Settings(settings =>
-            {
+                settings.Settings(s =>
+                {
+                    s.Name = name;
+                    s.Filter = tracerElement.Filter;
+                });
                 foreach (var key in tracerElement.Logs.Select(x => x.ToUpper()))
                 {
                     if (!Logs.ContainsKey(key)) { continue; }
-                    settings.SetLog(Logs[key]);
+                    settings.AddListener(Logs[key]);
                 }
             });
         }
 
-        private static Tracer CreateNullTracer() => new Tracer() { Name = "NullTracer", Filter = TraceFilters.None };
+        private static Tracer CreateNullTracer() => new Tracer(); 
 
-        #region TraceContext
+    #region TraceContext
 
-        /// <summary>
-        /// トレース基本情報を取得します。
-        /// </summary>
-        internal static TraceContext Context => _context ?? (_context = new TraceContext());
+    /// <summary>
+    /// トレース基本情報を取得します。
+    /// </summary>
+    internal static TraceContext Context => _context ?? (_context = new TraceContext());
 
-        [ThreadStatic]
-        private static TraceContext _context;
+    [ThreadStatic]
+    private static TraceContext _context;
 
-        #endregion
-    }
+    #endregion
+}
 }

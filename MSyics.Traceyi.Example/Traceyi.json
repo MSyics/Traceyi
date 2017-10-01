@@ -35,7 +35,7 @@
         "useGlobalLock": true,
         "newLine": "\r\n",
         "encoding": "shift-jis",
-        "useErrorStream": "false",
+        "useErrorStream": false,
         // 出力するログのレイアウトを指定する（省略可）
         // ................................................................
         // レイアウト項目
@@ -72,7 +72,7 @@
         // {message|_, 20:R}
         // {threadId, 4:D4|_, 8:L}
         "layout": {
-          "format": "{dateTime:yyyy/MM/dd}{tab}{dateTime:HH:mm:ss.ffff}{tab}{action}{tab}{operationId}{tab}{activityId}{tab}{class}{tab}{member}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}"
+          "format": "{dateTime:yyyy/MM/dd}{tab}{dateTime:HH:mm:ss.ffff}{tab}{action}{tab}{message}{tab}{operationId}"
         }
       }
     ],
@@ -85,7 +85,10 @@
         "useGlobalLock": true,
         "newLine": "\r\n",
         "encoding": "shift-jis",
-        "path": "C:\\Users\\Shinich\\Desktop\\ConsoleApp4\\log\\Logs\\test3.log"
+        "path": "C:\\Users\\Shinich\\Desktop\\ConsoleApp4\\log\\Logs\\test3.log",
+        "layout": {
+          "format": "{dateTime}{tab}{message}"
+        }
       }
     ],
     "rotatefiles": [

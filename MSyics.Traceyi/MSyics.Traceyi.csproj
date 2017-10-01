@@ -4,6 +4,15 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <SignAssembly>false</SignAssembly>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>2.0.0</Version>
+    <PackageId>Traceyi</PackageId>
+    <Authors>MSyics</Authors>
+    <Company>MSyics</Company>
+    <Product>Traceyi</Product>
+    <PackageProjectUrl>https://github.com/MSyics/Traceyi</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/MSyics/Traceyi</RepositoryUrl>
+    <PackageLicenseUrl>https://github.com/MSyics/Traceyi/blob/master/LICENSE</PackageLicenseUrl>
+    <Copyright>Copyright (c) 2017 MSyics</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,7 +31,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Remove="Logs\EventLog.cs" />
+    <Compile Remove="Listeners\EventLog.cs" />
   </ItemGroup>
 
   <ItemGroup>

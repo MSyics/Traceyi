@@ -44,9 +44,9 @@ namespace MSyics.Traceyi
         /// <summary>
         /// トレースの設定を行います。
         /// </summary>
-        public static Tracer Settings(this Tracer tracer, Action<TracerSettings> setting)
+        public static Tracer Configure(this Tracer tracer, Action<TracerConfiguration> settings)
         {
-            setting(new TracerSettings(tracer));
+            settings(new TracerConfiguration(tracer));
             return tracer;
         }
     }

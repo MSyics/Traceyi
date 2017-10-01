@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace MSyics.Traceyi
 {
@@ -9,41 +11,60 @@ namespace MSyics.Traceyi
     /// </summary>
     public sealed class Tracer
     {
+        private static int ProcessId { get; set; }
+        private static string ProcessName { get; set; }
+        private static string MachineName { get; } = Environment.MachineName;
+
+        static Tracer()
+        {
+            using (var process = Process.GetCurrentProcess())
+            {
+                ProcessId = process.Id;
+                ProcessName = process.ProcessName;
+            }
+        }
+
         /// <summary>
         /// スレッドに関連付いたトレース基本情報を取得します。
         /// </summary>
         public TraceContext Context => Traceable.Context;
 
         /// <summary>
-        /// 名前を取得します。
+        /// 設定値を取得します。
         /// </summary>
-        public string Name { get; internal set; }
-
-        /// <summary>
-        /// フィルターを取得します。
-        /// </summary>
-        public TraceFilters Filter { get; set; } = TraceFilters.All;
+        public TracerSettings Settings { get; } = new TracerSettings();
 
         /// <summary>
         /// トレースイベントを設定します。
         /// </summary>
         public event EventHandler<TraceEventArg> OnTrace;
 
-        private void RaiseTrace(TraceAction action, DateTime dateTime, object message)
+        private void RaiseTrace(DateTime traced, TraceAction action, object message)
         {
             var eh = OnTrace;
-            if (eh != null)
+            if (eh == null) { return; }
+
+            var data = new TraceEventArg();
+            if (Settings.CanListens.Traced) { data.Traced = traced; }
+            if (Settings.CanListens.Action) { data.Action = action; }
+            if (Settings.CanListens.Message) { data.Message = message; }
+            if (Settings.CanListens.ActivityId) { data.ActivityId = Traceable.Context.ActivityId; }
+            if (Settings.CanListens.OperationId) { data.OperationId = Traceable.Context.CurrentOperation.OperationId; }
+            if (Settings.CanListens.ClassName || Settings.CanListens.MemberName)
             {
-                var data = new TraceEventArg()
-                {
-                    Message = message,
-                    DateTime = dateTime,
-                    Action = action,
-                    CacheData = new TraceEventCacheData(),
-                };
-                
-                eh(this, data);
+                var memberInfo = TraceUtility.GetTracedMemberInfo();
+                if (Settings.CanListens.ClassName) { data.Class = memberInfo.ReflectedType.FullName; }
+                if (Settings.CanListens.MemberName) { data.Member = memberInfo.Name; }
             }
+            if (Settings.CanListens.ThreadId) { data.ThreadId = Thread.CurrentThread.ManagedThreadId; }
+            if (Settings.CanListens.ProcessId || Settings.CanListens.ProcessName)
+            {
+                if (Settings.CanListens.ProcessId) { data.ProcessId = ProcessId; }
+                if (Settings.CanListens.ProcessName) { data.ProcessName = ProcessName; }
+            }
+            if (Settings.CanListens.MachineName) { data.MachineName = MachineName; }
+
+            eh(this, data);
         }
 
         #region Debug
@@ -52,20 +73,9 @@ namespace MSyics.Traceyi
         /// </summary>
         public void Debug(object message)
         {
-            if (this.Filter.Contains(TraceAction.Debug))
+            if (this.Settings.Filter.Contains(TraceAction.Debug))
             {
-                RaiseTrace(TraceAction.Debug, DateTime.Now, message);
-            }
-        }
-
-        /// <summary>
-        /// デバッグに必要なメッセージを残します。
-        /// </summary>
-        public void Debug(string message)
-        {
-            if (this.Filter.Contains(TraceAction.Debug))
-            {
-                RaiseTrace(TraceAction.Debug, DateTime.Now, message);
+                RaiseTrace(DateTime.Now, TraceAction.Debug, message);
             }
         }
 
@@ -74,9 +84,9 @@ namespace MSyics.Traceyi
         /// </summary>
         public void Debug(string format, params object[] args)
         {
-            if (this.Filter.Contains(TraceAction.Debug))
+            if (this.Settings.Filter.Contains(TraceAction.Debug))
             {
-                RaiseTrace(TraceAction.Debug, DateTime.Now, string.Format(format, args));
+                RaiseTrace(DateTime.Now, TraceAction.Debug, string.Format(format, args));
             }
         }
         #endregion
@@ -87,20 +97,9 @@ namespace MSyics.Traceyi
         /// </summary>
         public void Information(object message)
         {
-            if (this.Filter.Contains(TraceAction.Info))
+            if (this.Settings.Filter.Contains(TraceAction.Info))
             {
-                RaiseTrace(TraceAction.Info, DateTime.Now, message);
-            }
-        }
-
-        /// <summary>
-        /// 通知メッセージを残します。
-        /// </summary>
-        public void Information(string message)
-        {
-            if (this.Filter.Contains(TraceAction.Info))
-            {
-                RaiseTrace(TraceAction.Info, DateTime.Now, message);
+                RaiseTrace(DateTime.Now, TraceAction.Info, message);
             }
         }
 
@@ -109,9 +108,9 @@ namespace MSyics.Traceyi
         /// </summary>
         public void Information(string format, params object[] args)
         {
-            if (this.Filter.Contains(TraceAction.Info))
+            if (this.Settings.Filter.Contains(TraceAction.Info))
             {
-                RaiseTrace(TraceAction.Info, DateTime.Now, string.Format(format, args));
+                RaiseTrace(DateTime.Now, TraceAction.Info, string.Format(format, args));
             }
         }
         #endregion
@@ -122,20 +121,9 @@ namespace MSyics.Traceyi
         /// </summary>
         public void Warning(object message)
         {
-            if (this.Filter.Contains(TraceAction.Warning))
+            if (this.Settings.Filter.Contains(TraceAction.Warning))
             {
-                RaiseTrace(TraceAction.Warning, DateTime.Now, message);
-            }
-        }
-
-        /// <summary>
-        /// 注意メッセージを残します。
-        /// </summary>
-        public void Warning(string message)
-        {
-            if (this.Filter.Contains(TraceAction.Warning))
-            {
-                RaiseTrace(TraceAction.Warning, DateTime.Now, message);
+                RaiseTrace(DateTime.Now, TraceAction.Warning, message);
             }
         }
 
@@ -144,9 +132,9 @@ namespace MSyics.Traceyi
         /// </summary>
         public void Warning(string format, params object[] args)
         {
-            if (this.Filter.Contains(TraceAction.Warning))
+            if (this.Settings.Filter.Contains(TraceAction.Warning))
             {
-                RaiseTrace(TraceAction.Warning, DateTime.Now, string.Format(format, args));
+                RaiseTrace(DateTime.Now, TraceAction.Warning, string.Format(format, args));
             }
         }
         #endregion
@@ -157,20 +145,9 @@ namespace MSyics.Traceyi
         /// </summary>
         public void Error(object message)
         {
-            if (this.Filter.Contains(TraceAction.Error))
+            if (this.Settings.Filter.Contains(TraceAction.Error))
             {
-                RaiseTrace(TraceAction.Error, DateTime.Now, message);
-            }
-        }
-
-        /// <summary>
-        /// エラーメッセージを残します。
-        /// </summary>
-        public void Error(string message)
-        {
-            if (this.Filter.Contains(TraceAction.Error))
-            {
-                RaiseTrace(TraceAction.Error, DateTime.Now, message);
+                RaiseTrace(DateTime.Now, TraceAction.Error, message);
             }
         }
 
@@ -179,9 +156,9 @@ namespace MSyics.Traceyi
         /// </summary>
         public void Error(string format, params object[] args)
         {
-            if (this.Filter.Contains(TraceAction.Error))
+            if (this.Settings.Filter.Contains(TraceAction.Error))
             {
-                RaiseTrace(TraceAction.Error, DateTime.Now, string.Format(format, args));
+                RaiseTrace(DateTime.Now, TraceAction.Error, string.Format(format, args));
             }
         }
 
@@ -193,22 +170,22 @@ namespace MSyics.Traceyi
         {
             var operation = new TraceOperation()
             {
-                OperationId = operationId ?? TraceUtility.GetOperationId(),
+                OperationId = operationId ?? $"{this.Context.OperationStack.Count}", //TraceUtility.GetOperationId(),
                 ScopeId = scopeId,
                 StartedDate = DateTime.Now,
             };
             this.Context.OperationStack.Push(operation);
 
-            if (this.Filter.Contains(TraceAction.Start))
+            if (this.Settings.Filter.Contains(TraceAction.Start))
             {
-                RaiseTrace(TraceAction.Start, operation.StartedDate, message ?? operation.OperationId);
+                RaiseTrace(operation.StartedDate, TraceAction.Start, message ?? operation.OperationId);
             }
 
-            if (this.Filter.Contains(TraceAction.Calling))
+            if (this.Settings.Filter.Contains(TraceAction.Calling))
             {
                 var sb = new StringBuilder(this.Context.CurrentOperation.OperationId.ToString());
-                this.Context.Operations.Skip(1).Aggregate(sb, (x, y) => x.Insert(0, y.OperationId.ToString() + "|"));
-                RaiseTrace(TraceAction.Calling, operation.StartedDate, sb);
+                this.Context.Operations.Skip(1).Aggregate(sb, (x, y) => x.Insert(0, y.OperationId.ToString() + ">"));
+                RaiseTrace(operation.StartedDate, TraceAction.Calling, sb);
             }
         }
 
@@ -216,14 +193,6 @@ namespace MSyics.Traceyi
         /// 操作の開始メッセージを残します。
         /// </summary>
         public void Start(object message)
-        {
-            Start(null, message, Guid.Empty);
-        }
-
-        /// <summary>
-        /// 操作の開始メッセージを残します。
-        /// </summary>
-        public void Start(string message)
         {
             Start(null, message, Guid.Empty);
         }
@@ -254,13 +223,13 @@ namespace MSyics.Traceyi
                 }
 
                 var stopedDateTime = DateTime.Now;
-                if (this.Filter.Contains(TraceAction.Elapsed))
+                if (this.Settings.Filter.Contains(TraceAction.Elapsed))
                 {
-                    RaiseTrace(TraceAction.Elapsed, stopedDateTime, (stopedDateTime - currentOperation.StartedDate));
+                    RaiseTrace(stopedDateTime, TraceAction.Elapsed, (stopedDateTime - currentOperation.StartedDate));
                 }
-                if (this.Filter.Contains(TraceAction.Stop))
+                if (this.Settings.Filter.Contains(TraceAction.Stop))
                 {
-                    RaiseTrace(TraceAction.Stop, stopedDateTime, message ?? currentOperation.OperationId);
+                    RaiseTrace(stopedDateTime, TraceAction.Stop, message ?? currentOperation.OperationId);
                 }
 
                 var popOperation = this.Context.OperationStack.Pop();
@@ -272,14 +241,6 @@ namespace MSyics.Traceyi
         /// 操作の終了メッセージを残します。
         /// </summary>
         public void Stop(object message)
-        {
-            Stop(message, Guid.Empty);
-        }
-
-        /// <summary>
-        /// 操作の終了メッセージを残します。
-        /// </summary>
-        public void Stop(string message)
         {
             Stop(message, Guid.Empty);
         }

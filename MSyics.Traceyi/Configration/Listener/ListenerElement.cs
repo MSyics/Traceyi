@@ -10,9 +10,9 @@ using System.Text;
 namespace MSyics.Traceyi.Configration
 {
     /// <summary>
-    /// Log クラスから派生するクラスを設定する要素を表します。これは抽象クラスです。
+    /// Listener クラスから派生するクラスを設定する要素を表します。これは抽象クラスです。
     /// </summary>
-    public abstract class LogElement
+    public abstract class ListenerElement
     {
         /// <summary>
         /// 名前を取得または設定します。
@@ -27,6 +27,6 @@ namespace MSyics.Traceyi.Configration
         /// <summary>
         /// 派生クラスでオーバーライドされると実行オブジェクトを取得します。
         /// </summary>
-        public abstract Log GetRuntimeObject();
+        public abstract LoggingListener GetRuntimeObject();
     }
 }

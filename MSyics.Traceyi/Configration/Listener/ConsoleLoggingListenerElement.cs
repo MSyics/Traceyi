@@ -12,7 +12,7 @@ namespace MSyics.Traceyi.Configration
     /// <summary>
     /// console 要素を表します。
     /// </summary>
-    public class ConsoleLogElement : TextWriterLogElement
+    public class ConsoleLoggingListenerElement : TextWriterListenerElement
     {
         /// <summary>
         /// エラーストリームを使用するかどうかを示す値を取得または設定します。
@@ -22,8 +22,8 @@ namespace MSyics.Traceyi.Configration
         /// <summary>
         /// 実行オブジェクトを取得します。
         /// </summary>
-        public override Log GetRuntimeObject() =>
-             new ConsoleLog(this.UseErrorStream, this.Layout.GetRuntimeObject())
+        public override LoggingListener GetRuntimeObject() =>
+             new ConsoleLoggingListener(this.UseErrorStream, this.Layout.GetRuntimeObject())
              {
                  Name = this.Name,
                  NewLine = this.NewLine,

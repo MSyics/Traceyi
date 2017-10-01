@@ -8,13 +8,13 @@ namespace MSyics.Traceyi.Layout
     /// <summary>
     /// TextLogLayout クラスで指定されたレイアウトを認識できるフォーマットに変換する機能を提供します。
     /// </summary>
-    internal sealed class TextLogLayoutConverter
+    internal sealed class TraceLogLayoutConverter
     {
         /// <summary>
         /// TextLogLayoutConverter クラスのインスタンスを初期化します。
         /// </summary>
         /// <param name="items">ログの記録項目</param>
-        public TextLogLayoutConverter(params TextLogLayoutItem[] items) => this.Items = items;
+        public TraceLogLayoutConverter(params TraceLogLayoutItem[] items) => this.Items = items;
 
         /// <summary>
         /// 指定されたレイアウトを認識できるフォーマットに変換します。
@@ -38,7 +38,7 @@ namespace MSyics.Traceyi.Layout
                         var item = this.Items[itemIndex];
                         if (convertString.StartsWith(item.Name, StringComparison.OrdinalIgnoreCase))
                         {
-                            if (item.UseFormat)
+                            if (item.CanFormat)
                             {
                                 var formatString = convertString.Substring(item.Name.Length);
                                 var separator = GetSeparatorCharacter(formatString);
@@ -71,6 +71,6 @@ namespace MSyics.Traceyi.Layout
             return ":";
         }
 
-        private TextLogLayoutItem[] Items { get; set; }
+        private TraceLogLayoutItem[] Items { get; set; }
     }
 }

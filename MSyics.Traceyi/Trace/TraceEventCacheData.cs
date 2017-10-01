@@ -15,11 +15,11 @@ namespace MSyics.Traceyi
 
         static TraceEventCacheData()
         {
-            using (var process = Process.GetCurrentProcess())
-            {
-                m_processId = process.Id;
-                m_processName = process.ProcessName;
-            }
+            //using (var process = Process.GetCurrentProcess())
+            //{
+            //    m_processId = process.Id;
+            //    m_processName = process.ProcessName;
+            //}
         }
 
         /// <summary>
@@ -50,11 +50,11 @@ namespace MSyics.Traceyi
         /// <summary>
         /// マネージスレッドの一意な識別子を取得します。
         /// </summary>
-        public int ThreadId { get; } = Thread.CurrentThread.ManagedThreadId;
+        public int ThreadId { get; } //= Thread.CurrentThread.ManagedThreadId;
 
         /// <summary>
         /// 操作識別子を取得します。
         /// </summary>
-        public object OperationId { get; } = Traceable.Context.CurrentOperation.OperationId;
+        public object OperationId { get; } //= Traceable.Context.CurrentOperation.OperationId;
     }
 }

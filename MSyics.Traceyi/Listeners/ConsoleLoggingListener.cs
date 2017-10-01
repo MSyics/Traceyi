@@ -6,14 +6,14 @@ namespace MSyics.Traceyi
     /// <summary>
     /// トレースデータをコンソールに記録します。
     /// </summary>
-    public class ConsoleLog : TextWriterLog
+    public class ConsoleLoggingListener : TextWriterLoggingListener
     {
         /// <summary>
         /// ConsoleLog クラスのインスタンスを初期化します。
         /// </summary>
         /// <param name="useErrorStream">標準出力ストリームと標準エラーストリームのどちらを使うかを示す値</param>
         /// <param name="layout">レイアウト</param>
-        public ConsoleLog(bool useErrorStream, ILogLayout layout)
+        public ConsoleLoggingListener(bool useErrorStream, ITraceLogLayout layout)
             : base(useErrorStream ? Console.Out : Console.Error, layout)
         {
         }
@@ -22,7 +22,7 @@ namespace MSyics.Traceyi
         /// ConsoleLog クラスのインスタンスを初期化します。
         /// </summary>
         /// <param name="useErrorStream">標準出力ストリームと標準エラーストリームのどちらを使うかを示す値</param>
-        public ConsoleLog(bool useErrorStream)
+        public ConsoleLoggingListener(bool useErrorStream)
             : base(useErrorStream ? Console.Out : Console.Error)
         {
         }
@@ -30,7 +30,7 @@ namespace MSyics.Traceyi
         /// <summary>
         /// ConsoleLog クラスのインスタンスを初期化します。
         /// </summary>
-        public ConsoleLog()
+        public ConsoleLoggingListener()
             : this(false)
         {
         }

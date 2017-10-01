@@ -10,9 +10,9 @@ using System.Text;
 namespace MSyics.Traceyi.Configration
 {
     /// <summary>
-    /// TextWriterLog クラスから派生するクラスを設定する要素を表します。これは抽象クラスです。
+    /// TextWriterListener クラスから派生するクラスを設定する要素を表します。これは抽象クラスです。
     /// </summary>
-    public abstract class TextWriterLogElement : LogElement
+    public abstract class TextWriterListenerElement : ListenerElement
     {
         /// <summary>
         /// 改行文字を取得または設定します。

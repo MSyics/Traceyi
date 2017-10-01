@@ -12,7 +12,7 @@ namespace MSyics.Traceyi.Configration
     /// <summary>
     /// rotateFile 要素を表します。
     /// </summary>
-    public class RotateFileLogElement : TextWriterLogElement
+    public class RotateFileLoggingListenerElement : TextWriterListenerElement
     {
         /// <summary>
         /// パスのレイアウトを取得または設定します。
@@ -32,9 +32,9 @@ namespace MSyics.Traceyi.Configration
         /// <summary>
         /// 実行オブジェクトを取得します。
         /// </summary>
-        public override Log GetRuntimeObject()
+        public override LoggingListener GetRuntimeObject()
         {
-            return new RotateFileLog(this.PathLayout)
+            return new RotateFileLoggingListener(this.PathLayout)
             {
                 Encoding = this.GetEncoding(),
                 Layout = this.Layout.GetRuntimeObject(),

@@ -7,11 +7,11 @@ namespace MSyics.Traceyi
     /// <summary>
     /// トレースデータを記録します。これは抽象クラスです。
     /// </summary>
-    public abstract class Log : IDisposable
+    public abstract class LoggingListener : IDisposable
     {
         #region Static Members
         private static readonly object m_thisLock = new object();
-        static Log() { }
+        static LoggingListener() { }
         #endregion
 
         /// <summary>
@@ -28,29 +28,21 @@ namespace MSyics.Traceyi
         {
             if (this.UseGlobalLock)
             {
-                lock (Log.m_thisLock)
+                lock (LoggingListener.m_thisLock)
                 {
-                    Write(e.Message, e.DateTime, e.Action);
+                    Write(e);
                 }
             }
             else
             {
-                Write(e.Message, e.DateTime, e.Action);
+                Write(e);
             }
         }
 
         /// <summary>
         /// トレースデータを書き込みます。
         /// </summary>
-        public abstract void Write(object message, DateTime dateTime, TraceAction action, TraceEventCacheData cacheData);
-
-        /// <summary>
-        /// トレースデータを書き込みます。
-        /// </summary>
-        public void Write(object message, DateTime dateTime, TraceAction action)
-        {
-            Write(message, dateTime, action, new TraceEventCacheData());
-        }
+        public abstract void Write(TraceEventArg e);
 
         /// <summary>
         /// 使用しているリソースを閉じます。

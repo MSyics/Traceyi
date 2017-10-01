@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 
 namespace MSyics.Traceyi
 {
@@ -10,8 +11,8 @@ namespace MSyics.Traceyi
         /// <summary>
         /// ロギングライブラリで定義されているすべての型を取得します。
         /// </summary>
-        internal static Type[] LoggingLibraryTypes = Assembly.GetExecutingAssembly().GetTypes();
-
+        internal static Type[] LoggingLibraryTypes { get; } = Assembly.GetExecutingAssembly().GetTypes();
+   
         /// <summary>
         /// トレースしたメンバー情報を取得します。
         /// </summary>
@@ -52,7 +53,7 @@ namespace MSyics.Traceyi
                                   .TakeWhile(x => !TraceUtility.LoggingLibraryTypes.Any(y => y.Equals(x.ReflectedType)))
                                   .Last();
                 return $"{method.ReflectedType.FullName}.{method.Name}";
-            }                                                  
-        }                                                      
-    }                                                          
+            }
+        }
+    }
 }

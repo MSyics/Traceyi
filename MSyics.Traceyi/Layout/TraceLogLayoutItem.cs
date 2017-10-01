@@ -4,7 +4,7 @@ namespace MSyics.Traceyi.Layout
     /// <summary>
     /// ログの記録項目を表します。
     /// </summary>
-    internal sealed class TextLogLayoutItem
+    internal sealed class TraceLogLayoutItem
     {
         /// <summary>
         /// 項目名称を取得または設定します。
@@ -14,6 +14,6 @@ namespace MSyics.Traceyi.Layout
         /// <summary>
         /// フォーマット書式を使用できるかどうかを示す値を取得または設定します。
         /// </summary>
-        public bool UseFormat { get; set; }
+        public bool CanFormat { get; set; }
     }
 }

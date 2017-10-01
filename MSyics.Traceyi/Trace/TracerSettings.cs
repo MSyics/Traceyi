@@ -1,49 +1,30 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace MSyics.Traceyi
 {
-    /// <summary>
-    /// Tracer オブジェクトの設定を行います。
-    /// </summary>
     public sealed class TracerSettings
     {
-        Tracer m_source;
+        public string Name { get; internal set; }
+        public TraceFilters Filter { get; set; } = TraceFilters.All;
+        public TracerListens CanListens { get; } = new TracerListens();
+    }
 
-        internal TracerSettings()
-        {
-        }
+    public sealed class TracerListens
+    {
+        public bool Traced { get; internal set; } = true;
+        public bool Action { get; internal set; } = true;
 
-        /// <summary>
-        /// TracerSetting クラスのインスタンスを初期化します。
-        /// </summary>
-        public TracerSettings(Tracer source) => m_source = source;
+        public bool Message { get; set; } = true;
+        public bool ActivityId { get; set; } = true;
+        public bool OperationId { get; set; } = true;
+        public bool ClassName { get; set; } = true;
+        public bool MemberName { get; set; } = true;
 
-        /// <summary>
-        /// トレースイベントに Log オブジェクトを関連付けます。
-        /// </summary>
-        public TracerSettings SetLog(Log log)
-        {
-            m_source.OnTrace += log.OnTrace;
-            return this;
-        }
-
-        /// <summary>
-        /// トレースイベントに引数の Action デリゲートを関連付けます。 
-        /// </summary>
-        public TracerSettings SetLog(Action<TraceEventArg> action)
-        {
-            m_source.OnTrace += (sender, e) => action(e);
-            return this;
-        }
-
-        /// <summary>
-        /// 各種プロパティを設定します。
-        /// </summary>
-        public TracerSettings SetProperty(string name, TraceFilters filter)
-        {
-            m_source.Name = name;
-            m_source.Filter = filter;
-            return this;
-        }
+        public bool ThreadId { get; set; } = true;
+        public bool ProcessId { get; set; } = true;
+        public bool ProcessName { get; set; } = true;
+        public bool MachineName { get; set; } = true;
     }
 }

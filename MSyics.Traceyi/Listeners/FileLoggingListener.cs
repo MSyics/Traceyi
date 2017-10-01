@@ -7,7 +7,7 @@ namespace MSyics.Traceyi
     /// <summary>
     /// トレースデータをファイルに記録します。
     /// </summary>
-    public class FileLog : TextWriterLog
+    public class FileLoggingListener : TextWriterLoggingListener
     {
         /// <summary>
         /// FileLog クラスのインスタンスを初期化します。
@@ -15,7 +15,7 @@ namespace MSyics.Traceyi
         /// <param name="stream">ファイル用のストリーム</param>
         /// <param name="encoding">文字エンコーディング</param>
         /// <param name="layout">レイアウト</param>
-        public FileLog(FileStream stream, Encoding encoding, ILogLayout layout)
+        public FileLoggingListener(FileStream stream, Encoding encoding, ITraceLogLayout layout)
             : base(new StreamWriter(stream, encoding) { AutoFlush = true }, layout)
         {
         }
@@ -25,7 +25,7 @@ namespace MSyics.Traceyi
         /// </summary>
         /// <param name="stream">ファイル用のストリーム</param>
         /// <param name="encoding">文字エンコーディング</param>
-        public FileLog(FileStream stream, Encoding encoding)
+        public FileLoggingListener(FileStream stream, Encoding encoding)
             : base(new StreamWriter(stream, encoding) { AutoFlush = true })
         {
         }
@@ -34,7 +34,7 @@ namespace MSyics.Traceyi
         /// FileLog クラスのインスタンスを初期化します。
         /// </summary>
         /// <param name="stream">ファイル用のストリーム</param>
-        public FileLog(FileStream stream)
+        public FileLoggingListener(FileStream stream)
             : this(stream, Encoding.UTF8)
         {
         }

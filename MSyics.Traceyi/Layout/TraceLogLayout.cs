@@ -5,7 +5,7 @@ namespace MSyics.Traceyi.Layout
     /// <summary>
     /// トレースデータをテキストで記録するときのレイアウトを表します。
     /// </summary>
-    public sealed class TextLogLayout : ILogLayout
+    public sealed class TraceLogLayout : ITraceLogLayout
     {
         /// <summary>
         /// 初期レイアウトを示す固定値です。
@@ -15,12 +15,12 @@ namespace MSyics.Traceyi.Layout
         /// <summary>
         /// TextLayout クラスのインスタンスを初期化します。
         /// </summary>
-        public TextLogLayout(string layout) => this.Layout = layout;
+        public TraceLogLayout(string layout) => this.Layout = layout;
 
         /// <summary>
         /// TextLayout クラスのインスタンスを初期化します。
         /// </summary>
-        public TextLogLayout()
+        public TraceLogLayout()
             : this(DefaultLayout)
         {
         }
@@ -32,7 +32,7 @@ namespace MSyics.Traceyi.Layout
         /// <param name="dateTime">日時</param>
         /// <param name="action">トレース動作</param>
         /// <param name="cacheData">トレースイベントデータ</param>
-        public string Format(object message, DateTime dateTime, TraceAction action, TraceEventCacheData cacheData)
+        public string Format(TraceEventArg e)
         {
             SetFormattedLayout();
 
@@ -41,37 +41,37 @@ namespace MSyics.Traceyi.Layout
                     this.FormattedLayout,
                     "\t",
                     this.NewLine,
-                    dateTime,
-                    action,
-                    message,
-                    cacheData?.ActivityId,
-                    cacheData?.OperationId,
-                    cacheData?.Member?.ReflectedType,
-                    cacheData?.Member,
-                    cacheData?.ThreadId,
-                    cacheData?.ProcessId,
-                    cacheData?.ProcessName,
-                    cacheData?.MachineName);
+                    e.Traced,
+                    e.Action,
+                    e.Message,
+                    e.ActivityId,
+                    e.OperationId,
+                    e.Class,
+                    e.Member,
+                    e.ThreadId,
+                    e.ProcessId,
+                    e.ProcessName,
+                    e.MachineName);
         }
 
         private void SetFormattedLayout()
         {
             if (this.IsMakeFormattedLayout) { return; }
 
-            var converter = new TextLogLayoutConverter(
-                new TextLogLayoutItem { Name = "tab", UseFormat = false },
-                new TextLogLayoutItem { Name = "newLine", UseFormat = false },
-                new TextLogLayoutItem { Name = "dateTime", UseFormat = true },
-                new TextLogLayoutItem { Name = "action", UseFormat = true },
-                new TextLogLayoutItem { Name = "message", UseFormat = true },
-                new TextLogLayoutItem { Name = "activityId", UseFormat = true },
-                new TextLogLayoutItem { Name = "operationId", UseFormat = true },
-                new TextLogLayoutItem { Name = "class", UseFormat = true },
-                new TextLogLayoutItem { Name = "member", UseFormat = true },
-                new TextLogLayoutItem { Name = "threadId", UseFormat = true },
-                new TextLogLayoutItem { Name = "processId", UseFormat = true },
-                new TextLogLayoutItem { Name = "processName", UseFormat = true },
-                new TextLogLayoutItem { Name = "machineName", UseFormat = true });
+            var converter = new TraceLogLayoutConverter(
+                new TraceLogLayoutItem { Name = "tab", CanFormat = false },
+                new TraceLogLayoutItem { Name = "newLine", CanFormat = false },
+                new TraceLogLayoutItem { Name = "dateTime", CanFormat = true },
+                new TraceLogLayoutItem { Name = "action", CanFormat = true },
+                new TraceLogLayoutItem { Name = "message", CanFormat = true },
+                new TraceLogLayoutItem { Name = "activityId", CanFormat = true },
+                new TraceLogLayoutItem { Name = "operationId", CanFormat = true },
+                new TraceLogLayoutItem { Name = "class", CanFormat = true },
+                new TraceLogLayoutItem { Name = "member", CanFormat = true },
+                new TraceLogLayoutItem { Name = "threadId", CanFormat = true },
+                new TraceLogLayoutItem { Name = "processId", CanFormat = true },
+                new TraceLogLayoutItem { Name = "processName", CanFormat = true },
+                new TraceLogLayoutItem { Name = "machineName", CanFormat = true });
 
             this.FormattedLayout = converter.Convert(this.Layout.Trim());
             this.IsMakeFormattedLayout = true;
@@ -97,7 +97,7 @@ namespace MSyics.Traceyi.Layout
         /// </summary>
         public string NewLine { get; set; }
 
-        private IFormatProvider FormatProvider { get; set; } = new TextLogLayoutFormat();
+        private IFormatProvider FormatProvider { get; set; } = new TraceLogLayoutFormat();
         private string FormattedLayout { get; set; }
         private bool IsMakeFormattedLayout { get; set; }
     }

@@ -23,9 +23,9 @@ namespace MSyics.Traceyi.Example
             //pg.Case1();
             //pg.Case2();
             //pg.Case3();
-            //pg.Case4();
-            //Console.WriteLine("----");
             pg.Case4();
+            //Console.WriteLine("----");
+            //pg.Case4();
             //pg.Case_();
         }
 
@@ -41,18 +41,21 @@ namespace MSyics.Traceyi.Example
                 //    writer.WriteLine(e.Message);
                 //};
 
-                var sw = Stopwatch.StartNew();
-                for (int i = 0; i < 10000; i++)
+                for (int _ = 0; _ < 5; _++)
                 {
-                    Tracer.Information("hogehoge");
-                    //writer.WriteLine(DateTime.Now.ToString("yyyy/mm/dd"));
-                    //writer.WriteLine("{0:yyyy/mm/dd}", DateTime.Now);
-                    //writer.WriteLine("{0}", "hogehoge");
-                    //writer.WriteLine("hogehoge");
-                    //writer.
+                    var sw = Stopwatch.StartNew();
+                    for (int i = 0; i < 10000; i++)
+                    {
+                        Tracer.Information("hogehoge");
+                        //writer.WriteLine(DateTime.Now.ToString("yyyy/mm/dd"));
+                        //writer.WriteLine("{0:yyyy/mm/dd}", DateTime.Now);
+                        //writer.WriteLine("{0}", "hogehoge");
+                        //writer.WriteLine("hogehoge");
+                        //writer.
+                    }
+                    sw.Stop();
+                    Console.WriteLine(sw.ElapsedMilliseconds);
                 }
-                sw.Stop();
-                Console.WriteLine(sw.ElapsedMilliseconds);
             }
 
         }
@@ -68,10 +71,10 @@ namespace MSyics.Traceyi.Example
         private void Case4()
         {
             Tracer.Context.ActivityId = 1;
-            using (var scope = Tracer.Scope(1))
+            using (var scope = Tracer.Scope())
             {
                 var tasks = Enumerable
-                .Range(1, 5)
+                .Range(1, 2)
                 .Select(i => Task.Factory.StartNew(() => Test()));
 
                 Task.WaitAll(tasks.ToArray());

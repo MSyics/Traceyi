@@ -7,7 +7,7 @@ namespace MSyics.Traceyi.Layout
     /// <summary>
     /// TextLogLayout クラスで使用するカスタム書式を実装します。
     /// </summary>
-    internal sealed class TextLogLayoutFormat : IFormatProvider, ICustomFormatter
+    internal sealed class TraceLogLayoutFormat : IFormatProvider, ICustomFormatter
     {
         /// <summary>
         /// 書式内の区切り文字を示す固定値です。

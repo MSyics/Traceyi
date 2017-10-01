@@ -9,12 +9,12 @@ namespace MSyics.Traceyi
     /// <summary>
     /// トレースデータを TextWriter オブジェクトを使用して記録します。
     /// </summary>
-    public abstract class TextWriterLog : Log
+    public abstract class TextWriterLoggingListener : LoggingListener
     {
         /// <summary>
         /// TextWriter クラスのインスタンスを初期化します。
         /// </summary>
-        public TextWriterLog(TextWriter writer, ILogLayout layout)
+        public TextWriterLoggingListener(TextWriter writer, ITraceLogLayout layout)
         {
             this.TextWriter = writer;
             this.Layout = layout;
@@ -23,15 +23,15 @@ namespace MSyics.Traceyi
         /// <summary>
         /// TextWriter クラスのインスタンスを初期化します。
         /// </summary>
-        public TextWriterLog(TextWriter writer)
-            : this(writer, new TextLogLayout())
+        public TextWriterLoggingListener(TextWriter writer)
+            : this(writer, new TraceLogLayout())
         {
         }
 
         /// <summary>
         /// TextWriter クラスのインスタンスを初期化します。
         /// </summary>
-        protected TextWriterLog()
+        protected TextWriterLoggingListener()
             : this(TextWriter.Null)
         {
         }
@@ -39,9 +39,9 @@ namespace MSyics.Traceyi
         /// <summary>
         /// トレースデータを書き込みます。
         /// </summary>
-        public override void Write(object message, DateTime dateTime, TraceAction action, TraceEventCacheData cacheData)
+        public override void Write(TraceEventArg e)
         {
-            this.TextWriter.WriteLine(this.Layout.Format(message, dateTime, action, cacheData));
+            this.TextWriter.WriteLine(this.Layout.Format(e));
         }
 
         /// <summary>
@@ -59,9 +59,9 @@ namespace MSyics.Traceyi
             {
                 this.TextWriter.NewLine = value;
 
-                if (this.Layout is TextLogLayout)
+                if (this.Layout is TraceLogLayout)
                 {
-                    ((TextLogLayout)this.Layout).NewLine = value;
+                    ((TraceLogLayout)this.Layout).NewLine = value;
                 }
             }
         }
@@ -74,7 +74,7 @@ namespace MSyics.Traceyi
         /// <summary>
         /// ログデータのレイアウト機能を取得または設定します。
         /// </summary>
-        protected ILogLayout Layout { get; private set; }
+        protected ITraceLogLayout Layout { get; private set; }
 
         /// <summary>
         /// 文字エンコーディングを取得します。

@@ -12,7 +12,7 @@ namespace MSyics.Traceyi.Configration
     /// <summary>
     /// file 要素を表します。
     /// </summary>
-    public class FileLogElement : TextWriterLogElement
+    public class FileLoggingListenerElement : TextWriterListenerElement
     {
         /// <summary>
         /// パスを取得または設定します。
@@ -22,7 +22,7 @@ namespace MSyics.Traceyi.Configration
         /// <summary>
         /// 実行オブジェクトを取得します。
         /// </summary>
-        public override Log GetRuntimeObject()
+        public override LoggingListener GetRuntimeObject()
         {
             var path = string.IsNullOrWhiteSpace(this.Path) ? System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory,AppDomain.CurrentDomain.FriendlyName + ".log") : this.Path;
 
@@ -35,7 +35,7 @@ namespace MSyics.Traceyi.Configration
                 Directory.CreateDirectory(System.IO.Path.GetDirectoryName(path));
             }
 
-            return new FileLog(new FileStream(path, FileMode.Append, FileAccess.Write, FileShare.ReadWrite), GetEncoding(), this.Layout.GetRuntimeObject())
+            return new FileLoggingListener(new FileStream(path, FileMode.Append, FileAccess.Write, FileShare.ReadWrite), GetEncoding(), this.Layout.GetRuntimeObject())
             {
                 Name = this.Name,
                 NewLine = this.NewLine,

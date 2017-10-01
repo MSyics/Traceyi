@@ -10,14 +10,14 @@ namespace MSyics.Traceyi
     /// <summary>
     /// トレースデータをローテーションファイルに記録します。
     /// </summary>
-    public class RotateFileLog : Log
+    public class RotateFileLoggingListener : LoggingListener
     {
         private object m_thisLock = new object();
 
         /// <summary>
         /// RotateFileLog クラスのインスタンスを初期化します。
         /// </summary>
-        public RotateFileLog(string pathLayout, ILogLayout layout)
+        public RotateFileLoggingListener(string pathLayout, ITraceLogLayout layout)
         {
             this.PathLayout = string.IsNullOrEmpty(pathLayout) ? Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName) + ".log" : pathLayout;
             this.Layout = layout;
@@ -28,27 +28,27 @@ namespace MSyics.Traceyi
         /// <summary>
         /// RotateFileLog クラスのインスタンスを初期化します。
         /// </summary>
-        public RotateFileLog(string pathLayout)
-            : this(pathLayout, new TextLogLayout())
+        public RotateFileLoggingListener(string pathLayout)
+            : this(pathLayout, new TraceLogLayout())
         {
         }
 
         /// <summary>
         /// RotateFileLog クラスのインスタンスを初期化します。
         /// </summary>
-        public RotateFileLog()
+        public RotateFileLoggingListener()
             : this(string.Empty)
         {
         }
 
         private void SetFormattedPathLayout()
         {
-            var converter = new TextLogLayoutConverter(
-                new TextLogLayoutItem { Name = "dateTime", UseFormat = true },
-                new TextLogLayoutItem { Name = "threadId", UseFormat = true },
-                new TextLogLayoutItem { Name = "processId", UseFormat = true },
-                new TextLogLayoutItem { Name = "processName", UseFormat = true },
-                new TextLogLayoutItem { Name = "machineName", UseFormat = true });
+            var converter = new TraceLogLayoutConverter(
+                new TraceLogLayoutItem { Name = "dateTime", CanFormat = true },
+                new TraceLogLayoutItem { Name = "threadId", CanFormat = true },
+                new TraceLogLayoutItem { Name = "processId", CanFormat = true },
+                new TraceLogLayoutItem { Name = "processName", CanFormat = true },
+                new TraceLogLayoutItem { Name = "machineName", CanFormat = true });
 
             this.FormattedPathLayout = converter.Convert(this.PathLayout.Trim());
         }
@@ -56,16 +56,16 @@ namespace MSyics.Traceyi
         /// <summary>
         /// パスを作成します。
         /// </summary>
-        private string MakePath(DateTime dateTime, TraceAction action, TraceEventCacheData cacheData)
+        private string MakePath(TraceEventArg e)
         {
             var path = string.Format(
                 this.FormatProvider,
                 this.FormattedPathLayout,
-                dateTime,
-                cacheData.ThreadId,
-                cacheData.ProcessId,
-                cacheData.ProcessName,
-                cacheData.MachineName);
+                e.Traced,
+                e.ThreadId,
+                e.ProcessId,
+                e.ProcessName,
+                e.MachineName);
 
             if (!Path.IsPathRooted(path))
             {
@@ -83,15 +83,15 @@ namespace MSyics.Traceyi
         /// <summary>
         /// トレースデータを書き込みます。
         /// </summary>
-        public override void Write(object message, DateTime dateTime, TraceAction action, TraceEventCacheData cacheData)
+        public override void Write(TraceEventArg e)
         {
             lock (m_thisLock)
             {
-                var path = this.MakePath(dateTime, action, cacheData);
+                var path = this.MakePath(e);
 
                 this.Rotate(path);
 
-                var log = new FileLog(this.StreamManager.AddOrUpdate(path), this.Encoding, this.Layout)
+                var log = new FileLoggingListener(this.StreamManager.AddOrUpdate(path), this.Encoding, this.Layout)
                 {
                     Name = this.Name,
                     NewLine = this.NewLine,
@@ -99,7 +99,7 @@ namespace MSyics.Traceyi
                 };
                 using (log)
                 {
-                    log.Write(message, dateTime, action, cacheData);
+                    log.Write(e);
                 }
             }
         }
@@ -138,7 +138,7 @@ namespace MSyics.Traceyi
         /// <summary>
         /// デストラクタ
         /// </summary>
-        ~RotateFileLog()
+        ~RotateFileLoggingListener()
         {
             Dispose(false);
         }
@@ -165,7 +165,7 @@ namespace MSyics.Traceyi
             }
         }
 
-        private IFormatProvider FormatProvider { get; set; } = new TextLogLayoutFormat();
+        private IFormatProvider FormatProvider { get; set; } = new TraceLogLayoutFormat();
 
         /// <summary>
         /// パスのレイアウトを取得します。
@@ -180,7 +180,7 @@ namespace MSyics.Traceyi
         /// <summary>
         /// トレースデータの記録形式を取得または設定します。
         /// </summary>
-        public ILogLayout Layout { get; set; }
+        public ITraceLogLayout Layout { get; set; }
 
         /// <summary>
         /// 改行文字を取得または設定します。
