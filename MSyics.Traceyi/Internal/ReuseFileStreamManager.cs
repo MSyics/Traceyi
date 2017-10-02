@@ -1,9 +1,13 @@
-﻿using System;
+﻿/****************************************************************
+© 2017 MSyics
+This software is released under the MIT License.
+http://opensource.org/licenses/mit-license.php
+****************************************************************/
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Collections;
 
 namespace MSyics.Traceyi
 {
@@ -23,11 +27,9 @@ namespace MSyics.Traceyi
             {
                 this.Remove(m_currentPath);
             }
-
             m_currentPath = path;
 
-            ReuseFileStream stream;
-            if (m_streams.TryGetValue(path, out stream))
+            if (m_streams.TryGetValue(path, out var stream))
             {
                 stream.Position = stream.Length;
             }
@@ -44,8 +46,7 @@ namespace MSyics.Traceyi
         {
             if (string.IsNullOrEmpty(path)) return;
 
-            ReuseFileStream stream;
-            if (m_streams.TryGetValue(path, out stream))
+            if (m_streams.TryGetValue(path, out var stream))
             {
                 stream.Clean();
                 m_streams.Remove(path);

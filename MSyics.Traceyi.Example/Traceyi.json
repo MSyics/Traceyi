@@ -19,7 +19,7 @@
       //         All        : すべて
       "filter": "All",
       "useMemberInfo": false,
-      "listeners": [ "rotateFile" ]
+      "listeners": [ "rotatefile" ]
     }
   ],
   "listener": {
@@ -73,7 +73,7 @@
         // {message|_, 20:R}
         // {threadId, 4:D4|_, 8:L}
         "layout": {
-          "format": "{dateTime:yyyy/MM/dd}{tab}{dateTime:HH:mm:ss.ffff}{tab}{action}{tab}{message}{tab}{operationId}{tab}{class}.{member}"
+          "format": "{dateTime:yyyy/MM/dd}{tab}{dateTime:HH:mm:ss.ffff}{tab}{action}{tab}{operationId}{tab}{activityId}{tab}{class}{tab}{member}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}"
         }
       }
     ],
@@ -117,7 +117,7 @@
         "maxLength": "0",
         "leaveFiles": "true",
         "layout": {
-          "format": "{dateTime:yyyy/MM/dd}{tab}{dateTime:HH:mm:ss.ffff}{tab}{action}{tab}{operationId}{tab}{activityId}{tab}{class}{tab}{member}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}"
+          "format": "{dateTime}{tab}{message}"
         }
       }
     ]

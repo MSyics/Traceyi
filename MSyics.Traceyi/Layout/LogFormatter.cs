@@ -1,4 +1,9 @@
-﻿using System;
+﻿/****************************************************************
+© 2017 MSyics
+This software is released under the MIT License.
+http://opensource.org/licenses/mit-license.php
+****************************************************************/
+using System;
 
 namespace MSyics.Traceyi.Layout
 {
@@ -28,10 +33,7 @@ namespace MSyics.Traceyi.Layout
         /// <summary>
         /// ログにフォーマットした情報を書き込みます。
         /// </summary>
-        /// <param name="message">メッセージ</param>
-        /// <param name="dateTime">日時</param>
-        /// <param name="action">トレース動作</param>
-        /// <param name="cacheData">トレースイベントデータ</param>
+        /// <param name="e">トレースイベントデータ</param>
         public string Format(TraceEventArg e)
         {
             SetFormattedLayout();

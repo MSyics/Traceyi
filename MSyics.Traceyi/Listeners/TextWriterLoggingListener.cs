@@ -1,8 +1,11 @@
-﻿using System;
+﻿/****************************************************************
+© 2017 MSyics
+This software is released under the MIT License.
+http://opensource.org/licenses/mit-license.php
+****************************************************************/
+using MSyics.Traceyi.Layout;
 using System.IO;
 using System.Text;
-using System.Linq;
-using MSyics.Traceyi.Layout;
 
 namespace MSyics.Traceyi
 {

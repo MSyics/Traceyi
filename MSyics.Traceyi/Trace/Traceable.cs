@@ -1,11 +1,13 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿/****************************************************************
+© 2017 MSyics
+This software is released under the MIT License.
+http://opensource.org/licenses/mit-license.php
+****************************************************************/
+using Microsoft.Extensions.Configuration;
 using MSyics.Traceyi.Configration;
-using MSyics.Traceyi.Layout;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 
 namespace MSyics.Traceyi
 {
@@ -16,7 +18,7 @@ namespace MSyics.Traceyi
     {
         private static readonly object m_thisLock = new object();
         private static Dictionary<string, Tracer> Tracers = new Dictionary<string, Tracer>();
-        private static Dictionary<string, ITraceListener> Listeners = new Dictionary<string, ITraceListener>();
+        private static Dictionary<string, ListenerElement> Listeners = new Dictionary<string, ListenerElement>();
         private static Dictionary<string, Func<IConfiguration, IEnumerable<ListenerElement>>> SectionedListenersElements = new Dictionary<string, Func<IConfiguration, IEnumerable<ListenerElement>>>();
 
         static Traceable()
@@ -86,7 +88,7 @@ namespace MSyics.Traceyi
                     var listenerName = listener.Name.ToUpper();
                     if (string.IsNullOrWhiteSpace(listenerName)) continue;
                     if (Listeners.ContainsKey(listenerName)) continue;
-                    Listeners.Add(listenerName, listener.GetRuntimeObject());
+                    Listeners.Add(listenerName, listener);
                 }
             }
 
@@ -102,7 +104,7 @@ namespace MSyics.Traceyi
                 foreach (var key in tracerElement.Listeners.Select(x => x.ToUpper()))
                 {
                     if (!Listeners.ContainsKey(key)) { continue; }
-                    settings.AddListener(Listeners[key]);
+                    settings.AddListener(Listeners[key].GetRuntimeObject());
                 }
             });
         }

@@ -1,11 +1,9 @@
-﻿using Microsoft.Extensions.Configuration;
-using MSyics.Traceyi.Configration;
-using MSyics.Traceyi.Layout;
-using System;
+﻿/****************************************************************
+© 2017 MSyics
+This software is released under the MIT License.
+http://opensource.org/licenses/mit-license.php
+****************************************************************/
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 
 namespace MSyics.Traceyi.Configration
 {

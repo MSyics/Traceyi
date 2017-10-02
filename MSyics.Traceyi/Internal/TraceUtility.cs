@@ -1,8 +1,12 @@
-﻿using System;
+﻿/****************************************************************
+© 2017 MSyics
+This software is released under the MIT License.
+http://opensource.org/licenses/mit-license.php
+****************************************************************/
+using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Threading;
 
 namespace MSyics.Traceyi
 {
@@ -12,7 +16,7 @@ namespace MSyics.Traceyi
         /// ロギングライブラリで定義されているすべての型を取得します。
         /// </summary>
         internal static Type[] LoggingLibraryTypes { get; } = Assembly.GetExecutingAssembly().GetTypes();
-   
+
         /// <summary>
         /// トレースしたメンバー情報を取得します。
         /// </summary>
@@ -20,18 +24,12 @@ namespace MSyics.Traceyi
         internal static MemberInfo GetTracedMemberInfo()
         {
             var stack = new StackTrace(false);
-            if (stack.FrameCount == 0)
-            {
-                return null;
-            }
-            else
-            {
-                return stack.GetFrames()
-                            .Reverse()
-                            .Select(x => x.GetMethod())
-                            .TakeWhile(x => !TraceUtility.LoggingLibraryTypes.Any(y => y.Equals(x.ReflectedType)))
-                            .Last();
-            }
+            if (stack.FrameCount == 0) { return null; }
+            return stack.GetFrames()
+                        .Reverse()
+                        .Select(x => x.GetMethod())
+                        .TakeWhile(x => !TraceUtility.LoggingLibraryTypes.Any(y => y.Equals(x.ReflectedType)))
+                        .Last();
         }
 
         /// <summary>
@@ -41,19 +39,13 @@ namespace MSyics.Traceyi
         internal static string GetOperationId()
         {
             var stack = new StackTrace(false);
-            if (stack.FrameCount == 0)
-            {
-                return string.Empty;
-            }
-            else
-            {
-                var method = stack.GetFrames()
-                                  .Reverse()
-                                  .Select(x => x.GetMethod())
-                                  .TakeWhile(x => !TraceUtility.LoggingLibraryTypes.Any(y => y.Equals(x.ReflectedType)))
-                                  .Last();
-                return $"{method.ReflectedType.FullName}.{method.Name}";
-            }
+            if (stack.FrameCount == 0) { return string.Empty; }
+            var method = stack.GetFrames()
+                              .Reverse()
+                              .Select(x => x.GetMethod())
+                              .TakeWhile(x => !TraceUtility.LoggingLibraryTypes.Any(y => y.Equals(x.ReflectedType)))
+                              .Last();
+            return $"{method.ReflectedType.FullName}.{method.Name}";
         }
     }
 }

@@ -1,5 +1,10 @@
-﻿{
-  "tracers": [
+﻿/****************************************************************
+© 2017 MSyics
+This software is released under the MIT License.
+http://opensource.org/licenses/mit-license.php
+****************************************************************/
+{
+  "tracer": [
     {
       "name": "default",
       // トレースする動作のフィルターを設定する。複数指定可。
@@ -18,36 +23,12 @@
       //         Actions    : Debug, Info, Start, Stop, Warning, Error
       //         All        : すべて
       "filter": "All",
-      // {dateTime}    : DateTime 型
-      // {action}      : TraceAction 型
-      // {message}     : Object 型
-      // {activityId}  : Object 型
-      // {operationId} : Object 型
-      // {class}       : Type 型
-      // {member}      : MemberInfo 型
-      // {threadId}    : Int32 型
-      // {processId}   : Int32 型
-      // {processName} : String 型
-      // {machineName} : String 型
-      //"traceItems": {
-      //  "traced": true,
-      //  "action": true,
-      //  "message": true,
-      //  "activityId": true,
-      //  "operationId": true,
-      //  "class": true,
-      //  "member": true,
-      //  "threadId": true,
-      //  "processId": true,
-      //  "processName": true,
-      //  "machineName": true
-      //},
-      "useMemberInfo": true,
-      "listeners": [ "console", "file", "rotatefile" ]
+      "useMemberInfo": false,
+      "listeners": [ "rotatefile" ]
     }
   ],
-  "listeners": {
-    "consoles": [
+  "listener": {
+    "consoleLogging": [
       // コンソールに出力する
       // ................................................................
       // name           : 要素の名前
@@ -60,7 +41,7 @@
         "useGlobalLock": true,
         "newLine": "\r\n",
         "encoding": "shift-jis",
-        "useErrorStream": "false",
+        "useErrorStream": false,
         // 出力するログのレイアウトを指定する（省略可）
         // ................................................................
         // レイアウト項目
@@ -101,7 +82,7 @@
         }
       }
     ],
-    "files": [
+    "fileLogging": [
       // ファイルに出力する
       // ................................................................
       // path  : パスを指定する。（省略：[ApplicationName].log）
@@ -110,13 +91,13 @@
         "useGlobalLock": true,
         "newLine": "\r\n",
         "encoding": "shift-jis",
-        "path": "",
+        "path": "C:\\Users\\Shinich\\Desktop\\ConsoleApp4\\log\\Logs\\test3.log",
         "layout": {
-          "format": "{dateTime:yyyy/MM/dd}{tab}{dateTime:HH:mm:ss.ffff}{tab}{action}{tab}{operationId}{tab}{activityId}{tab}{class}{tab}{member}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}"
+          "format": "{dateTime}{tab}{message}"
         }
       }
     ],
-    "rotatefiles": [
+    "rotateFileLogging": [
       // 指定した条件で新しいファイルに出力する
       // ................................................................
       // pathLayout  : パスを指定する。レイアウト指定可能（省略：[ApplicationName].log）
@@ -134,14 +115,14 @@
       // leaveFiles  : ファイルの最大バイト数を超えたファイルを残すかどうか
       {
         "name": "rotatefile",
-        "useGlobalLock": true,
+        "useGlobalLock": false,
         "newLine": "\r\n",
         "encoding": "shift-jis",
-        "pathLayout": "log\\{processId|0,4:R}{threadId|0,4:R}{dateTime:yyyyMMddHHmm}.log",
-        "maxLength": "5000",
+        "pathLayout": "C:\\Users\\Shinich\\Desktop\\ConsoleApp4\\log\\Logs\\test4.log",
+        "maxLength": "0",
         "leaveFiles": "true",
         "layout": {
-          "format": "{dateTime:yyyy/MM/dd}{tab}{dateTime:HH:mm:ss.ffff}{tab}{action}{tab}{operationId}{tab}{activityId}{tab}{class}{tab}{member}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}"
+          "format": "{dateTime}{tab}{message}"
         }
       }
     ]

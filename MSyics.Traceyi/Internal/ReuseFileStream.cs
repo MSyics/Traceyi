@@ -1,4 +1,9 @@
-﻿using System.IO;
+﻿/****************************************************************
+© 2017 MSyics
+This software is released under the MIT License.
+http://opensource.org/licenses/mit-license.php
+****************************************************************/
+using System.IO;
 
 namespace MSyics.Traceyi
 {
