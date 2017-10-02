@@ -21,7 +21,7 @@ namespace MSyics.Traceyi
         /// <summary>
         /// トレースイベントに Listener オブジェクトを関連付けます。
         /// </summary>
-        public TracerConfiguration AddListener(LoggingListener listener)
+        public TracerConfiguration AddListener(ITraceListener listener)
         {
             m_source.OnTrace += listener.OnTrace;
             return this;

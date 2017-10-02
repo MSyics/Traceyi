@@ -16,25 +16,25 @@ namespace MSyics.Traceyi
     {
         private static readonly object m_thisLock = new object();
         private static Dictionary<string, Tracer> Tracers = new Dictionary<string, Tracer>();
-        private static Dictionary<string, LoggingListener> Logs = new Dictionary<string, LoggingListener>();
-        private static Dictionary<string, Func<IConfiguration, IEnumerable<ListenerElement>>> SectionedLogElements = new Dictionary<string, Func<IConfiguration, IEnumerable<ListenerElement>>>();
+        private static Dictionary<string, ITraceListener> Listeners = new Dictionary<string, ITraceListener>();
+        private static Dictionary<string, Func<IConfiguration, IEnumerable<ListenerElement>>> SectionedListenersElements = new Dictionary<string, Func<IConfiguration, IEnumerable<ListenerElement>>>();
 
         static Traceable()
         {
-            AddSectionedLogElement<ConsoleLoggingListenerElement>("Consoles");
-            AddSectionedLogElement<FileLoggingListenerElement>("Files");
-            AddSectionedLogElement<RotateFileLoggingListenerElement>("RotateFiles");
+            AddSectionedListenerElement<ConsoleLoggingListenerElement>("ConsoleLogging");
+            AddSectionedListenerElement<FileLoggingListenerElement>("FileLogging");
+            AddSectionedListenerElement<RotateFileLoggingListenerElement>("RotateFileLogging");
         }
 
         /// <summary>
-        /// カスタム Log 要素を登録します。
+        /// カスタム Listener 要素を登録します。
         /// </summary>
         /// <typeparam name="T">カスタム Log 要素の型</typeparam>
         /// <param name="section">セクション名</param>
-        public static void AddSectionedLogElement<T>(string section)
+        public static void AddSectionedListenerElement<T>(string section)
             where T : ListenerElement
         {
-            SectionedLogElements.Add(section.ToUpper(), (config) => config.Get<List<T>>());
+            SectionedListenersElements.Add(section.ToUpper(), (config) => config.Get<List<T>>());
         }
 
         /// <summary>
@@ -69,56 +69,56 @@ namespace MSyics.Traceyi
 
             var config = builder.Build();
 
-            if (!config.GetSection("Tracers").Exists()) return CreateNullTracer();
-            if (!config.GetSection("Log").Exists()) return CreateNullTracer();
+            if (!config.GetSection("Tracer").Exists()) return CreateNullTracer();
+            if (!config.GetSection("Listener").Exists()) return CreateNullTracer();
 
             // Get Tracer Element
-            var tracerElement = config.GetSection("Tracers").Get<List<TracerElement>>().FirstOrDefault(x => x.Name.ToUpper() == name.ToUpper());
+            var tracerElement = config.GetSection("Tracer").Get<List<TracerElement>>().FirstOrDefault(x => x.Name.ToUpper() == name.ToUpper());
             if (tracerElement == null) return CreateNullTracer();
 
-            // Add Log RuntimeObject
-            foreach (var logSection in config.GetSection("Log").GetChildren())
+            // Add Listener RuntimeObject
+            foreach (var listenersSection in config.GetSection("Listener").GetChildren())
             {
-                var logSectionName = logSection.Key.ToUpper();
-                if (!SectionedLogElements.ContainsKey(logSectionName)) continue;
-                foreach (var log in SectionedLogElements[logSectionName](config.GetSection(logSection.Path)))
+                var listenersSectionName = listenersSection.Key.ToUpper();
+                if (!SectionedListenersElements.ContainsKey(listenersSectionName)) continue;
+                foreach (var listener in SectionedListenersElements[listenersSectionName](config.GetSection(listenersSection.Path)))
                 {
-                    var logName = log.Name.ToUpper();
-                    if (string.IsNullOrWhiteSpace(logName)) continue;
-                    if (Logs.ContainsKey(logName)) continue;
-                    Logs.Add(logName, log.GetRuntimeObject());
+                    var listenerName = listener.Name.ToUpper();
+                    if (string.IsNullOrWhiteSpace(listenerName)) continue;
+                    if (Listeners.ContainsKey(listenerName)) continue;
+                    Listeners.Add(listenerName, listener.GetRuntimeObject());
                 }
             }
 
             // Create Tracer
-            return new Tracer()
-            .Configure(settings =>
+            return new Tracer().Configure(settings =>
             {
                 settings.Settings(s =>
                 {
                     s.Name = name;
                     s.Filter = tracerElement.Filter;
+                    s.UseMemberInfo = tracerElement.UseMemberInfo;
                 });
-                foreach (var key in tracerElement.Logs.Select(x => x.ToUpper()))
+                foreach (var key in tracerElement.Listeners.Select(x => x.ToUpper()))
                 {
-                    if (!Logs.ContainsKey(key)) { continue; }
-                    settings.AddListener(Logs[key]);
+                    if (!Listeners.ContainsKey(key)) { continue; }
+                    settings.AddListener(Listeners[key]);
                 }
             });
         }
 
-        private static Tracer CreateNullTracer() => new Tracer(); 
+        private static Tracer CreateNullTracer() => new Tracer();
 
-    #region TraceContext
+        #region TraceContext
 
-    /// <summary>
-    /// トレース基本情報を取得します。
-    /// </summary>
-    internal static TraceContext Context => _context ?? (_context = new TraceContext());
+        /// <summary>
+        /// トレース基本情報を取得します。
+        /// </summary>
+        internal static TraceContext Context => _context ?? (_context = new TraceContext());
 
-    [ThreadStatic]
-    private static TraceContext _context;
+        [ThreadStatic]
+        private static TraceContext _context;
 
-    #endregion
-}
+        #endregion
+    }
 }

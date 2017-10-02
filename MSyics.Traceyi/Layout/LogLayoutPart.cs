@@ -4,7 +4,7 @@ namespace MSyics.Traceyi.Layout
     /// <summary>
     /// ログの記録項目を表します。
     /// </summary>
-    internal sealed class TraceLogLayoutItem
+    internal sealed class LogLayoutPart
     {
         /// <summary>
         /// 項目名称を取得または設定します。

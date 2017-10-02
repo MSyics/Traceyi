@@ -23,41 +23,31 @@ namespace MSyics.Traceyi.Example
             //pg.Case1();
             //pg.Case2();
             //pg.Case3();
-            pg.Case4();
+            //pg.Case4();
             //Console.WriteLine("----");
             //pg.Case4();
-            //pg.Case_();
+            pg.Case_();
         }
 
         private Tracer Tracer { get; } = Traceable.Get();
 
         private void Case_()
         {
-            var x = new ReuseFileStream(@"C:\Users\Shinich\Desktop\ConsoleApp4\log\Logs\test4.txt");
-            using (var writer = new StreamWriter(x))
+            for (int _ = 0; _ < 5; _++)
             {
-                //Tracer.OnTrace += (sender, e) =>
-                //{
-                //    writer.WriteLine(e.Message);
-                //};
-
-                for (int _ = 0; _ < 5; _++)
+                var sw = Stopwatch.StartNew();
+                for (int i = 0; i < 10000; i++)
                 {
-                    var sw = Stopwatch.StartNew();
-                    for (int i = 0; i < 10000; i++)
-                    {
-                        Tracer.Information("hogehoge");
-                        //writer.WriteLine(DateTime.Now.ToString("yyyy/mm/dd"));
-                        //writer.WriteLine("{0:yyyy/mm/dd}", DateTime.Now);
-                        //writer.WriteLine("{0}", "hogehoge");
-                        //writer.WriteLine("hogehoge");
-                        //writer.
-                    }
-                    sw.Stop();
-                    Console.WriteLine(sw.ElapsedMilliseconds);
+                    Tracer.Information("hogehoge");
+                    //writer.WriteLine(DateTime.Now.ToString("yyyy/mm/dd"));
+                    //writer.WriteLine("{0:yyyy/mm/dd}", DateTime.Now);
+                    //writer.WriteLine("{0}", "hogehoge");
+                    //writer.WriteLine("hogehoge");
+                    //writer.
                 }
+                sw.Stop();
+                Console.WriteLine(sw.ElapsedMilliseconds);
             }
-
         }
 
         private void Test()
@@ -94,7 +84,7 @@ namespace MSyics.Traceyi.Example
 
         private void Case2()
         {
-            using (Tracer.Scope())
+            using (this.Tracer.Scope())
             {
                 var act5 = new Action(() => Tracer.Information("hogehoge"));
                 var act4 = new Action(() => { using (Tracer.Scope()) { act5(); } });

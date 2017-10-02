@@ -25,13 +25,13 @@ namespace MSyics.Traceyi.Configration
         public TraceFilters Filter { get; set; } = TraceFilters.All;
 
         /// <summary>
+        /// クラスメンバー情報を取得するかどうを示す値を取得または設定します。
+        /// </summary>
+        public bool UseMemberInfo { get; set; } = true;
+
+        /// <summary>
         /// Tracer オブジェクトに紐づける Listener オブジェクトの名前一覧を取得または設定します。
         /// </summary>
-        public List<string> Logs { get; set; } = new List<string>();
-    }
-
-    internal class TraceFigure
-    {
-
+        public List<string> Listeners { get; set; } = new List<string>();
     }
 }

@@ -1,5 +1,5 @@
 ﻿{
-  "tracers": [
+  "tracer": [
     {
       "name": "default",
       // トレースする動作のフィルターを設定する。複数指定可。
@@ -18,11 +18,12 @@
       //         Actions    : Debug, Info, Start, Stop, Warning, Error
       //         All        : すべて
       "filter": "All",
-      "logs": [ "file", "console" ]
+      "useMemberInfo": false,
+      "listeners": [ "rotateFile" ]
     }
   ],
-  "log": {
-    "consoles": [
+  "listener": {
+    "consoleLogging": [
       // コンソールに出力する
       // ................................................................
       // name           : 要素の名前
@@ -72,11 +73,11 @@
         // {message|_, 20:R}
         // {threadId, 4:D4|_, 8:L}
         "layout": {
-          "format": "{dateTime:yyyy/MM/dd}{tab}{dateTime:HH:mm:ss.ffff}{tab}{action}{tab}{message}{tab}{operationId}"
+          "format": "{dateTime:yyyy/MM/dd}{tab}{dateTime:HH:mm:ss.ffff}{tab}{action}{tab}{message}{tab}{operationId}{tab}{class}.{member}"
         }
       }
     ],
-    "files": [
+    "fileLogging": [
       // ファイルに出力する
       // ................................................................
       // path  : パスを指定する。（省略：[ApplicationName].log）
@@ -91,7 +92,7 @@
         }
       }
     ],
-    "rotatefiles": [
+    "rotateFileLogging": [
       // 指定した条件で新しいファイルに出力する
       // ................................................................
       // pathLayout  : パスを指定する。レイアウト指定可能（省略：[ApplicationName].log）
@@ -112,11 +113,11 @@
         "useGlobalLock": false,
         "newLine": "\r\n",
         "encoding": "shift-jis",
-        "pathLayout": "C:\\Users\\Shinich\\Desktop\\ConsoleApp4\\log\\Logs\\test2.log",
+        "pathLayout": "C:\\Users\\Shinich\\Desktop\\ConsoleApp4\\log\\Logs\\test4.log",
         "maxLength": "0",
         "leaveFiles": "true",
         "layout": {
-          "format": "{message}"
+          "format": "{dateTime:yyyy/MM/dd}{tab}{dateTime:HH:mm:ss.ffff}{tab}{action}{tab}{operationId}{tab}{activityId}{tab}{class}{tab}{member}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}"
         }
       }
     ]

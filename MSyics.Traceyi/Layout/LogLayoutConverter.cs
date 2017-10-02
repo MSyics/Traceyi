@@ -6,15 +6,15 @@ using System.Text;
 namespace MSyics.Traceyi.Layout
 {
     /// <summary>
-    /// TextLogLayout クラスで指定されたレイアウトを認識できるフォーマットに変換する機能を提供します。
+    /// LogFormatter クラスで指定されたレイアウトを認識できるフォーマットに変換する機能を提供します。
     /// </summary>
-    internal sealed class TraceLogLayoutConverter
+    internal sealed class LogLayoutConverter
     {
         /// <summary>
-        /// TextLogLayoutConverter クラスのインスタンスを初期化します。
+        /// LogLayoutConverter クラスのインスタンスを初期化します。
         /// </summary>
-        /// <param name="items">ログの記録項目</param>
-        public TraceLogLayoutConverter(params TraceLogLayoutItem[] items) => this.Items = items;
+        /// <param name="parts">ログの記録項目</param>
+        public LogLayoutConverter(params LogLayoutPart[] parts) => this.Parts = parts;
 
         /// <summary>
         /// 指定されたレイアウトを認識できるフォーマットに変換します。
@@ -33,14 +33,14 @@ namespace MSyics.Traceyi.Layout
                     if (length <= 0) { throw new FormatException("入力文字列の形式が正しくありません。"); }
 
                     var convertString = layout.Substring(startIndex, length);
-                    for (int itemIndex = 0; itemIndex < this.Items.Length; itemIndex++)
+                    for (int itemIndex = 0; itemIndex < this.Parts.Length; itemIndex++)
                     {
-                        var item = this.Items[itemIndex];
-                        if (convertString.StartsWith(item.Name, StringComparison.OrdinalIgnoreCase))
+                        var part = this.Parts[itemIndex];
+                        if (convertString.StartsWith(part.Name, StringComparison.OrdinalIgnoreCase))
                         {
-                            if (item.CanFormat)
+                            if (part.CanFormat)
                             {
-                                var formatString = convertString.Substring(item.Name.Length);
+                                var formatString = convertString.Substring(part.Name.Length);
                                 var separator = GetSeparatorCharacter(formatString);
                                 sb.Append($"{{{itemIndex}{separator}{formatString}}}");
                             }
@@ -71,6 +71,6 @@ namespace MSyics.Traceyi.Layout
             return ":";
         }
 
-        private TraceLogLayoutItem[] Items { get; set; }
+        private LogLayoutPart[] Parts { get; set; }
     }
 }

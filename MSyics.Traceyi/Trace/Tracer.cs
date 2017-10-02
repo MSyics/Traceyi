@@ -29,9 +29,6 @@ namespace MSyics.Traceyi
         /// </summary>
         public TraceContext Context => Traceable.Context;
 
-        /// <summary>
-        /// 設定値を取得します。
-        /// </summary>
         public TracerSettings Settings { get; } = new TracerSettings();
 
         /// <summary>
@@ -44,27 +41,7 @@ namespace MSyics.Traceyi
             var eh = OnTrace;
             if (eh == null) { return; }
 
-            var data = new TraceEventArg();
-            if (Settings.CanListens.Traced) { data.Traced = traced; }
-            if (Settings.CanListens.Action) { data.Action = action; }
-            if (Settings.CanListens.Message) { data.Message = message; }
-            if (Settings.CanListens.ActivityId) { data.ActivityId = Traceable.Context.ActivityId; }
-            if (Settings.CanListens.OperationId) { data.OperationId = Traceable.Context.CurrentOperation.OperationId; }
-            if (Settings.CanListens.ClassName || Settings.CanListens.MemberName)
-            {
-                var memberInfo = TraceUtility.GetTracedMemberInfo();
-                if (Settings.CanListens.ClassName) { data.Class = memberInfo.ReflectedType.FullName; }
-                if (Settings.CanListens.MemberName) { data.Member = memberInfo.Name; }
-            }
-            if (Settings.CanListens.ThreadId) { data.ThreadId = Thread.CurrentThread.ManagedThreadId; }
-            if (Settings.CanListens.ProcessId || Settings.CanListens.ProcessName)
-            {
-                if (Settings.CanListens.ProcessId) { data.ProcessId = ProcessId; }
-                if (Settings.CanListens.ProcessName) { data.ProcessName = ProcessName; }
-            }
-            if (Settings.CanListens.MachineName) { data.MachineName = MachineName; }
-
-            eh(this, data);
+            eh(this, new TraceEventArg(traced, action, message, Settings.UseMemberInfo));
         }
 
         #region Debug
@@ -76,17 +53,6 @@ namespace MSyics.Traceyi
             if (this.Settings.Filter.Contains(TraceAction.Debug))
             {
                 RaiseTrace(DateTime.Now, TraceAction.Debug, message);
-            }
-        }
-
-        /// <summary>
-        /// デバッグに必要なメッセージを残します。
-        /// </summary>
-        public void Debug(string format, params object[] args)
-        {
-            if (this.Settings.Filter.Contains(TraceAction.Debug))
-            {
-                RaiseTrace(DateTime.Now, TraceAction.Debug, string.Format(format, args));
             }
         }
         #endregion
@@ -102,17 +68,6 @@ namespace MSyics.Traceyi
                 RaiseTrace(DateTime.Now, TraceAction.Info, message);
             }
         }
-
-        /// <summary>
-        /// 通知メッセージを残します。
-        /// </summary>
-        public void Information(string format, params object[] args)
-        {
-            if (this.Settings.Filter.Contains(TraceAction.Info))
-            {
-                RaiseTrace(DateTime.Now, TraceAction.Info, string.Format(format, args));
-            }
-        }
         #endregion
 
         #region Warning
@@ -124,17 +79,6 @@ namespace MSyics.Traceyi
             if (this.Settings.Filter.Contains(TraceAction.Warning))
             {
                 RaiseTrace(DateTime.Now, TraceAction.Warning, message);
-            }
-        }
-
-        /// <summary>
-        /// 注意メッセージを残します。
-        /// </summary>
-        public void Warning(string format, params object[] args)
-        {
-            if (this.Settings.Filter.Contains(TraceAction.Warning))
-            {
-                RaiseTrace(DateTime.Now, TraceAction.Warning, string.Format(format, args));
             }
         }
         #endregion
@@ -150,27 +94,14 @@ namespace MSyics.Traceyi
                 RaiseTrace(DateTime.Now, TraceAction.Error, message);
             }
         }
-
-        /// <summary>
-        /// エラーメッセージを残します。
-        /// </summary>
-        public void Error(string format, params object[] args)
-        {
-            if (this.Settings.Filter.Contains(TraceAction.Error))
-            {
-                RaiseTrace(DateTime.Now, TraceAction.Error, string.Format(format, args));
-            }
-        }
-
         #endregion
 
         #region Start
-
         internal void Start(object operationId, object message, Guid scopeId)
         {
             var operation = new TraceOperation()
             {
-                OperationId = operationId ?? $"{this.Context.OperationStack.Count}", //TraceUtility.GetOperationId(),
+                OperationId = operationId ?? $"{new String('+', this.Context.OperationStack.Count)}", //TraceUtility.GetOperationId(),
                 ScopeId = scopeId,
                 StartedDate = DateTime.Now,
             };
@@ -184,7 +115,7 @@ namespace MSyics.Traceyi
             if (this.Settings.Filter.Contains(TraceAction.Calling))
             {
                 var sb = new StringBuilder(this.Context.CurrentOperation.OperationId.ToString());
-                this.Context.Operations.Skip(1).Aggregate(sb, (x, y) => x.Insert(0, y.OperationId.ToString() + ">"));
+                //this.Context.Operations.Skip(1).Aggregate(sb, (x, y) => x.Insert(0, y.OperationId.ToString() + ">"));
                 RaiseTrace(operation.StartedDate, TraceAction.Calling, sb);
             }
         }
@@ -204,11 +135,9 @@ namespace MSyics.Traceyi
         {
             Start(null, null, Guid.Empty);
         }
-
         #endregion
 
         #region Stop
-
         internal void Stop(object message, Guid scopeId)
         {
             var byScope = !scopeId.Equals(Guid.Empty);
@@ -252,7 +181,6 @@ namespace MSyics.Traceyi
         {
             Stop(null, Guid.Empty);
         }
-
         #endregion
     }
 }

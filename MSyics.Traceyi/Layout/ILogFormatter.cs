@@ -3,9 +3,9 @@
 namespace MSyics.Traceyi.Layout
 {
     /// <summary>
-    /// ログの記録形式を表します。
+    /// 書式設定されたログを取得する機能を提供します。
     /// </summary>
-    public interface ITraceLogLayout
+    public interface ILogFormatter
     {
         /// <summary>
         /// 書式設定されたログデータを取得します。

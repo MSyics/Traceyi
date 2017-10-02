@@ -17,7 +17,7 @@ namespace MSyics.Traceyi
         /// <summary>
         /// RotateFileLog クラスのインスタンスを初期化します。
         /// </summary>
-        public RotateFileLoggingListener(string pathLayout, ITraceLogLayout layout)
+        public RotateFileLoggingListener(string pathLayout, ILogFormatter layout)
         {
             this.PathLayout = string.IsNullOrEmpty(pathLayout) ? Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName) + ".log" : pathLayout;
             this.Layout = layout;
@@ -29,7 +29,7 @@ namespace MSyics.Traceyi
         /// RotateFileLog クラスのインスタンスを初期化します。
         /// </summary>
         public RotateFileLoggingListener(string pathLayout)
-            : this(pathLayout, new TraceLogLayout())
+            : this(pathLayout, new LogFormatter())
         {
         }
 
@@ -43,12 +43,12 @@ namespace MSyics.Traceyi
 
         private void SetFormattedPathLayout()
         {
-            var converter = new TraceLogLayoutConverter(
-                new TraceLogLayoutItem { Name = "dateTime", CanFormat = true },
-                new TraceLogLayoutItem { Name = "threadId", CanFormat = true },
-                new TraceLogLayoutItem { Name = "processId", CanFormat = true },
-                new TraceLogLayoutItem { Name = "processName", CanFormat = true },
-                new TraceLogLayoutItem { Name = "machineName", CanFormat = true });
+            var converter = new LogLayoutConverter(
+                new LogLayoutPart { Name = "dateTime", CanFormat = true },
+                new LogLayoutPart { Name = "threadId", CanFormat = true },
+                new LogLayoutPart { Name = "processId", CanFormat = true },
+                new LogLayoutPart { Name = "processName", CanFormat = true },
+                new LogLayoutPart { Name = "machineName", CanFormat = true });
 
             this.FormattedPathLayout = converter.Convert(this.PathLayout.Trim());
         }
@@ -165,7 +165,7 @@ namespace MSyics.Traceyi
             }
         }
 
-        private IFormatProvider FormatProvider { get; set; } = new TraceLogLayoutFormat();
+        private IFormatProvider FormatProvider { get; set; } = new LogLayoutFormatProvider();
 
         /// <summary>
         /// パスのレイアウトを取得します。
@@ -180,7 +180,7 @@ namespace MSyics.Traceyi
         /// <summary>
         /// トレースデータの記録形式を取得または設定します。
         /// </summary>
-        public ITraceLogLayout Layout { get; set; }
+        public ILogFormatter Layout { get; set; }
 
         /// <summary>
         /// 改行文字を取得または設定します。

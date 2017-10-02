@@ -42,10 +42,11 @@
       //  "processName": true,
       //  "machineName": true
       //},
-      "logs": [ "console", "file", "rotatefile" ]
+      "useMemberInfo": true,
+      "listeners": [ "console", "file", "rotatefile" ]
     }
   ],
-  "log": {
+  "listeners": {
     "consoles": [
       // コンソールに出力する
       // ................................................................

@@ -27,6 +27,6 @@ namespace MSyics.Traceyi.Configration
         /// <summary>
         /// 派生クラスでオーバーライドされると実行オブジェクトを取得します。
         /// </summary>
-        public abstract LoggingListener GetRuntimeObject();
+        public abstract ITraceListener GetRuntimeObject();
     }
 }

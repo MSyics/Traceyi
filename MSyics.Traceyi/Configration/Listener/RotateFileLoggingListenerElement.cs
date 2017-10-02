@@ -32,7 +32,7 @@ namespace MSyics.Traceyi.Configration
         /// <summary>
         /// 実行オブジェクトを取得します。
         /// </summary>
-        public override LoggingListener GetRuntimeObject()
+        public override ITraceListener GetRuntimeObject()
         {
             return new RotateFileLoggingListener(this.PathLayout)
             {

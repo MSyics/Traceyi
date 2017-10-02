@@ -15,7 +15,7 @@ namespace MSyics.Traceyi
         /// <param name="stream">ファイル用のストリーム</param>
         /// <param name="encoding">文字エンコーディング</param>
         /// <param name="layout">レイアウト</param>
-        public FileLoggingListener(FileStream stream, Encoding encoding, ITraceLogLayout layout)
+        public FileLoggingListener(FileStream stream, Encoding encoding, ILogFormatter layout)
             : base(new StreamWriter(stream, encoding) { AutoFlush = true }, layout)
         {
         }

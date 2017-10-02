@@ -22,7 +22,7 @@ namespace MSyics.Traceyi.Configration
         /// <summary>
         /// 実行オブジェクトを取得します。
         /// </summary>
-        public override LoggingListener GetRuntimeObject() =>
+        public override ITraceListener GetRuntimeObject() =>
              new ConsoleLoggingListener(this.UseErrorStream, this.Layout.GetRuntimeObject())
              {
                  Name = this.Name,

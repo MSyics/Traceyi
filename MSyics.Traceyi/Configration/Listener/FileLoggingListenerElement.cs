@@ -22,7 +22,7 @@ namespace MSyics.Traceyi.Configration
         /// <summary>
         /// 実行オブジェクトを取得します。
         /// </summary>
-        public override LoggingListener GetRuntimeObject()
+        public override ITraceListener GetRuntimeObject()
         {
             var path = string.IsNullOrWhiteSpace(this.Path) ? System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory,AppDomain.CurrentDomain.FriendlyName + ".log") : this.Path;
 

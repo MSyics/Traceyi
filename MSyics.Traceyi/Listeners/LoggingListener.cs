@@ -7,7 +7,7 @@ namespace MSyics.Traceyi
     /// <summary>
     /// トレースデータを記録します。これは抽象クラスです。
     /// </summary>
-    public abstract class LoggingListener : IDisposable
+    public abstract class LoggingListener : IDisposable, ITraceListener
     {
         #region Static Members
         private static readonly object m_thisLock = new object();
@@ -24,7 +24,7 @@ namespace MSyics.Traceyi
         /// </summary>
         public string Name { get; protected internal set; }
 
-        internal void OnTrace(object sender, TraceEventArg e)
+        void ITraceListener.OnTrace(object sender, TraceEventArg e)
         {
             if (this.UseGlobalLock)
             {

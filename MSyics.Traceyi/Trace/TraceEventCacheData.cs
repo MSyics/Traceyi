@@ -12,20 +12,45 @@ namespace MSyics.Traceyi
     {
         private static int m_processId;
         private static string m_processName;
+        private static string m_machineName = Environment.MachineName;
 
         static TraceEventCacheData()
         {
-            //using (var process = Process.GetCurrentProcess())
-            //{
-            //    m_processId = process.Id;
-            //    m_processName = process.ProcessName;
-            //}
+            using (var process = Process.GetCurrentProcess())
+            {
+                m_processId = process.Id;
+                m_processName = process.ProcessName;
+            }
+        }
+
+        public TraceEventCacheData(DateTime traced, TraceAction action, string message, bool useMemberInfo = false)
+        {
+            Traced = traced;
+            Action = action;
+            Message = message;
+
+            if (useMemberInfo)
+            {
+                var memberInfo = TraceUtility.GetTracedMemberInfo();
+                ClassName = memberInfo.ReflectedType.FullName;
+                MemberName = memberInfo.Name;
+            }
         }
 
         /// <summary>
-        /// トレースしたメソッド情報を取得します。
+        /// トレースした日時を取得または設定します。
         /// </summary>
-        public MemberInfo Member { get; } = TraceUtility.GetTracedMemberInfo();
+        public DateTime Traced { get; private set; }
+
+        /// <summary>
+        /// トレースの動作を取得または設定します。
+        /// </summary>
+        public TraceAction Action { get; private set; }
+
+        /// <summary>
+        /// メッセージを取得または設定します。
+        /// </summary>
+        public object Message { get; private set; }
 
         /// <summary>
         /// スレッドに関連付けられた一意な識別子を取得します。
@@ -33,28 +58,38 @@ namespace MSyics.Traceyi
         public object ActivityId { get; } = Traceable.Context.ActivityId;
 
         /// <summary>
-        /// マシン名を取得します。
+        /// 操作識別子を取得します。
         /// </summary>
-        public string MachineName { get; } = Environment.MachineName;
+        public object OperationId { get; } = Traceable.Context.CurrentOperation.OperationId;
 
         /// <summary>
-        /// プロセスの一意な識別子を取得します。
+        /// トレースしたクラス名を取得します。
         /// </summary>
-        public int ProcessId { get; } = TraceEventCacheData.m_processId;
+        public string ClassName { get; internal set; }
 
         /// <summary>
-        /// プロセスの名前を取得します。
+        /// トレースしたメンバー名を取得します。
         /// </summary>
-        public string ProcessName { get; } = TraceEventCacheData.m_processName;
+        public string MemberName { get; internal set; }
 
         /// <summary>
         /// マネージスレッドの一意な識別子を取得します。
         /// </summary>
-        public int ThreadId { get; } //= Thread.CurrentThread.ManagedThreadId;
+        public int ThreadId { get; } = Thread.CurrentThread.ManagedThreadId;
 
         /// <summary>
-        /// 操作識別子を取得します。
+        /// プロセスの一意な識別子を取得します。
         /// </summary>
-        public object OperationId { get; } //= Traceable.Context.CurrentOperation.OperationId;
+        public int ProcessId { get; } = m_processId;
+
+        /// <summary>
+        /// プロセスの名前を取得します。
+        /// </summary>
+        public string ProcessName { get; } = m_processName;
+
+        /// <summary>
+        /// マシン名を取得します。
+        /// </summary>
+        public string MachineName { get; } = m_machineName;
     }
 }

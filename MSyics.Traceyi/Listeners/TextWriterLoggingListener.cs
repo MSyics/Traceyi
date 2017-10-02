@@ -14,7 +14,7 @@ namespace MSyics.Traceyi
         /// <summary>
         /// TextWriter クラスのインスタンスを初期化します。
         /// </summary>
-        public TextWriterLoggingListener(TextWriter writer, ITraceLogLayout layout)
+        public TextWriterLoggingListener(TextWriter writer, ILogFormatter layout)
         {
             this.TextWriter = writer;
             this.Layout = layout;
@@ -24,7 +24,7 @@ namespace MSyics.Traceyi
         /// TextWriter クラスのインスタンスを初期化します。
         /// </summary>
         public TextWriterLoggingListener(TextWriter writer)
-            : this(writer, new TraceLogLayout())
+            : this(writer, new LogFormatter())
         {
         }
 
@@ -59,9 +59,9 @@ namespace MSyics.Traceyi
             {
                 this.TextWriter.NewLine = value;
 
-                if (this.Layout is TraceLogLayout)
+                if (this.Layout is LogFormatter)
                 {
-                    ((TraceLogLayout)this.Layout).NewLine = value;
+                    ((LogFormatter)this.Layout).NewLine = value;
                 }
             }
         }
@@ -74,7 +74,7 @@ namespace MSyics.Traceyi
         /// <summary>
         /// ログデータのレイアウト機能を取得または設定します。
         /// </summary>
-        protected ITraceLogLayout Layout { get; private set; }
+        protected ILogFormatter Layout { get; private set; }
 
         /// <summary>
         /// 文字エンコーディングを取得します。

@@ -5,9 +5,9 @@ using System.Text;
 namespace MSyics.Traceyi.Layout
 {
     /// <summary>
-    /// TextLogLayout クラスで使用するカスタム書式を実装します。
+    /// LogFormatter クラスで使用するカスタム書式を実装します。
     /// </summary>
-    internal sealed class TraceLogLayoutFormat : IFormatProvider, ICustomFormatter
+    internal sealed class LogLayoutFormatProvider : IFormatProvider, ICustomFormatter
     {
         /// <summary>
         /// 書式内の区切り文字を示す固定値です。
