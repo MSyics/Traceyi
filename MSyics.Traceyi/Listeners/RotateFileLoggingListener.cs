@@ -25,7 +25,6 @@ namespace MSyics.Traceyi
         {
             PathLayout = string.IsNullOrEmpty(pathLayout) ? Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName) + ".log" : pathLayout;
             Layout = layout;
-
             SetFormattedPathLayout();
         }
 
