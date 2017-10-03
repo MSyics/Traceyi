@@ -28,6 +28,6 @@ namespace MSyics.Traceyi
         public DateTime StartedDate { get; internal set; } = DateTime.MinValue;
 
         internal Guid ScopeId { get; set; } = Guid.Empty;
-        internal bool UseScope => !this.ScopeId.Equals(Guid.Empty);
+        internal bool UseScope => !ScopeId.Equals(Guid.Empty);
     }
 }

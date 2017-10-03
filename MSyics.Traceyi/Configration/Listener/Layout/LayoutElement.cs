@@ -15,11 +15,11 @@ namespace MSyics.Traceyi.Configration
         /// <summary>
         /// レイアウト形式を取得または設定します。
         /// </summary>
-        public string Format { get; set; } = LogFormatter.DefaultLayout;
+        public string Format { get; set; } = LogLayout.DefaultLayout;
 
         /// <summary>
         /// 実行オブジェクトを取得します。
         /// </summary>
-        public LogFormatter GetRuntimeObject() => new LogFormatter(this.Format);
+        public LogLayout GetRuntimeObject() => new LogLayout(Format);
     }
 }

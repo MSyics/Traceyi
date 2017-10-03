@@ -65,12 +65,12 @@ namespace MSyics.Traceyi
         private static Tracer Create(string name)
         {
             var builder = new ConfigurationBuilder();
-
+            
             builder.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
                    .AddJsonFile("Traceyi.json", false, true);
 
             var config = builder.Build();
-
+            
             if (!config.GetSection("Tracer").Exists()) return CreateNullTracer();
             if (!config.GetSection("Listener").Exists()) return CreateNullTracer();
 

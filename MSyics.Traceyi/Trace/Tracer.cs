@@ -53,7 +53,7 @@ namespace MSyics.Traceyi
         /// </summary>
         public void Debug(object message)
         {
-            if (this.Settings.Filter.Contains(TraceAction.Debug))
+            if (Settings.Filter.Contains(TraceAction.Debug))
             {
                 RaiseTrace(DateTime.Now, TraceAction.Debug, message);
             }
@@ -66,7 +66,7 @@ namespace MSyics.Traceyi
         /// </summary>
         public void Information(object message)
         {
-            if (this.Settings.Filter.Contains(TraceAction.Info))
+            if (Settings.Filter.Contains(TraceAction.Info))
             {
                 RaiseTrace(DateTime.Now, TraceAction.Info, message);
             }
@@ -79,7 +79,7 @@ namespace MSyics.Traceyi
         /// </summary>
         public void Warning(object message)
         {
-            if (this.Settings.Filter.Contains(TraceAction.Warning))
+            if (Settings.Filter.Contains(TraceAction.Warning))
             {
                 RaiseTrace(DateTime.Now, TraceAction.Warning, message);
             }
@@ -92,7 +92,7 @@ namespace MSyics.Traceyi
         /// </summary>
         public void Error(object message)
         {
-            if (this.Settings.Filter.Contains(TraceAction.Error))
+            if (Settings.Filter.Contains(TraceAction.Error))
             {
                 RaiseTrace(DateTime.Now, TraceAction.Error, message);
             }
@@ -104,21 +104,21 @@ namespace MSyics.Traceyi
         {
             var operation = new TraceOperation()
             {
-                OperationId = operationId ?? $"{new String('+', this.Context.OperationStack.Count)}", //TraceUtility.GetOperationId(),
+                OperationId = operationId ?? $"{new String('+', Context.OperationStack.Count)}", //TraceUtility.GetOperationId(),
                 ScopeId = scopeId,
                 StartedDate = DateTime.Now,
             };
-            this.Context.OperationStack.Push(operation);
+            Context.OperationStack.Push(operation);
 
-            if (this.Settings.Filter.Contains(TraceAction.Start))
+            if (Settings.Filter.Contains(TraceAction.Start))
             {
                 RaiseTrace(operation.StartedDate, TraceAction.Start, message ?? operation.OperationId);
             }
 
-            if (this.Settings.Filter.Contains(TraceAction.Calling))
+            if (Settings.Filter.Contains(TraceAction.Calling))
             {
-                var sb = new StringBuilder(this.Context.CurrentOperation.OperationId.ToString());
-                //this.Context.Operations.Skip(1).Aggregate(sb, (x, y) => x.Insert(0, y.OperationId.ToString() + ">"));
+                var sb = new StringBuilder(Context.CurrentOperation.OperationId.ToString());
+                //Context.Operations.Skip(1).Aggregate(sb, (x, y) => x.Insert(0, y.OperationId.ToString() + ">"));
                 RaiseTrace(operation.StartedDate, TraceAction.Calling, sb);
             }
         }
@@ -146,25 +146,25 @@ namespace MSyics.Traceyi
             var byScope = !scopeId.Equals(Guid.Empty);
             for (; ; )
             {
-                if (this.Context.OperationStack.Count == 0) { break; }
+                if (Context.OperationStack.Count == 0) { break; }
 
-                var currentOperation = this.Context.OperationStack.Peek();
+                var currentOperation = Context.OperationStack.Peek();
                 if (!byScope)
                 {
                     if (currentOperation.UseScope) { break; }
                 }
 
                 var stopedDateTime = DateTime.Now;
-                if (this.Settings.Filter.Contains(TraceAction.Elapsed))
+                if (Settings.Filter.Contains(TraceAction.Elapsed))
                 {
                     RaiseTrace(stopedDateTime, TraceAction.Elapsed, (stopedDateTime - currentOperation.StartedDate));
                 }
-                if (this.Settings.Filter.Contains(TraceAction.Stop))
+                if (Settings.Filter.Contains(TraceAction.Stop))
                 {
                     RaiseTrace(stopedDateTime, TraceAction.Stop, message ?? currentOperation.OperationId);
                 }
 
-                var popOperation = this.Context.OperationStack.Pop();
+                var popOperation = Context.OperationStack.Pop();
                 if (scopeId.Equals(popOperation.ScopeId)) { break; }
             }
         }

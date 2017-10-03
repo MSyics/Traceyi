@@ -17,17 +17,17 @@ namespace MSyics.Traceyi
         /// <summary>
         /// TextWriter クラスのインスタンスを初期化します。
         /// </summary>
-        public TextWriterLoggingListener(TextWriter writer, ILogFormatter layout)
+        public TextWriterLoggingListener(TextWriter writer, ILogLayout layout)
         {
-            this.TextWriter = writer;
-            this.Layout = layout;
+            TextWriter = writer;
+            Layout = layout;
         }
 
         /// <summary>
         /// TextWriter クラスのインスタンスを初期化します。
         /// </summary>
         public TextWriterLoggingListener(TextWriter writer)
-            : this(writer, new LogFormatter())
+            : this(writer, new LogLayout())
         {
         }
 
@@ -44,27 +44,27 @@ namespace MSyics.Traceyi
         /// </summary>
         public override void Write(TraceEventArg e)
         {
-            this.TextWriter.WriteLine(this.Layout.Format(e));
+            TextWriter.WriteLine(Layout.Format(e));
         }
 
         /// <summary>
         /// ライターのすべてのバッファーをクリアし、基になるデバイスに書き込みます。
         /// </summary>
-        public virtual void Flush() => this.TextWriter.Flush();
+        public virtual void Flush() => TextWriter.Flush();
 
         /// <summary>
         /// 改行文字を取得または設定します。
         /// </summary>
         public string NewLine
         {
-            get { return this.TextWriter.NewLine; }
+            get { return TextWriter.NewLine; }
             set
             {
-                this.TextWriter.NewLine = value;
+                TextWriter.NewLine = value;
 
-                if (this.Layout is LogFormatter)
+                if (Layout is LogLayout)
                 {
-                    ((LogFormatter)this.Layout).NewLine = value;
+                    ((LogLayout)Layout).NewLine = value;
                 }
             }
         }
@@ -77,11 +77,11 @@ namespace MSyics.Traceyi
         /// <summary>
         /// ログデータのレイアウト機能を取得または設定します。
         /// </summary>
-        protected ILogFormatter Layout { get; private set; }
+        protected ILogLayout Layout { get; private set; }
 
         /// <summary>
         /// 文字エンコーディングを取得します。
         /// </summary>
-        public Encoding Encoding => this.TextWriter.Encoding;
+        public Encoding Encoding => TextWriter.Encoding;
     }
 }

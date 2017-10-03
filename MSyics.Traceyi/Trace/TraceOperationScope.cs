@@ -24,8 +24,8 @@ namespace MSyics.Traceyi
         /// </summary>
         public TraceOperationScope(Tracer target, object operationId)
         {
-            this.Target = target;
-            this.Target.Start(operationId, null, this.Id);
+            Target = target;
+            Target.Start(operationId, null, Id);
         }
 
         /// <summary>
@@ -33,8 +33,8 @@ namespace MSyics.Traceyi
         /// </summary>
         public TraceOperationScope(Tracer target)
         {
-            this.Target = target;
-            this.Target.Start(null, null, this.Id);
+            Target = target;
+            Target.Start(null, null, Id);
         }
       
         #region IDisposable Members
@@ -45,7 +45,7 @@ namespace MSyics.Traceyi
         {
             if (!_disposed)
             {
-                this.Target.Stop(null, this.Id);
+                Target.Stop(null, Id);
                 _disposed = true;
             }
         }

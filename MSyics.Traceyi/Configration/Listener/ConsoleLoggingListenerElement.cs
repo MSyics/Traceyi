@@ -20,11 +20,11 @@ namespace MSyics.Traceyi.Configration
         /// 実行オブジェクトを取得します。
         /// </summary>
         public override ITraceListener GetRuntimeObject() =>
-             new ConsoleLoggingListener(this.UseErrorStream, this.Layout.GetRuntimeObject())
+             new ConsoleLoggingListener(UseErrorStream, Layout.GetRuntimeObject())
              {
-                 Name = this.Name,
-                 NewLine = this.NewLine,
-                 UseGlobalLock = this.UseGlobalLock,
+                 Name = Name,
+                 NewLine = NewLine,
+                 UseGlobalLock = UseGlobalLock,
              };
     }
 

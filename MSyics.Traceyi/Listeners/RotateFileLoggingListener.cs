@@ -21,19 +21,19 @@ namespace MSyics.Traceyi
         /// <summary>
         /// RotateFileLog クラスのインスタンスを初期化します。
         /// </summary>
-        public RotateFileLoggingListener(string pathLayout, ILogFormatter layout)
+        public RotateFileLoggingListener(string pathLayout, ILogLayout layout)
         {
-            this.PathLayout = string.IsNullOrEmpty(pathLayout) ? Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName) + ".log" : pathLayout;
-            this.Layout = layout;
+            PathLayout = string.IsNullOrEmpty(pathLayout) ? Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName) + ".log" : pathLayout;
+            Layout = layout;
 
-            this.SetFormattedPathLayout();
+            SetFormattedPathLayout();
         }
 
         /// <summary>
         /// RotateFileLog クラスのインスタンスを初期化します。
         /// </summary>
         public RotateFileLoggingListener(string pathLayout)
-            : this(pathLayout, new LogFormatter())
+            : this(pathLayout, new LogLayout())
         {
         }
 
@@ -54,7 +54,7 @@ namespace MSyics.Traceyi
                 new LogLayoutPart { Name = "processName", CanFormat = true },
                 new LogLayoutPart { Name = "machineName", CanFormat = true });
 
-            this.FormattedPathLayout = converter.Convert(this.PathLayout.Trim());
+            FormattedPathLayout = converter.Convert(PathLayout.Trim());
         }
 
         /// <summary>
@@ -63,8 +63,8 @@ namespace MSyics.Traceyi
         private string MakePath(TraceEventArg e)
         {
             var path = string.Format(
-                this.FormatProvider,
-                this.FormattedPathLayout,
+                FormatProvider,
+                FormattedPathLayout,
                 e.Traced,
                 e.ThreadId,
                 e.ProcessId,
@@ -91,14 +91,13 @@ namespace MSyics.Traceyi
         {
             lock (m_thisLock)
             {
-                var path = this.MakePath(e);
+                var path = MakePath(e);
+                Rotate(path);
 
-                this.Rotate(path);
-
-                var log = new FileLoggingListener(this.StreamManager.AddOrUpdate(path), this.Encoding, this.Layout)
+                var log = new FileLoggingListener(StreamManager.AddOrUpdate(path), Encoding, Layout)
                 {
-                    Name = this.Name,
-                    NewLine = this.NewLine,
+                    Name = Name,
+                    NewLine = NewLine,
                     UseGlobalLock = false,
                 };
                 using (log)
@@ -113,16 +112,15 @@ namespace MSyics.Traceyi
         /// </summary>
         private void Rotate(string path)
         {
-            if (this.MaxLength <= 0) { return; }
+            if (MaxLength <= 0) { return; }
 
-            ReuseFileStream stream;
-            if (!this.StreamManager.TryGet(path, out stream)) { return; }
-            if (this.MaxLength >= stream.Length) { return; }
+            if (!StreamManager.TryGet(path, out var stream)) { return; }
+            if (MaxLength >= stream.Length) { return; }
 
             if (File.Exists(path))
             {
-                this.StreamManager.Remove(path);
-                if (this.LeaveFiles)
+                StreamManager.Remove(path);
+                if (LeaveFiles)
                 {
                     // 指定サイズ以上になるファイルの名前を変える。
                     var fileName = Path.GetFileNameWithoutExtension(path);
@@ -156,7 +154,7 @@ namespace MSyics.Traceyi
             {
                 try
                 {
-                    this.StreamManager?.Clear();
+                    StreamManager?.Clear();
                 }
                 catch (Exception)
                 {
@@ -184,7 +182,7 @@ namespace MSyics.Traceyi
         /// <summary>
         /// トレースデータの記録形式を取得または設定します。
         /// </summary>
-        public ILogFormatter Layout { get; set; }
+        public ILogLayout Layout { get; set; }
 
         /// <summary>
         /// 改行文字を取得または設定します。

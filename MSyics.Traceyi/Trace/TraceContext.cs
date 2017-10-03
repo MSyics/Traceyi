@@ -33,20 +33,20 @@ namespace MSyics.Traceyi
         /// <summary>
         /// 現在のトレース操作情報を取得します。
         /// </summary>
-        public TraceOperation CurrentOperation => this.OperationStack.Count == 0 ? TraceOperation.NullOperation : this.OperationStack.Peek();
+        public TraceOperation CurrentOperation => OperationStack.Count == 0 ? TraceOperation.NullOperation : OperationStack.Peek();
 
         /// <summary>
         /// トレース操作情報の一覧を取得します。
         /// </summary>
-        public TraceOperation[] Operations => this.OperationStack.ToArray();
+        public TraceOperation[] Operations => OperationStack.ToArray();
 
         /// <summary>
         /// トレース基本情報をリフレッシュします。
         /// </summary>
         public void Refresh()
         {
-            this.ActivityId = null;
-            this.OperationStack.Clear();
+            ActivityId = null;
+            OperationStack.Clear();
         }
     }
 }

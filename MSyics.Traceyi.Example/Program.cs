@@ -84,7 +84,7 @@ namespace MSyics.Traceyi.Example
 
         private void Case2()
         {
-            using (this.Tracer.Scope())
+            using (Tracer.Scope())
             {
                 var act5 = new Action(() => Tracer.Information("hogehoge"));
                 var act4 = new Action(() => { using (Tracer.Scope()) { act5(); } });

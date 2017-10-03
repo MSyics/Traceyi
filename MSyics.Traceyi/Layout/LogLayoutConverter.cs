@@ -17,7 +17,7 @@ namespace MSyics.Traceyi.Layout
         /// LogLayoutConverter クラスのインスタンスを初期化します。
         /// </summary>
         /// <param name="parts">ログの記録項目</param>
-        public LogLayoutConverter(params LogLayoutPart[] parts) => this.Parts = parts;
+        public LogLayoutConverter(params LogLayoutPart[] parts) => Parts = parts;
 
         /// <summary>
         /// 指定されたレイアウトを認識できるフォーマットに変換します。
@@ -36,9 +36,9 @@ namespace MSyics.Traceyi.Layout
                     if (length <= 0) { throw new FormatException("入力文字列の形式が正しくありません。"); }
 
                     var convertString = layout.Substring(startIndex, length);
-                    for (int itemIndex = 0; itemIndex < this.Parts.Length; itemIndex++)
+                    for (int itemIndex = 0; itemIndex < Parts.Length; itemIndex++)
                     {
-                        var part = this.Parts[itemIndex];
+                        var part = Parts[itemIndex];
                         if (convertString.StartsWith(part.Name, StringComparison.OrdinalIgnoreCase))
                         {
                             if (part.CanFormat)

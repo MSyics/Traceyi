@@ -24,7 +24,7 @@ http://opensource.org/licenses/mit-license.php
       //         All        : すべて
       "filter": "All",
       "useMemberInfo": false,
-      "listeners": [ "rotatefile" ]
+      "listeners": [ "rotatefile", "console" ]
     }
   ],
   "listener": {

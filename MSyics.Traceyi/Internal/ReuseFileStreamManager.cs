@@ -25,7 +25,7 @@ namespace MSyics.Traceyi
         {
             if ((!string.IsNullOrEmpty(m_currentPath)) && m_currentPath != path)
             {
-                this.Remove(m_currentPath);
+                Remove(m_currentPath);
             }
             m_currentPath = path;
 

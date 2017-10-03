@@ -29,7 +29,7 @@ namespace MSyics.Traceyi
 
         void ITraceListener.OnTrace(object sender, TraceEventArg e)
         {
-            if (this.UseGlobalLock)
+            if (UseGlobalLock)
             {
                 lock (LoggingListener.m_thisLock)
                 {
@@ -74,9 +74,9 @@ namespace MSyics.Traceyi
         /// </summary>
         protected virtual void Dispose(bool disposing)
         {
-            if (!this.IsDisposed)
+            if (!IsDisposed)
             {
-                this.IsDisposed = true;
+                IsDisposed = true;
 
                 if (disposing)
                 {

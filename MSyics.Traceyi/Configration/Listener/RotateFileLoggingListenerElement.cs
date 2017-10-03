@@ -31,15 +31,15 @@ namespace MSyics.Traceyi.Configration
         /// </summary>
         public override ITraceListener GetRuntimeObject()
         {
-            return new RotateFileLoggingListener(this.PathLayout)
+            return new RotateFileLoggingListener(PathLayout)
             {
-                Encoding = this.GetEncoding(),
-                Layout = this.Layout.GetRuntimeObject(),
-                Name = this.Name,
-                NewLine = this.NewLine,
-                UseGlobalLock = this.UseGlobalLock,
-                MaxLength = this.MaxLength,
-                LeaveFiles = this.LeaveFiles,
+                Encoding = GetEncoding(),
+                Layout = Layout.GetRuntimeObject(),
+                Name = Name,
+                NewLine = NewLine,
+                UseGlobalLock = UseGlobalLock,
+                MaxLength = MaxLength,
+                LeaveFiles = LeaveFiles,
             };
         }
     }

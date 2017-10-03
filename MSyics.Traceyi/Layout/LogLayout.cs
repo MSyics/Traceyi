@@ -10,7 +10,7 @@ namespace MSyics.Traceyi.Layout
     /// <summary>
     /// 指定したレイアウトで書式設定されたログを取得します。
     /// </summary>
-    public sealed class LogFormatter : ILogFormatter
+    public sealed class LogLayout : ILogLayout
     {
         /// <summary>
         /// 初期レイアウトを示す固定値です。
@@ -20,12 +20,12 @@ namespace MSyics.Traceyi.Layout
         /// <summary>
         /// TextLayout クラスのインスタンスを初期化します。
         /// </summary>
-        public LogFormatter(string layout) => this.Layout = layout;
+        public LogLayout(string layout) => Layout = layout;
 
         /// <summary>
         /// TextLayout クラスのインスタンスを初期化します。
         /// </summary>
-        public LogFormatter()
+        public LogLayout()
             : this(DefaultLayout)
         {
         }
@@ -39,10 +39,10 @@ namespace MSyics.Traceyi.Layout
             SetFormattedLayout();
 
             return string.Format(
-                    this.FormatProvider,
-                    this.FormattedLayout,
+                    FormatProvider,
+                    FormattedLayout,
                     "\t",
-                    this.NewLine,
+                    NewLine,
                     e.Traced,
                     e.Action,
                     e.Message,
@@ -58,7 +58,7 @@ namespace MSyics.Traceyi.Layout
 
         private void SetFormattedLayout()
         {
-            if (this.IsMakeFormattedLayout) { return; }
+            if (IsMakeFormattedLayout) { return; }
 
             var converter = new LogLayoutConverter(
                 new LogLayoutPart { Name = "tab", CanFormat = false },
@@ -75,8 +75,8 @@ namespace MSyics.Traceyi.Layout
                 new LogLayoutPart { Name = "processName", CanFormat = true },
                 new LogLayoutPart { Name = "machineName", CanFormat = true });
 
-            this.FormattedLayout = converter.Convert(this.Layout.Trim());
-            this.IsMakeFormattedLayout = true;
+            FormattedLayout = converter.Convert(Layout.Trim());
+            IsMakeFormattedLayout = true;
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace MSyics.Traceyi.Layout
             {
                 if (_layout == value) { return; }
                 _layout = value;
-                this.IsMakeFormattedLayout = false;
+                IsMakeFormattedLayout = false;
             }
         }
         private string _layout;

@@ -23,7 +23,7 @@ namespace MSyics.Traceyi.Configration
         /// </summary>
         public override ITraceListener GetRuntimeObject()
         {
-            var path = string.IsNullOrWhiteSpace(this.Path) ? System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory,AppDomain.CurrentDomain.FriendlyName + ".log") : this.Path;
+            var path = string.IsNullOrWhiteSpace(Path) ? System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory,AppDomain.CurrentDomain.FriendlyName + ".log") : Path;
 
             if (!System.IO.Path.IsPathRooted(path))
             {
@@ -34,11 +34,11 @@ namespace MSyics.Traceyi.Configration
                 Directory.CreateDirectory(System.IO.Path.GetDirectoryName(path));
             }
 
-            return new FileLoggingListener(new FileStream(path, FileMode.Append, FileAccess.Write, FileShare.ReadWrite), GetEncoding(), this.Layout.GetRuntimeObject())
+            return new FileLoggingListener(new FileStream(path, FileMode.Append, FileAccess.Write, FileShare.ReadWrite), GetEncoding(), Layout.GetRuntimeObject())
             {
-                Name = this.Name,
-                NewLine = this.NewLine,
-                UseGlobalLock = this.UseGlobalLock,
+                Name = Name,
+                NewLine = NewLine,
+                UseGlobalLock = UseGlobalLock,
             };
         }
     }
