@@ -10,23 +10,23 @@ namespace MSyics.Traceyi
     /// <summary>
     /// Tracer オブジェクトの設定を行います。
     /// </summary>
-    public sealed class TracerConfiguration
+    public sealed class TracerBuildable: IBuildSettings, IBuildListener
     {
         Tracer m_source;
 
-        internal TracerConfiguration()
+        internal TracerBuildable()
         {
         }
 
         /// <summary>
         /// TracerSetting クラスのインスタンスを初期化します。
         /// </summary>
-        public TracerConfiguration(Tracer source) => m_source = source;
+        public TracerBuildable(Tracer source) => m_source = source;
 
         /// <summary>
         /// トレースイベントに Listener オブジェクトを関連付けます。
         /// </summary>
-        public TracerConfiguration AddListener(ITraceListener listener)
+        public IBuildListener AddListener(ITraceListener listener)
         {
             m_source.OnTrace += listener.OnTrace;
             return this;
@@ -35,21 +35,32 @@ namespace MSyics.Traceyi
         /// <summary>
         /// トレースイベントに引数の Action デリゲートを関連付けます。 
         /// </summary>
-        public TracerConfiguration AddListener(Action<TraceEventArg> action)
+        public IBuildListener AddListener(Action<TraceEventArg> listener)
         {
-            m_source.OnTrace += (sender, e) => action(e);
+            m_source.OnTrace += (sender, e) => listener(e);
             return this;
         }
 
         /// <summary>
         /// 各種設定値を設定します。
         /// </summary>
-        public TracerConfiguration Settings(Action<TracerSettings> settings)
+        public IBuildListener Settings(Action<TracerSettings> settings)
         {
             if (settings == null) return this;
 
             settings(m_source.Settings);
             return this;
         }
+    }
+
+    public interface IBuildSettings
+    {
+        IBuildListener Settings(Action<TracerSettings> settings);
+    }
+
+    public interface IBuildListener
+    {
+        IBuildListener AddListener(ITraceListener listener);
+        IBuildListener AddListener(Action<TraceEventArg> listener);
     }
 }

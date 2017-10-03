@@ -13,6 +13,7 @@
     <RepositoryUrl>https://github.com/MSyics/Traceyi</RepositoryUrl>
     <PackageLicenseUrl>https://github.com/MSyics/Traceyi/blob/master/LICENSE</PackageLicenseUrl>
     <Copyright>Copyright (c) 2017 MSyics</Copyright>
+    <Description>Traceyi is a tracelog library for .NET Standard 2.0</Description>
   </PropertyGroup>
 
   <ItemGroup>

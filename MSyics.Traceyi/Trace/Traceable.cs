@@ -93,7 +93,7 @@ namespace MSyics.Traceyi
             }
 
             // Create Tracer
-            return new Tracer().Configure(settings =>
+            return new Tracer().Build(settings =>
             {
                 settings.Settings(s =>
                 {

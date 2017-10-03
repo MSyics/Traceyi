@@ -12,6 +12,7 @@ namespace MSyics.Traceyi.Example
     {
         static void Main(string[] args)
         {
+
             //using (var scope = TracerManager.Default.Scope())
             //{
             //    TracerManager.Default.Information(Directory.GetCurrentDirectory());
