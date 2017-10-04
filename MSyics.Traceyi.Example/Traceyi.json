@@ -83,7 +83,7 @@
       // path  : パスを指定する。（省略：[ApplicationName].log）
       {
         "name": "file",
-        "useGlobalLock": true,
+        "useGlobalLock": false,
         "newLine": "\r\n",
         "encoding": "shift-jis",
         "path": "C:\\Users\\Shinich\\Desktop\\ConsoleApp4\\log\\Logs\\test3.log",

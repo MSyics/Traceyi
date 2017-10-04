@@ -34,7 +34,7 @@ namespace MSyics.Traceyi.Configration
                 Directory.CreateDirectory(System.IO.Path.GetDirectoryName(path));
             }
 
-            return new FileLoggingListener(new FileStream(path, FileMode.Append, FileAccess.Write, FileShare.ReadWrite), GetEncoding(), Layout.GetRuntimeObject())
+            return new FileLoggingListener(new FileStream(path, FileMode.Append, FileAccess.Write, FileShare.ReadWrite, 4096, FileOptions.None), GetEncoding(), Layout.GetRuntimeObject())
             {
                 Name = Name,
                 NewLine = NewLine,

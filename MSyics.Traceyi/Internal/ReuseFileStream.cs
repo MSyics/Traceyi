@@ -16,7 +16,7 @@ namespace MSyics.Traceyi
         /// ReuseFileStream クラスのインスタンスを初期化します。
         /// </summary>
         public ReuseFileStream(string path)
-            : base(path, FileMode.Append, FileAccess.Write, FileShare.Read)
+            : base(path, FileMode.Append, FileAccess.Write, FileShare.Read, 40960, FileOptions.None)
         {
         }
 
