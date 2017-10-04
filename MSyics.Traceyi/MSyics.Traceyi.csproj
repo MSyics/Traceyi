@@ -50,6 +50,12 @@
     <PackageReference Include="microsoft.Extensions.Configuration.Xml" Version="2.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Traceyi.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
   <ProjectExtensions><VisualStudio><UserProperties Traceyi_1json__JSONSchema="http://json.schemastore.org/config" /></VisualStudio></ProjectExtensions>
 
 </Project>
