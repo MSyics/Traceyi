@@ -43,14 +43,5 @@ namespace MSyics.Traceyi
                 return false;
             }
         }
-
-        /// <summary>
-        /// トレースの設定を行います。
-        /// </summary>
-        public static Tracer Build(this Tracer tracer, Action<TracerBuildable> builder)
-        {
-            builder(new TracerBuildable(tracer));
-            return tracer;
-        }
     }
 }

@@ -10,34 +10,36 @@ namespace MSyics.Traceyi
     /// <summary>
     /// Tracer オブジェクトの設定を行います。
     /// </summary>
-    public sealed class TracerBuildable: IBuildSettings, IBuildListener
+    public sealed class TracerBuildable: IBuildSettings, IBuildListener, IBuildTracer
     {
         Tracer m_source;
-
-        internal TracerBuildable()
-        {
-        }
 
         /// <summary>
         /// TracerSetting クラスのインスタンスを初期化します。
         /// </summary>
-        public TracerBuildable(Tracer source) => m_source = source;
+        internal TracerBuildable() => m_source = new Tracer();
 
         /// <summary>
         /// トレースイベントに Listener オブジェクトを関連付けます。
         /// </summary>
-        public IBuildListener AddListener(ITraceListener listener)
+        public IBuildTracer Attach(params ITraceListener[] listeners)
         {
-            m_source.OnTrace += listener.OnTrace;
+            foreach (var item in listeners)
+            {
+                m_source.OnTrace += item.OnTrace;
+            }
             return this;
         }
 
         /// <summary>
         /// トレースイベントに引数の Action デリゲートを関連付けます。 
         /// </summary>
-        public IBuildListener AddListener(Action<TraceEventArg> listener)
+        public IBuildTracer Attach(params Action<TraceEventArg>[] listener)
         {
-            m_source.OnTrace += (sender, e) => listener(e);
+            foreach (var item in listener)
+            {
+                m_source.OnTrace += (sender, e) => item(e);
+            }
             return this;
         }
 
@@ -51,6 +53,11 @@ namespace MSyics.Traceyi
             settings(m_source.Settings);
             return this;
         }
+
+        /// <summary>
+        /// 構築した Tracer オブジェクトを取得します。
+        /// </summary>
+        public Tracer Get() => m_source;
     }
 
     public interface IBuildSettings
@@ -60,7 +67,12 @@ namespace MSyics.Traceyi
 
     public interface IBuildListener
     {
-        IBuildListener AddListener(ITraceListener listener);
-        IBuildListener AddListener(Action<TraceEventArg> listener);
+        IBuildTracer Attach(params ITraceListener[] listeners);
+        IBuildTracer Attach(params Action<TraceEventArg>[] listeners);
+    }
+
+    public interface IBuildTracer
+    {
+        Tracer Get();
     }
 }

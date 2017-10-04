@@ -28,6 +28,8 @@ namespace MSyics.Traceyi
             AddSectionedListenerElement<RotateFileLoggingListenerElement>("RotateFileLogging");
         }
 
+        #region Configuration
+
         /// <summary>
         /// カスタム Listener 要素を登録します。
         /// </summary>
@@ -38,6 +40,15 @@ namespace MSyics.Traceyi
         {
             SectionedListenersElements.Add(section.ToUpper(), (config) => config.Get<List<T>>());
         }
+
+        #endregion
+
+        #region Creation
+
+        /// <summary>
+        /// Tracer オブジェクトを構築します。
+        /// </summary>
+        public static IBuildSettings Build() => new TracerBuildable();
 
         /// <summary>
         /// 構成ファイルで設定した Tracer オブジェクトを取得します。
@@ -65,12 +76,12 @@ namespace MSyics.Traceyi
         private static Tracer Create(string name)
         {
             var builder = new ConfigurationBuilder();
-            
+
             builder.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
                    .AddJsonFile("Traceyi.json", false, true);
 
             var config = builder.Build();
-            
+
             if (!config.GetSection("Tracer").Exists()) return CreateNullTracer();
             if (!config.GetSection("Listener").Exists()) return CreateNullTracer();
 
@@ -92,24 +103,20 @@ namespace MSyics.Traceyi
                 }
             }
 
-            // Create Tracer
-            return new Tracer().Build(settings =>
-            {
-                settings.Settings(s =>
+            return Build()
+                .Settings(x =>
                 {
-                    s.Name = name;
-                    s.Filter = tracerElement.Filter;
-                    s.UseMemberInfo = tracerElement.UseMemberInfo;
-                });
-                foreach (var key in tracerElement.Listeners.Select(x => x.ToUpper()))
-                {
-                    if (!Listeners.ContainsKey(key)) { continue; }
-                    settings.AddListener(Listeners[key].GetRuntimeObject());
-                }
-            });
+                    x.Name = name;
+                    x.Filter = tracerElement.Filter;
+                    x.UseMemberInfo = tracerElement.UseMemberInfo;
+                })
+                .Attach(Listeners.Where(x => tracerElement.Listeners.Exists(y => x.Key.ToUpper() == y.ToUpper())).Select(x => x.Value.GetRuntimeObject()).ToArray())
+                .Get();
         }
 
         private static Tracer CreateNullTracer() => new Tracer();
+
+        #endregion
 
         #region TraceContext
 
