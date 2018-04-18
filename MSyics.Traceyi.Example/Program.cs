@@ -17,7 +17,7 @@ namespace MSyics.Traceyi.Example
             builder.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
                    .AddJsonFile("Traceyi.json", false, true);
             var config = builder.Build();
-            Traceable.AddConfiguration(config.GetSection("Traceyi"));
+            Traceable.AddConfiguration(config);
 
             //using (var scope = TracerManager.Default.Scope())
             //{

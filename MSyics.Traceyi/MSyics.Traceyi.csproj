@@ -45,10 +45,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="microsoft.Extensions.Configuration" Version="2.0.0" />
-    <PackageReference Include="microsoft.Extensions.Configuration.Binder" Version="2.0.0" />
-    <PackageReference Include="microsoft.Extensions.Configuration.Json" Version="2.0.0" />
-    <PackageReference Include="microsoft.Extensions.Configuration.Xml" Version="2.0.0" />
+    <PackageReference Include="microsoft.Extensions.Configuration" Version="2.0.1" />
+    <PackageReference Include="microsoft.Extensions.Configuration.Binder" Version="2.0.1" />
+    <PackageReference Include="microsoft.Extensions.Configuration.Json" Version="2.0.1" />
   </ItemGroup>
 
   <ItemGroup>

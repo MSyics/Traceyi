@@ -82,17 +82,18 @@ namespace MSyics.Traceyi
         private static Tracer Create(string name)
         {
             if (Configuration == null) return CreateNullTracer();
-            if (!Configuration.GetSection("Tracer").Exists()) return CreateNullTracer();
-            if (!Configuration.GetSection("Listener").Exists()) return CreateNullTracer();
+            if (!Configuration.GetSection("Traceyi").Exists()) return CreateNullTracer();
+            if (!Configuration.GetSection("Traceyi:Tracer").Exists()) return CreateNullTracer();
+            if (!Configuration.GetSection("Traceyi:Listener").Exists()) return CreateNullTracer();
 
             // Get Tracer Element
-            var tracerElement = Configuration.GetSection("Tracer")
+            var tracerElement = Configuration.GetSection("Traceyi:Tracer")
                                              .Get<List<TracerElement>>()
                                              .FirstOrDefault(x => x.Name.ToUpper() == name.ToUpper());
             if (tracerElement == null) return CreateNullTracer();
 
             // Add Listener RuntimeObject
-            foreach (var listenersSection in Configuration.GetSection("Listener").GetChildren())
+            foreach (var listenersSection in Configuration.GetSection("Traceyi:Listener").GetChildren())
             {
                 var listenersSectionName = listenersSection.Key.ToUpper();
                 if (!SectionedListenersElements.ContainsKey(listenersSectionName)) continue;

@@ -29,7 +29,7 @@
         "Name": "specific",
         "Filters": "All",
         "UseMemberInfo": true,
-        "Listeners": [ "console", "file" ],
+        "Listeners": [ "console", "file" ]
       }
     ],
     "Listener": {

@@ -7,12 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="microsoft.Extensions.Configuration" Version="2.0.0" />
-    <PackageReference Include="microsoft.Extensions.Configuration.Json" Version="2.0.0" />
-    <PackageReference Include="microsoft.Extensions.Configuration.Xml" Version="2.0.0" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\MSyics.Traceyi\MSyics.Traceyi.csproj" />
   </ItemGroup>
 
