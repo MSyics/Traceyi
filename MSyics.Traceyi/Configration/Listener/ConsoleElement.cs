@@ -1,15 +1,17 @@
 ﻿/****************************************************************
-© 2017 MSyics
+© 2018 MSyics
 This software is released under the MIT License.
 http://opensource.org/licenses/mit-license.php
 ****************************************************************/
 
+using MSyics.Traceyi.Listeners;
+
 namespace MSyics.Traceyi.Configration
 {
     /// <summary>
-    /// console 要素を表します。
+    /// Console 要素を表します。
     /// </summary>
-    public class ConsoleLoggingListenerElement : TextWriterListenerElement
+    public class ConsoleElement : TextLoggerElement
     {
         /// <summary>
         /// エラーストリームを使用するかどうかを示す値を取得または設定します。
@@ -20,7 +22,7 @@ namespace MSyics.Traceyi.Configration
         /// 実行オブジェクトを取得します。
         /// </summary>
         public override ITraceListener GetRuntimeObject() =>
-             new ConsoleLoggingListener(UseErrorStream, Layout.GetRuntimeObject())
+             new ConsoleLogger(UseErrorStream, Layout.GetRuntimeObject())
              {
                  Name = Name,
                  NewLine = NewLine,

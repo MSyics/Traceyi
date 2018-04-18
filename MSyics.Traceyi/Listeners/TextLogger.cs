@@ -1,5 +1,5 @@
 ﻿/****************************************************************
-© 2017 MSyics
+© 2018 MSyics
 This software is released under the MIT License.
 http://opensource.org/licenses/mit-license.php
 ****************************************************************/
@@ -7,17 +7,17 @@ using MSyics.Traceyi.Layout;
 using System.IO;
 using System.Text;
 
-namespace MSyics.Traceyi
+namespace MSyics.Traceyi.Listeners
 {
     /// <summary>
     /// トレースデータを TextWriter オブジェクトを使用して記録します。
     /// </summary>
-    public abstract class TextWriterLoggingListener : LoggingListener
+    public abstract class TextLogger : Logger
     {
         /// <summary>
         /// TextWriter クラスのインスタンスを初期化します。
         /// </summary>
-        public TextWriterLoggingListener(TextWriter writer, ILogLayout layout)
+        public TextLogger(TextWriter writer, ILogLayout layout)
         {
             TextWriter = writer;
             Layout = layout;
@@ -26,7 +26,7 @@ namespace MSyics.Traceyi
         /// <summary>
         /// TextWriter クラスのインスタンスを初期化します。
         /// </summary>
-        public TextWriterLoggingListener(TextWriter writer)
+        public TextLogger(TextWriter writer)
             : this(writer, new LogLayout())
         {
         }
@@ -34,7 +34,7 @@ namespace MSyics.Traceyi
         /// <summary>
         /// TextWriter クラスのインスタンスを初期化します。
         /// </summary>
-        protected TextWriterLoggingListener()
+        protected TextLogger()
             : this(TextWriter.Null)
         {
         }

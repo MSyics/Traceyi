@@ -1,5 +1,5 @@
 ﻿/****************************************************************
-© 2017 MSyics
+© 2018 MSyics
 This software is released under the MIT License.
 http://opensource.org/licenses/mit-license.php
 ****************************************************************/
@@ -13,9 +13,9 @@ namespace MSyics.Traceyi
     internal static class TraceUtility
     {
         /// <summary>
-        /// ロギングライブラリで定義されているすべての型を取得します。
+        /// ライブラリで定義されているすべての型を取得します。
         /// </summary>
-        internal static Type[] LoggingLibraryTypes { get; } = Assembly.GetExecutingAssembly().GetTypes();
+        internal static Type[] LibraryTypes { get; } = Assembly.GetExecutingAssembly().GetTypes();
 
         /// <summary>
         /// トレースしたメンバー情報を取得します。
@@ -28,7 +28,7 @@ namespace MSyics.Traceyi
             return stack.GetFrames()
                         .Reverse()
                         .Select(x => x.GetMethod())
-                        .TakeWhile(x => !TraceUtility.LoggingLibraryTypes.Any(y => y.Equals(x.ReflectedType)))
+                        .TakeWhile(x => !TraceUtility.LibraryTypes.Any(y => y.Equals(x.ReflectedType)))
                         .Last();
         }
 
@@ -43,7 +43,7 @@ namespace MSyics.Traceyi
             var method = stack.GetFrames()
                               .Reverse()
                               .Select(x => x.GetMethod())
-                              .TakeWhile(x => !TraceUtility.LoggingLibraryTypes.Any(y => y.Equals(x.ReflectedType)))
+                              .TakeWhile(x => !TraceUtility.LibraryTypes.Any(y => y.Equals(x.ReflectedType)))
                               .Last();
             return $"{method.ReflectedType.FullName}.{method.Name}";
         }

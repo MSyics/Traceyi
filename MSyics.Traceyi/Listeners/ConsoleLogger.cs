@@ -1,41 +1,41 @@
 ﻿/****************************************************************
-© 2017 MSyics
+© 2018 MSyics
 This software is released under the MIT License.
 http://opensource.org/licenses/mit-license.php
 ****************************************************************/
 using MSyics.Traceyi.Layout;
 using System;
 
-namespace MSyics.Traceyi
+namespace MSyics.Traceyi.Listeners
 {
     /// <summary>
     /// トレースデータをコンソールに記録します。
     /// </summary>
-    public class ConsoleLoggingListener : TextWriterLoggingListener
+    public class ConsoleLogger : TextLogger
     {
         /// <summary>
-        /// ConsoleLog クラスのインスタンスを初期化します。
+        /// クラスのインスタンスを初期化します。
         /// </summary>
         /// <param name="useErrorStream">標準出力ストリームと標準エラーストリームのどちらを使うかを示す値</param>
         /// <param name="layout">レイアウト</param>
-        public ConsoleLoggingListener(bool useErrorStream, ILogLayout layout)
+        public ConsoleLogger(bool useErrorStream, ILogLayout layout)
             : base(useErrorStream ? Console.Out : Console.Error, layout)
         {
         }
 
         /// <summary>
-        /// ConsoleLog クラスのインスタンスを初期化します。
+        /// クラスのインスタンスを初期化します。
         /// </summary>
         /// <param name="useErrorStream">標準出力ストリームと標準エラーストリームのどちらを使うかを示す値</param>
-        public ConsoleLoggingListener(bool useErrorStream)
+        public ConsoleLogger(bool useErrorStream)
             : base(useErrorStream ? Console.Out : Console.Error)
         {
         }
 
         /// <summary>
-        /// ConsoleLog クラスのインスタンスを初期化します。
+        /// クラスのインスタンスを初期化します。
         /// </summary>
-        public ConsoleLoggingListener()
+        public ConsoleLogger()
             : this(false)
         {
         }

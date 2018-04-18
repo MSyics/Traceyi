@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Linq;
 using System.Diagnostics;
+using Microsoft.Extensions.Configuration;
 
 namespace MSyics.Traceyi.Example
 {
@@ -12,6 +13,11 @@ namespace MSyics.Traceyi.Example
     {
         static void Main(string[] args)
         {
+            var builder = new ConfigurationBuilder();
+            builder.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+                   .AddJsonFile("Traceyi.json", false, true);
+            var config = builder.Build();
+            Traceable.AddConfiguration(config.GetSection("Traceyi"));
 
             //using (var scope = TracerManager.Default.Scope())
             //{
@@ -21,16 +27,34 @@ namespace MSyics.Traceyi.Example
             //}
 
             var pg = new Program();
-            //pg.Case1();
-            //pg.Case2();
-            //pg.Case3();
-            //pg.Case4();
+            pg.Case1();
+            pg.Case2();
+            pg.Case3();
+            pg.Case4();
             //Console.WriteLine("----");
             //pg.Case4();
-            pg.Case_();
+            //pg.Case_();
+            pg.Case5();
         }
 
-        private Tracer Tracer { get; } = Traceable.Get();
+        private Tracer Tracer { get; } = Traceable.Get("");
+
+        private void Case5()
+        {
+            var tasks = new Task[3];
+            for (int i = 0; i < tasks.Length; i++)
+            {
+                tasks[i] = Task.Run(() =>
+                {
+                    for (int j = 0; j < 100; j++)
+                    {
+                        Tracer.Information(j);
+                    }
+                });
+            }
+            Task.WaitAll(tasks);
+        }
+
 
         private void Case_()
         {

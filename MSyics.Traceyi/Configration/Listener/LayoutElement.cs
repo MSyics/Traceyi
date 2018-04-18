@@ -1,5 +1,5 @@
 ﻿/****************************************************************
-© 2017 MSyics
+© 2018 MSyics
 This software is released under the MIT License.
 http://opensource.org/licenses/mit-license.php
 ****************************************************************/
@@ -8,7 +8,7 @@ using MSyics.Traceyi.Layout;
 namespace MSyics.Traceyi.Configration
 {
     /// <summary>
-    /// layout 要素を表します。
+    /// Layout 要素を表します。
     /// </summary>
     public class LayoutElement
     {

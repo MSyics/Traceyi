@@ -1,5 +1,5 @@
 ﻿/****************************************************************
-© 2017 MSyics
+© 2018 MSyics
 This software is released under the MIT License.
 http://opensource.org/licenses/mit-license.php
 ****************************************************************/
@@ -37,11 +37,11 @@ namespace MSyics.Traceyi
         /// <summary>
         /// トレースイベントを設定します。
         /// </summary>
-        public event EventHandler<TraceEventArg> OnTrace;
+        public event EventHandler<TraceEventArg> Tracing;
 
-        private void RaiseTrace(DateTime traced, TraceAction action, object message)
+        private void RaiseTracing(DateTime traced, TraceAction action, object message)
         {
-            var eh = OnTrace;
+            var eh = Tracing;
             if (eh == null) { return; }
 
             eh(this, new TraceEventArg(traced, action, message, Settings.UseMemberInfo));
@@ -55,7 +55,7 @@ namespace MSyics.Traceyi
         {
             if (Settings.Filter.Contains(TraceAction.Debug))
             {
-                RaiseTrace(DateTime.Now, TraceAction.Debug, message);
+                RaiseTracing(DateTime.Now, TraceAction.Debug, message);
             }
         }
         #endregion
@@ -68,7 +68,7 @@ namespace MSyics.Traceyi
         {
             if (Settings.Filter.Contains(TraceAction.Info))
             {
-                RaiseTrace(DateTime.Now, TraceAction.Info, message);
+                RaiseTracing(DateTime.Now, TraceAction.Info, message);
             }
         }
         #endregion
@@ -81,7 +81,7 @@ namespace MSyics.Traceyi
         {
             if (Settings.Filter.Contains(TraceAction.Warning))
             {
-                RaiseTrace(DateTime.Now, TraceAction.Warning, message);
+                RaiseTracing(DateTime.Now, TraceAction.Warning, message);
             }
         }
         #endregion
@@ -94,7 +94,7 @@ namespace MSyics.Traceyi
         {
             if (Settings.Filter.Contains(TraceAction.Error))
             {
-                RaiseTrace(DateTime.Now, TraceAction.Error, message);
+                RaiseTracing(DateTime.Now, TraceAction.Error, message);
             }
         }
         #endregion
@@ -112,14 +112,14 @@ namespace MSyics.Traceyi
 
             if (Settings.Filter.Contains(TraceAction.Start))
             {
-                RaiseTrace(operation.StartedDate, TraceAction.Start, message ?? operation.OperationId);
+                RaiseTracing(operation.StartedDate, TraceAction.Start, message ?? operation.OperationId);
             }
 
             if (Settings.Filter.Contains(TraceAction.Calling))
             {
                 var sb = new StringBuilder(Context.CurrentOperation.OperationId.ToString());
                 //Context.Operations.Skip(1).Aggregate(sb, (x, y) => x.Insert(0, y.OperationId.ToString() + ">"));
-                RaiseTrace(operation.StartedDate, TraceAction.Calling, sb);
+                RaiseTracing(operation.StartedDate, TraceAction.Calling, sb);
             }
         }
 
@@ -157,11 +157,11 @@ namespace MSyics.Traceyi
                 var stopedDateTime = DateTime.Now;
                 if (Settings.Filter.Contains(TraceAction.Elapsed))
                 {
-                    RaiseTrace(stopedDateTime, TraceAction.Elapsed, (stopedDateTime - currentOperation.StartedDate));
+                    RaiseTracing(stopedDateTime, TraceAction.Elapsed, (stopedDateTime - currentOperation.StartedDate));
                 }
                 if (Settings.Filter.Contains(TraceAction.Stop))
                 {
-                    RaiseTrace(stopedDateTime, TraceAction.Stop, message ?? currentOperation.OperationId);
+                    RaiseTracing(stopedDateTime, TraceAction.Stop, message ?? currentOperation.OperationId);
                 }
 
                 var popOperation = Context.OperationStack.Pop();

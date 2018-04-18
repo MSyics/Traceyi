@@ -1,5 +1,5 @@
 ﻿/****************************************************************
-© 2017 MSyics
+© 2018 MSyics
 This software is released under the MIT License.
 http://opensource.org/licenses/mit-license.php
 ****************************************************************/
@@ -9,37 +9,37 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace MSyics.Traceyi
+namespace MSyics.Traceyi.Listeners
 {
     /// <summary>
-    /// トレースデータをローテーションファイルに記録します。
+    /// トレースデータをファイルに記録します。
     /// </summary>
-    public class RotateFileLoggingListener : LoggingListener
+    public class FileLogger : Logger
     {
-        private object m_thisLock = new object();
+        private object LockObj { get; } = new object();
 
         /// <summary>
-        /// RotateFileLog クラスのインスタンスを初期化します。
+        /// クラスのインスタンスを初期化します。
         /// </summary>
-        public RotateFileLoggingListener(string pathLayout, ILogLayout layout)
+        public FileLogger(string pathLayout, ILogLayout layout)
         {
-            PathLayout = string.IsNullOrEmpty(pathLayout) ? Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName) + ".log" : pathLayout;
+            Path = string.IsNullOrEmpty(pathLayout) ? System.IO.Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName) + ".log" : pathLayout;
             Layout = layout;
             SetFormattedPathLayout();
         }
 
         /// <summary>
-        /// RotateFileLog クラスのインスタンスを初期化します。
+        /// クラスのインスタンスを初期化します。
         /// </summary>
-        public RotateFileLoggingListener(string pathLayout)
+        public FileLogger(string pathLayout)
             : this(pathLayout, new LogLayout())
         {
         }
 
         /// <summary>
-        /// RotateFileLog クラスのインスタンスを初期化します。
+        /// クラスのインスタンスを初期化します。
         /// </summary>
-        public RotateFileLoggingListener()
+        public FileLogger()
             : this(string.Empty)
         {
         }
@@ -53,7 +53,7 @@ namespace MSyics.Traceyi
                 new LogLayoutPart { Name = "processName", CanFormat = true },
                 new LogLayoutPart { Name = "machineName", CanFormat = true });
 
-            FormattedPathLayout = converter.Convert(PathLayout.Trim());
+            FormattedPath = converter.Convert(Path.Trim());
         }
 
         /// <summary>
@@ -63,21 +63,21 @@ namespace MSyics.Traceyi
         {
             var path = string.Format(
                 FormatProvider,
-                FormattedPathLayout,
+                FormattedPath,
                 e.Traced,
                 e.ThreadId,
                 e.ProcessId,
                 e.ProcessName,
                 e.MachineName);
 
-            if (!Path.IsPathRooted(path))
+            if (!System.IO.Path.IsPathRooted(path))
             {
-                path = Path.GetFullPath(path);
+                path = System.IO.Path.GetFullPath(path);
             }
 
             if (!StreamManager.Exists(path))
             {
-                Directory.CreateDirectory(Path.GetDirectoryName(path));
+                Directory.CreateDirectory(System.IO.Path.GetDirectoryName(path));
             }
 
             return path;
@@ -88,12 +88,12 @@ namespace MSyics.Traceyi
         /// </summary>
         public override void Write(TraceEventArg e)
         {
-            lock (m_thisLock)
+            lock (LockObj)
             {
                 var path = MakePath(e);
                 Rotate(path);
 
-                var log = new FileLoggingListener(StreamManager.AddOrUpdate(path), Encoding, Layout)
+                var log = new BasicFileLogger(StreamManager.AddOrUpdate(path), Encoding, Layout)
                 {
                     Name = Name,
                     NewLine = NewLine,
@@ -122,9 +122,9 @@ namespace MSyics.Traceyi
                 if (LeaveFiles)
                 {
                     // 指定サイズ以上になるファイルの名前を変える。
-                    var fileName = Path.GetFileNameWithoutExtension(path);
-                    var extension = Path.GetExtension(path);
-                    var directoryName = Path.GetDirectoryName(path);
+                    var fileName = System.IO.Path.GetFileNameWithoutExtension(path);
+                    var extension = System.IO.Path.GetExtension(path);
+                    var directoryName = System.IO.Path.GetDirectoryName(path);
                     var fileCount = Directory.GetFiles(directoryName, fileName + "-?*" + extension, SearchOption.TopDirectoryOnly).Count() + 1;
 
                     File.Move(path, directoryName + "\\" + fileName + "-" + fileCount + extension);
@@ -139,7 +139,7 @@ namespace MSyics.Traceyi
         /// <summary>
         /// デストラクタ
         /// </summary>
-        ~RotateFileLoggingListener()
+        ~FileLogger()
         {
             Dispose(false);
         }
@@ -169,14 +169,14 @@ namespace MSyics.Traceyi
         private IFormatProvider FormatProvider { get; set; } = new LogLayoutFormatProvider();
 
         /// <summary>
-        /// パスのレイアウトを取得します。
+        /// パスを取得します。
         /// </summary>
-        public string PathLayout { get; private set; }
+        public string Path { get; private set; }
 
         /// <summary>
         /// レイアウトからフォーマットした値を取得または設定します。
         /// </summary>
-        private string FormattedPathLayout { get; set; }
+        private string FormattedPath { get; set; }
 
         /// <summary>
         /// トレースデータの記録形式を取得または設定します。
@@ -203,6 +203,6 @@ namespace MSyics.Traceyi
         /// </summary>
         public bool LeaveFiles { get; set; }
 
-        private ReuseFileStreamManager StreamManager { get; set; } = new ReuseFileStreamManager();
+        private ReuseFileStreamManager StreamManager { get; } = new ReuseFileStreamManager();
     }
 }

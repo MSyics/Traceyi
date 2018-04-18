@@ -1,20 +1,20 @@
 ﻿/****************************************************************
-© 2017 MSyics
+© 2018 MSyics
 This software is released under the MIT License.
 http://opensource.org/licenses/mit-license.php
 ****************************************************************/
 using System;
 
-namespace MSyics.Traceyi
+namespace MSyics.Traceyi.Listeners
 {
     /// <summary>
     /// トレースデータを記録します。これは抽象クラスです。
     /// </summary>
-    public abstract class LoggingListener : IDisposable, ITraceListener
+    public abstract class Logger : IDisposable, ITraceListener
     {
         #region Static Members
-        private static readonly object m_thisLock = new object();
-        static LoggingListener() { }
+        private static object LockObj { get; } = new object();
+        static Logger() { }
         #endregion
 
         /// <summary>
@@ -27,11 +27,11 @@ namespace MSyics.Traceyi
         /// </summary>
         public string Name { get; protected internal set; }
 
-        void ITraceListener.OnTrace(object sender, TraceEventArg e)
+        void ITraceListener.OnTracing(object sender, TraceEventArg e)
         {
             if (UseGlobalLock)
             {
-                lock (LoggingListener.m_thisLock)
+                lock (Logger.LockObj)
                 {
                     Write(e);
                 }

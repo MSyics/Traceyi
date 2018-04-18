@@ -1,5 +1,5 @@
 ﻿/****************************************************************
-© 2017 MSyics
+© 2018 MSyics
 This software is released under the MIT License.
 http://opensource.org/licenses/mit-license.php
 ****************************************************************/
@@ -16,16 +16,15 @@ namespace MSyics.Traceyi
     /// </summary>
     public static class Traceable
     {
-        private static readonly object m_thisLock = new object();
-        private static Dictionary<string, Tracer> Tracers = new Dictionary<string, Tracer>();
-        private static Dictionary<string, ListenerElement> Listeners = new Dictionary<string, ListenerElement>();
-        private static Dictionary<string, Func<IConfiguration, IEnumerable<ListenerElement>>> SectionedListenersElements = new Dictionary<string, Func<IConfiguration, IEnumerable<ListenerElement>>>();
+        private static object LockObj { get; } = new object();
+        private static Dictionary<string, Tracer> Tracers { get; } = new Dictionary<string, Tracer>();
+        private static Dictionary<string, ListenerElement> Listeners { get; } = new Dictionary<string, ListenerElement>();
+        private static Dictionary<string, Func<IConfiguration, IEnumerable<ListenerElement>>> SectionedListenersElements { get; } = new Dictionary<string, Func<IConfiguration, IEnumerable<ListenerElement>>>();
 
         static Traceable()
         {
-            AddSectionedListenerElement<ConsoleLoggingListenerElement>("ConsoleLogging");
-            AddSectionedListenerElement<FileLoggingListenerElement>("FileLogging");
-            AddSectionedListenerElement<RotateFileLoggingListenerElement>("RotateFileLogging");
+            AddSectionedListenerElement<ConsoleElement>("Console");
+            AddSectionedListenerElement<FileElement>("File");
         }
 
         #region Configuration
@@ -41,6 +40,13 @@ namespace MSyics.Traceyi
             SectionedListenersElements.Add(section.ToUpper(), (config) => config.Get<List<T>>());
         }
 
+        public static void AddConfiguration(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
+        private static IConfiguration Configuration { get; set; }
+
         #endregion
 
         #region Creation
@@ -48,7 +54,7 @@ namespace MSyics.Traceyi
         /// <summary>
         /// Tracer オブジェクトを構築します。
         /// </summary>
-        public static IBuildSettings Build() => new TracerBuildable();
+        public static IBuildTracerSettings Build() => new BuildTracer();
 
         /// <summary>
         /// 構成ファイルで設定した Tracer オブジェクトを取得します。
@@ -56,7 +62,7 @@ namespace MSyics.Traceyi
         /// <param name="name">取得する Tracer オブジェクトの名前</param>
         public static Tracer Get(string name)
         {
-            lock (m_thisLock)
+            lock (LockObj)
             {
                 Tracer tracer;
                 if (!(Tracers.TryGetValue(name, out tracer)))
@@ -71,30 +77,26 @@ namespace MSyics.Traceyi
         /// <summary>
         /// 構成ファイルで設定した Default Tracer オブジェクトを取得します。
         /// </summary>
-        public static Tracer Get() => Get("Default");
+        public static Tracer Get() => Get("");
 
         private static Tracer Create(string name)
         {
-            var builder = new ConfigurationBuilder();
-
-            builder.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-                   .AddJsonFile("Traceyi.json", false, true);
-
-            var config = builder.Build();
-
-            if (!config.GetSection("Tracer").Exists()) return CreateNullTracer();
-            if (!config.GetSection("Listener").Exists()) return CreateNullTracer();
+            if (Configuration == null) return CreateNullTracer();
+            if (!Configuration.GetSection("Tracer").Exists()) return CreateNullTracer();
+            if (!Configuration.GetSection("Listener").Exists()) return CreateNullTracer();
 
             // Get Tracer Element
-            var tracerElement = config.GetSection("Tracer").Get<List<TracerElement>>().FirstOrDefault(x => x.Name.ToUpper() == name.ToUpper());
+            var tracerElement = Configuration.GetSection("Tracer")
+                                             .Get<List<TracerElement>>()
+                                             .FirstOrDefault(x => x.Name.ToUpper() == name.ToUpper());
             if (tracerElement == null) return CreateNullTracer();
 
             // Add Listener RuntimeObject
-            foreach (var listenersSection in config.GetSection("Listener").GetChildren())
+            foreach (var listenersSection in Configuration.GetSection("Listener").GetChildren())
             {
                 var listenersSectionName = listenersSection.Key.ToUpper();
                 if (!SectionedListenersElements.ContainsKey(listenersSectionName)) continue;
-                foreach (var listener in SectionedListenersElements[listenersSectionName](config.GetSection(listenersSection.Path)))
+                foreach (var listener in SectionedListenersElements[listenersSectionName](listenersSection))
                 {
                     var listenerName = listener.Name.ToUpper();
                     if (string.IsNullOrWhiteSpace(listenerName)) continue;
@@ -103,15 +105,15 @@ namespace MSyics.Traceyi
                 }
             }
 
-            return Build()
-                .Settings(x =>
-                {
-                    x.Name = name;
-                    x.Filter = tracerElement.Filter;
-                    x.UseMemberInfo = tracerElement.UseMemberInfo;
-                })
-                .Attach(Listeners.Where(x => tracerElement.Listeners.Exists(y => x.Key.ToUpper() == y.ToUpper())).Select(x => x.Value.GetRuntimeObject()).ToArray())
-                .Get();
+            return Build().Settings(x =>
+                          {
+                              x.Name = name;
+                              x.Filter = tracerElement.Filters;
+                              x.UseMemberInfo = tracerElement.UseMemberInfo;
+                          })
+                          .Attach(Listeners.Where(x => tracerElement.Listeners.Exists(y => x.Key.ToUpper() == y.ToUpper()))
+                          .Select(x => x.Value.GetRuntimeObject()).ToArray())
+                          .Get();
         }
 
         private static Tracer CreateNullTracer() => new Tracer();

@@ -1,13 +1,15 @@
 ﻿/****************************************************************
-© 2017 MSyics
+© 2018 MSyics
 This software is released under the MIT License.
 http://opensource.org/licenses/mit-license.php
 ****************************************************************/
 
+using MSyics.Traceyi.Listeners;
+
 namespace MSyics.Traceyi.Configration
 {
     /// <summary>
-    /// Listener クラスから派生するクラスを設定する要素を表します。これは抽象クラスです。
+    /// Listener 要素の基底クラスです。
     /// </summary>
     public abstract class ListenerElement
     {
@@ -15,11 +17,6 @@ namespace MSyics.Traceyi.Configration
         /// 名前を取得または設定します。
         /// </summary>
         public string Name { get; set; }
-
-        /// <summary>
-        /// グローバルロックを使用するかどうかを示す値を取得または設定します。
-        /// </summary>
-        public bool UseGlobalLock { get; set; }
 
         /// <summary>
         /// 派生クラスでオーバーライドされると実行オブジェクトを取得します。

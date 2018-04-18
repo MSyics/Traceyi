@@ -1,20 +1,22 @@
 ﻿/****************************************************************
-© 2017 MSyics
+© 2018 MSyics
 This software is released under the MIT License.
 http://opensource.org/licenses/mit-license.php
 ****************************************************************/
 
+using MSyics.Traceyi.Listeners;
+
 namespace MSyics.Traceyi.Configration
 {
     /// <summary>
-    /// rotateFile 要素を表します。
+    /// File 要素を表します。
     /// </summary>
-    public class RotateFileLoggingListenerElement : TextWriterListenerElement
+    public class FileElement : TextLoggerElement
     {
         /// <summary>
-        /// パスのレイアウトを取得または設定します。
+        /// パスを取得または設定します。
         /// </summary>
-        public string PathLayout { get; set; }
+        public string Path { get; set; }
 
         /// <summary>
         /// ファイルの書き込み上限バイト数を取得または設定します。
@@ -29,9 +31,8 @@ namespace MSyics.Traceyi.Configration
         /// <summary>
         /// 実行オブジェクトを取得します。
         /// </summary>
-        public override ITraceListener GetRuntimeObject()
-        {
-            return new RotateFileLoggingListener(PathLayout)
+        public override ITraceListener GetRuntimeObject() =>
+            new FileLogger(Path)
             {
                 Encoding = GetEncoding(),
                 Layout = Layout.GetRuntimeObject(),
@@ -41,6 +42,5 @@ namespace MSyics.Traceyi.Configration
                 MaxLength = MaxLength,
                 LeaveFiles = LeaveFiles,
             };
-        }
     }
 }
