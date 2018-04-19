@@ -5,6 +5,7 @@ http://opensource.org/licenses/mit-license.php
 ****************************************************************/
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -15,7 +16,7 @@ namespace MSyics.Traceyi
     {
         [ThreadStatic]
         private static string CurrentPath;
-        private static Dictionary<string, ReuseFileStream> Streams { get; } = new Dictionary<string, ReuseFileStream>();
+        private static ConcurrentDictionary<string, ReuseFileStream> Streams { get; } = new ConcurrentDictionary<string, ReuseFileStream>();
 
         public bool Exists(string path) => Streams.ContainsKey(path);
 
@@ -23,33 +24,21 @@ namespace MSyics.Traceyi
 
         public FileStream AddOrUpdate(string path)
         {
-            if ((!string.IsNullOrEmpty(CurrentPath)) && CurrentPath != path)
+            if ((!string.IsNullOrWhiteSpace(CurrentPath)) && CurrentPath != path)
             {
                 Remove(CurrentPath);
             }
             CurrentPath = path;
-
-            if (Streams.TryGetValue(path, out var stream))
-            {
-                stream.Position = stream.Length;
-            }
-            else
-            {
-                stream = new ReuseFileStream(path);
-                Streams[path] = stream;
-            }
-
-            return stream;
+            return Streams.GetOrAdd(path, x => new ReuseFileStream(x));
         }
 
         public void Remove(string path)
         {
             if (string.IsNullOrEmpty(path)) return;
 
-            if (Streams.TryGetValue(path, out var stream))
+            if (Streams.TryRemove(path, out var stream))
             {
                 stream.Clean();
-                Streams.Remove(path);
             }
         }
 
@@ -57,13 +46,9 @@ namespace MSyics.Traceyi
         {
             if (Streams.Count == 0) { return; }
 
-            lock (((ICollection)Streams).SyncRoot)
+            foreach (var item in Streams.ToArray())
             {
-                foreach (var item in Streams.ToArray())
-                {
-                    item.Value.Clean();
-                    Streams.Remove(item.Key);
-                }
+                Remove(item.Key);
             }
         }
 

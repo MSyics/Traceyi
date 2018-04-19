@@ -16,8 +16,6 @@ namespace MSyics.Traceyi.Listeners
     /// </summary>
     public class FileLogger : Logger
     {
-        private object LockObj { get; } = new object();
-
         /// <summary>
         /// クラスのインスタンスを初期化します。
         /// </summary>
@@ -88,21 +86,18 @@ namespace MSyics.Traceyi.Listeners
         /// </summary>
         public override void Write(TraceEventArg e)
         {
-            lock (LockObj)
-            {
-                var path = MakePath(e);
-                Rotate(path);
+            var path = MakePath(e);
+            Rotate(path);
 
-                var log = new BasicFileLogger(StreamManager.AddOrUpdate(path), Encoding, Layout)
-                {
-                    Name = Name,
-                    NewLine = NewLine,
-                    UseGlobalLock = false,
-                };
-                using (log)
-                {
-                    log.Write(e);
-                }
+            var log = new BasicFileLogger(StreamManager.AddOrUpdate(path), Encoding, Layout)
+            {
+                Name = Name,
+                NewLine = NewLine,
+                UseGlobalLock = false,
+            };
+            using (log)
+            {
+                log.Write(e);
             }
         }
 

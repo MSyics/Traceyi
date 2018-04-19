@@ -20,7 +20,7 @@ namespace MSyics.Traceyi.Listeners
         /// <summary>
         /// グローバルロックを使用するかどうか示す値を取得または設定します。
         /// </summary>
-        public bool UseGlobalLock { get; set; } = false;
+        public bool UseGlobalLock { get; set; } = true;
 
         /// <summary>
         /// 名前を取得または設定します。

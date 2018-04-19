@@ -41,18 +41,21 @@ namespace MSyics.Traceyi.Example
 
         private void Case5()
         {
-            var tasks = new Task[100000];
-            for (int i = 0; i < tasks.Length; i++)
+            using (Tracer.Scope())
             {
-                tasks[i] = Task.Run(() =>
+                var tasks = new Task[1];
+                for (int i = 0; i < tasks.Length; i++)
                 {
-                    for (int j = 0; j < 3; j++)
+                    tasks[i] = Task.Run(() =>
                     {
-                        Tracer.Information(j);
-                    }
-                });
+                        for (int j = 0; j < 3; j++)
+                        {
+                            Tracer.Information(j);
+                        }
+                    });
+                }
+                Task.WaitAll(tasks);
             }
-            Task.WaitAll(tasks);
         }
 
 

@@ -29,11 +29,11 @@
       "File": [
         {
           "Name": "file",
-          "UseGlobalLock": false,
+          "UseGlobalLock": true,
           "NewLine": "\r\n",
           "Encoding": "shift-jis",
-          "Path": "Test {threadId}.log",
-          "MaxLength": 1000000,
+          "Path": "Test1.log",
+          "MaxLength": 0,
           "LeaveFiles": true,
           "Layout": {
             "Format": "{dateTime:yyyy/MM/dd HH:mm:ss.ffffff}{tab}{message}{tab}{member}{tab}{threadId}"

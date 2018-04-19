@@ -57,7 +57,7 @@ namespace MSyics.Traceyi
         /// <summary>
         /// Tracer オブジェクトを構築します。
         /// </summary>
-        public static IBuildTracerSettings Build() => new BuildTracer();
+        public static IBuildTracerSettings Build() => new TracerCreation();
 
         /// <summary>
         /// 構成ファイルで設定した Tracer オブジェクトを取得します。

@@ -8,7 +8,7 @@ using System;
 
 namespace MSyics.Traceyi.Configration
 {
-    internal sealed class BuildTracer: IBuildTracerSettings, IBuildTraceListener, IBuildTracer
+    internal sealed class TracerCreation : IBuildTracerSettings, IBuildTraceListener, IBuildTracer
     {
         private Tracer Product { get; } = new Tracer();
 
