@@ -27,10 +27,10 @@ namespace MSyics.Traceyi.Example
             //}
 
             var pg = new Program();
-            pg.Case1();
-            pg.Case2();
-            pg.Case3();
-            pg.Case4();
+            //pg.Case1();
+            //pg.Case2();
+            //pg.Case3();
+            //pg.Case4();
             //Console.WriteLine("----");
             //pg.Case4();
             //pg.Case_();
@@ -41,12 +41,12 @@ namespace MSyics.Traceyi.Example
 
         private void Case5()
         {
-            var tasks = new Task[3];
+            var tasks = new Task[100000];
             for (int i = 0; i < tasks.Length; i++)
             {
                 tasks[i] = Task.Run(() =>
                 {
-                    for (int j = 0; j < 100; j++)
+                    for (int j = 0; j < 3; j++)
                     {
                         Tracer.Information(j);
                     }
@@ -99,7 +99,7 @@ namespace MSyics.Traceyi.Example
 
         private void Case1()
         {
-            Tracer.Information("hogehoge");
+            Tracer.Information("テスト");
             Tracer.Debug("hogehoge");
             Tracer.Warning("hogehoge");
             Tracer.Error("hogehoge");

@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using MSyics.Traceyi.Configration;
 using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Linq;
 
 namespace MSyics.Traceyi
@@ -16,9 +17,7 @@ namespace MSyics.Traceyi
     /// </summary>
     public static class Traceable
     {
-        private static object LockObj { get; } = new object();
-        private static Dictionary<string, Tracer> Tracers { get; } = new Dictionary<string, Tracer>();
-        private static Dictionary<string, ListenerElement> Listeners { get; } = new Dictionary<string, ListenerElement>();
+        private static ConcurrentDictionary<string, Tracer> Tracers { get; } = new ConcurrentDictionary<string, Tracer>();
         private static Dictionary<string, Func<IConfiguration, IEnumerable<ListenerElement>>> SectionedListenersElements { get; } = new Dictionary<string, Func<IConfiguration, IEnumerable<ListenerElement>>>();
 
         static Traceable()
@@ -43,6 +42,10 @@ namespace MSyics.Traceyi
         public static void AddConfiguration(IConfiguration configuration)
         {
             Configuration = configuration;
+            var i = Configuration.GetReloadToken();
+            i.RegisterChangeCallback(_ =>
+            {
+            }, null);
         }
 
         private static IConfiguration Configuration { get; set; }
@@ -60,60 +63,39 @@ namespace MSyics.Traceyi
         /// 構成ファイルで設定した Tracer オブジェクトを取得します。
         /// </summary>
         /// <param name="name">取得する Tracer オブジェクトの名前</param>
-        public static Tracer Get(string name)
+        public static Tracer Get(string name = "")
         {
-            lock (LockObj)
-            {
-                Tracer tracer;
-                if (!(Tracers.TryGetValue(name, out tracer)))
-                {
-                    tracer = Create(name);
-                    Tracers[name] = tracer;
-                }
-                return tracer;
-            }
+            return Tracers.GetOrAdd(name, Create(name));
         }
-
-        /// <summary>
-        /// 構成ファイルで設定した Default Tracer オブジェクトを取得します。
-        /// </summary>
-        public static Tracer Get() => Get("");
 
         private static Tracer Create(string name)
         {
             if (Configuration == null) return CreateNullTracer();
-            if (!Configuration.GetSection("Traceyi").Exists()) return CreateNullTracer();
-            if (!Configuration.GetSection("Traceyi:Tracer").Exists()) return CreateNullTracer();
-            if (!Configuration.GetSection("Traceyi:Listener").Exists()) return CreateNullTracer();
+
+            var tracerSection = Configuration.GetSection("Traceyi:Tracer");
+            if (!tracerSection.Exists()) return CreateNullTracer();
+
+            var listenerSection = Configuration.GetSection("Traceyi:Listener");
+            if (!listenerSection.Exists()) return CreateNullTracer();
 
             // Get Tracer Element
-            var tracerElement = Configuration.GetSection("Traceyi:Tracer")
-                                             .Get<List<TracerElement>>()
+            var tracerElement = tracerSection.Get<List<TracerElement>>()
                                              .FirstOrDefault(x => x.Name.ToUpper() == name.ToUpper());
             if (tracerElement == null) return CreateNullTracer();
-
             // Add Listener RuntimeObject
-            foreach (var listenersSection in Configuration.GetSection("Traceyi:Listener").GetChildren())
-            {
-                var listenersSectionName = listenersSection.Key.ToUpper();
-                if (!SectionedListenersElements.ContainsKey(listenersSectionName)) continue;
-                foreach (var listener in SectionedListenersElements[listenersSectionName](listenersSection))
-                {
-                    var listenerName = listener.Name.ToUpper();
-                    if (string.IsNullOrWhiteSpace(listenerName)) continue;
-                    if (Listeners.ContainsKey(listenerName)) continue;
-                    Listeners.Add(listenerName, listener);
-                }
-            }
-
+            var listeners = listenerSection.GetChildren()
+                                           .Where(x => SectionedListenersElements.ContainsKey(x.Key.ToUpper()))
+                                           .SelectMany(x => SectionedListenersElements[x.Key.ToUpper()](x))
+                                           .Where(x => tracerElement.Listeners.Exists(y => x.Name?.ToUpper() == y.ToUpper()))
+                                           .Select(x => x.GetRuntimeObject());
+            // Build Tracer
             return Build().Settings(x =>
                           {
                               x.Name = name;
                               x.Filter = tracerElement.Filters;
                               x.UseMemberInfo = tracerElement.UseMemberInfo;
                           })
-                          .Attach(Listeners.Where(x => tracerElement.Listeners.Exists(y => x.Key.ToUpper() == y.ToUpper()))
-                          .Select(x => x.Value.GetRuntimeObject()).ToArray())
+                          .Attach(listeners.ToArray())
                           .Get();
         }
 

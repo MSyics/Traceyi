@@ -4,6 +4,7 @@ This software is released under the MIT License.
 http://opensource.org/licenses/mit-license.php
 ****************************************************************/
 using MSyics.Traceyi.Layout;
+using System;
 using System.IO;
 using System.Text;
 
@@ -44,7 +45,18 @@ namespace MSyics.Traceyi.Listeners
         /// </summary>
         public override void Write(TraceEventArg e)
         {
-            TextWriter.WriteLine(Layout.Format(e));
+            try
+            {
+                TextWriter.WriteLine(Layout.Format(e));
+            }
+            catch (FormatException)
+            {
+                TextWriter.WriteLine($"レイアウトの書式が間違っているため書き込めません。");
+            }
+            catch (Exception ex)
+            {
+                TextWriter.WriteLine($"システム異常のため書き込めません。{NewLine}{ex}");
+            }
         }
 
         /// <summary>

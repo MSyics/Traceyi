@@ -109,8 +109,8 @@
           "NewLine": "\r\n",
           "Encoding": "shift-jis",
           "Path": "Test.log",
-          "MaxLength": "0",
-          "LeaveFiles": "true",
+          "MaxLength": 0,
+          "LeaveFiles": true,
           "Layout": {
             "Format": "{dateTime}{tab}{message}"
           }

@@ -2,10 +2,9 @@
   "Traceyi": {
     "Tracer": [
       {
-        "Name": "",
         "Filters": "All",
-        "UseMemberInfo": false,
-        "Listeners": [ "file", "console" ]
+        "UseMemberInfo": true,
+        "Listeners": [ "file", "1console" ]
       },
       {
         "Name": "a",
@@ -33,9 +32,9 @@
           "UseGlobalLock": false,
           "NewLine": "\r\n",
           "Encoding": "shift-jis",
-          "Path": "Test.log",
-          //"MaxLength": "0",
-          //"LeaveFiles": "false",
+          "Path": "Test {threadId}.log",
+          "MaxLength": 1000000,
+          "LeaveFiles": true,
           "Layout": {
             "Format": "{dateTime:yyyy/MM/dd HH:mm:ss.ffffff}{tab}{message}{tab}{member}{tab}{threadId}"
           }
