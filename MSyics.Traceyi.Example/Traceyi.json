@@ -4,7 +4,7 @@
       {
         "Filters": "All",
         "UseMemberInfo": true,
-        "Listeners": [ "file", "1console" ]
+        "Listeners": [ "file", "console" ]
       },
       {
         "Name": "a",
