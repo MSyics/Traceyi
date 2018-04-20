@@ -22,14 +22,22 @@ namespace MSyics.Traceyi
 
         public bool TryGet(string path, out ReuseFileStream stream) => Streams.TryGetValue(path, out stream);
 
-        public FileStream AddOrUpdate(string path)
+        public FileStream GetOrAdd(string path)
         {
             if ((!string.IsNullOrWhiteSpace(CurrentPath)) && CurrentPath != path)
             {
                 Remove(CurrentPath);
             }
             CurrentPath = path;
-            return Streams.GetOrAdd(path, x => new ReuseFileStream(x));
+
+            return Streams.AddOrUpdate(
+                path, 
+                new ReuseFileStream(path), 
+                (x, y) =>
+                {
+                    y.Position = y.Length;
+                    return y;
+                });
         }
 
         public void Remove(string path)

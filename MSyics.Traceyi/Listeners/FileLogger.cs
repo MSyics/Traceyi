@@ -89,7 +89,7 @@ namespace MSyics.Traceyi.Listeners
             var path = MakePath(e);
             Rotate(path);
 
-            var log = new BasicFileLogger(StreamManager.AddOrUpdate(path), Encoding, Layout)
+            var log = new BasicFileLogger(StreamManager.GetOrAdd(path), Encoding, Layout)
             {
                 Name = Name,
                 NewLine = NewLine,

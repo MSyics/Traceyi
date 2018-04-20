@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Diagnostics;
 using Microsoft.Extensions.Configuration;
+using System.Text;
 
 namespace MSyics.Traceyi.Example
 {
@@ -13,12 +14,24 @@ namespace MSyics.Traceyi.Example
     {
         static void Main(string[] args)
         {
-            var builder = new ConfigurationBuilder();
-            builder.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-                   .AddJsonFile("Traceyi.json", false, true);
-            var config = builder.Build();
-            Traceable.AddConfiguration(config);
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
+            //var builder = new ConfigurationBuilder();
+            //builder.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+            //       .AddJsonFile("Traceyi.json", false, true);
+            //var config = builder.Build();
+            //Traceable.AddConfiguration(config);
+            Traceable.Add("Traceyi.json");
+            //Traceable.Add(builder =>
+            //    builder.Settings(name: "")
+            //           .Attach(x => Console.WriteLine(x.Message)));
+
+            Traceable.Add(
+                "",
+                TraceFilters.All,
+                true,
+                    x => { Console.WriteLine(x.Message); },
+                    x => { });
             //using (var scope = TracerManager.Default.Scope())
             //{
             //    TracerManager.Default.Information(Directory.GetCurrentDirectory());
@@ -27,7 +40,7 @@ namespace MSyics.Traceyi.Example
             //}
 
             var pg = new Program();
-            //pg.Case1();
+            pg.Case1();
             //pg.Case2();
             //pg.Case3();
             //pg.Case4();
@@ -43,7 +56,7 @@ namespace MSyics.Traceyi.Example
         {
             using (Tracer.Scope())
             {
-                var tasks = new Task[1];
+                var tasks = new Task[10];
                 for (int i = 0; i < tasks.Length; i++)
                 {
                     tasks[i] = Task.Run(() =>
@@ -133,32 +146,5 @@ namespace MSyics.Traceyi.Example
                 Tracer.Start();
             }
         }
-    }
-
-    internal sealed class ReuseFileStream : FileStream
-    {
-        /// <summary>
-        /// ReuseFileStream クラスのインスタンスを初期化します。
-        /// </summary>
-        public ReuseFileStream(string path)
-            : base(path, FileMode.Append, FileAccess.Write, FileShare.Read)
-        {
-        }
-
-        /// <summary>
-        /// このメソッドの代わりに Clean メソッドを使用してください。
-        /// </summary>
-        public override void Close()
-        {
-            // StreamWriter を閉じてもストリームを閉じないようにするために、
-            // ここでは何もしません。
-        }
-
-        /// <summary>
-        /// 現在のストリームを閉じて関連付けられているリソースを解放します。
-        /// </summary>
-        public void Clean() => base.Close();
-
-        protected override void Dispose(bool disposing) => base.Dispose(disposing);
     }
 }

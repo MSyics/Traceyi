@@ -38,8 +38,6 @@ namespace MSyics.Traceyi.Configration
         /// </summary>
         protected Encoding GetEncoding()
         {
-            System.Text.Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
             if (int.TryParse(Encoding, out var codepage))
             {
                 try
