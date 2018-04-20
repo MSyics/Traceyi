@@ -15,7 +15,7 @@ namespace MSyics.Traceyi.Configration
         /// <summary>
         /// 名前を取得または設定します。
         /// </summary>
-        public string Name { get; set; }
+        public string Name { get; set; } = "";
 
         /// <summary>
         /// 派生クラスでオーバーライドされると実行オブジェクトを取得します。

@@ -5,6 +5,7 @@ http://opensource.org/licenses/mit-license.php
 ****************************************************************/
 using MSyics.Traceyi.Layout;
 using System;
+using System.Text;
 
 namespace MSyics.Traceyi.Listeners
 {
@@ -38,6 +39,17 @@ namespace MSyics.Traceyi.Listeners
         public ConsoleLogger()
             : this(false)
         {
+        }
+
+        public override Encoding Encoding
+        {
+            get => base.Encoding;
+            set
+            {
+                base.Encoding = value;
+                Console.InputEncoding = value;
+                Console.OutputEncoding = value;
+            }
         }
     }
 }

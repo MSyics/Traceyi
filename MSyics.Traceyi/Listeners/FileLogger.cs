@@ -139,28 +139,6 @@ namespace MSyics.Traceyi.Listeners
             Dispose(false);
         }
 
-        /// <summary>
-        /// アンマネージリソースを破棄します。
-        /// </summary>
-        protected override void DisposeUnmanagedResources()
-        {
-            try
-            {
-                try
-                {
-                    StreamManager?.Clear();
-                }
-                catch (Exception)
-                {
-                    // 余計な例外を潰すため
-                }
-            }
-            finally
-            {
-                base.DisposeUnmanagedResources();
-            }
-        }
-
         private IFormatProvider FormatProvider { get; set; } = new LogLayoutFormatProvider();
 
         /// <summary>
@@ -186,7 +164,7 @@ namespace MSyics.Traceyi.Listeners
         /// <summary>
         /// 文字エンコーディングを取得または設定します。
         /// </summary>
-        public Encoding Encoding { get; set; } = Encoding.UTF8;
+        public Encoding Encoding { get; set; } = Encoding.Default;
 
         /// <summary>
         /// ファイルの書き込み上限バイト数を取得または設定します。

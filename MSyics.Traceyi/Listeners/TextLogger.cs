@@ -89,11 +89,11 @@ namespace MSyics.Traceyi.Listeners
         /// <summary>
         /// ログデータのレイアウト機能を取得または設定します。
         /// </summary>
-        protected ILogLayout Layout { get; private set; }
+        public ILogLayout Layout { get; set; }
 
         /// <summary>
         /// 文字エンコーディングを取得します。
         /// </summary>
-        public Encoding Encoding => TextWriter.Encoding;
+        public virtual Encoding Encoding { get; set; } = Encoding.Default;
     }
 }

@@ -2,42 +2,61 @@
   "Traceyi": {
     "Tracer": [
       {
-        "Filters": "All",
-        "UseMemberInfo": true,
-        "Listeners": [ "file", "console" ]
+        /* DefaultTracer */
+        //"Name":  "",
+        //"Filters": "All",
+        //"UseMemberInfo": true,
+        "Listeners": [ "defaultConsole", "defaultFile" ]
       },
       {
-        "Name": "a",
-        "Filters": "All",
-        "UseMemberInfo": false,
-        "Listeners": [ "console" ]
+        "Name": "test",
+        "Listeners": [ "defaultConsole", "defaultFile" ]
+      },
+      {
+        "Name": "messageOnly",
+        "Listeners": [ "messageOnlyConsole" ]
+      },
+      {
+        "Name": "UsingCustomTraceListener",
+        "Listeners": [ "custom" ]
       }
     ],
     "Listener": {
       "Console": [
         {
-          "Name": "console",
-          "UseGlobalLock": true,
-          "NewLine": "\r\n",
-          "Encoding": "shift-jis",
-          "UseErrorStream": false,
+          "Name": "defaultConsole",
+          //"UseGlobalLock": true,
+          //"NewLine": "\r\n",
+          //"Encoding": "utf-8",
+          //"UseErrorStream": false,
+          //"Layout": {
+          //  "Format": "{dateTime:yyyy/MM/dd}{tab}{dateTime:HH:mm:ss.ffff}{tab}{action}{tab}{operationId}{tab}{activityId}{tab}{class}{tab}{member}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}"
+          //}
+        },
+        {
+          "Name": "messageOnlyConsole",
           "Layout": {
-            "Format": "{dateTime:yyyy/MM/dd}{tab}{dateTime:HH:mm:ss.ffff}{tab}{action}{tab}{operationId}{tab}{activityId}{tab}{class}{tab}{member}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}"
+            "Format": "{message}"
           }
         }
       ],
       "File": [
         {
-          "Name": "file",
+          "Name": "defaultFile",
           "UseGlobalLock": true,
-          "NewLine": "\r\n",
-          "Encoding": "shift-jis",
-          "Path": "Test1.log",
-          "MaxLength": 0,
-          "LeaveFiles": true,
-          "Layout": {
-            "Format": "{dateTime:yyyy/MM/dd HH:mm:ss.ffffff}{tab}{message}{tab}{member}{tab}{threadId}"
-          }
+          //"NewLine": "\r\n",
+          //"Encoding": "UTF-8",
+          //"Path": "",
+          //"MaxLength": 0,
+          //"LeaveFiles": true,
+          //"Layout": {
+          //  "Format": "{dateTime:yyyy/MM/dd}{tab}{dateTime:HH:mm:ss.ffff}{tab}{action}{tab}{operationId}{tab}{activityId}{tab}{class}{tab}{member}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}",
+          //}
+        }
+      ],
+      "Custom": [
+        {
+          "Name": "custom"
         }
       ]
     }

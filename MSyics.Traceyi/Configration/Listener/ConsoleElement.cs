@@ -15,7 +15,7 @@ namespace MSyics.Traceyi.Configration
         /// <summary>
         /// エラーストリームを使用するかどうかを示す値を取得または設定します。
         /// </summary>
-        public bool UseErrorStream { get; set; }
+        public bool UseErrorStream { get; set; } = false;
 
         /// <summary>
         /// 実行オブジェクトを取得します。
@@ -26,6 +26,7 @@ namespace MSyics.Traceyi.Configration
                  Name = Name,
                  NewLine = NewLine,
                  UseGlobalLock = UseGlobalLock,
+                 Encoding = GetEncoding(),
              };
     }
 }

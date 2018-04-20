@@ -25,7 +25,7 @@ namespace MSyics.Traceyi
         [ThreadStatic]
         private static TraceContext _context;
 
-        private static ConcurrentDictionary<string, Tracer> Tracers { get; } = new ConcurrentDictionary<string, Tracer>();
+        private static Dictionary<string, Tracer> Tracers { get; } = new Dictionary<string, Tracer>();
 
         /// <summary>
         /// 構成ファイルで設定した Tracer オブジェクトを取得します。
@@ -57,7 +57,7 @@ namespace MSyics.Traceyi
             {
                 tracer.Tracing += item.OnTracing;
             }
-            Tracers.AddOrUpdate(name.ToUpper(), tracer, (x, y) => tracer);
+            Tracers[name.ToUpper()] = tracer;
         }
 
         /// <summary>

@@ -40,7 +40,7 @@ namespace MSyics.Traceyi.Listeners
         /// </summary>
         /// <param name="stream">ファイル用のストリーム</param>
         public BasicFileLogger(FileStream stream)
-            : this(stream, Encoding.UTF8)
+            : this(stream, Encoding.Default)
         {
         }
 

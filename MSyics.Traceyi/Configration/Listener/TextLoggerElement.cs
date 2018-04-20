@@ -16,12 +16,12 @@ namespace MSyics.Traceyi.Configration
         /// <summary>
         /// グローバルロックを使用するかどうかを示す値を取得または設定します。
         /// </summary>
-        public bool UseGlobalLock { get; set; }
+        public bool UseGlobalLock { get; set; } = true;
 
         /// <summary>
         /// 改行文字を取得または設定します。
         /// </summary>
-        public string NewLine { get; set; }
+        public string NewLine { get; set; } = Environment.NewLine;
 
         /// <summary>
         /// 文字エンコーディングの値を取得または設定します。

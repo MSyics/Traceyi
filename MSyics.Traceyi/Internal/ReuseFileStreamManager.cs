@@ -16,7 +16,7 @@ namespace MSyics.Traceyi
     {
         [ThreadStatic]
         private static string CurrentPath;
-        private static ConcurrentDictionary<string, ReuseFileStream> Streams { get; } = new ConcurrentDictionary<string, ReuseFileStream>();
+        private static Dictionary<string, ReuseFileStream> Streams = new Dictionary<string, ReuseFileStream>();
 
         public bool Exists(string path) => Streams.ContainsKey(path);
 
@@ -24,7 +24,7 @@ namespace MSyics.Traceyi
 
         public FileStream GetOrAdd(string path)
         {
-            if ((!string.IsNullOrWhiteSpace(CurrentPath)) && CurrentPath != path)
+            if ((!string.IsNullOrEmpty(CurrentPath)) && CurrentPath != path)
             {
                 Remove(CurrentPath);
             }
@@ -39,6 +39,7 @@ namespace MSyics.Traceyi
                 stream = new ReuseFileStream(path);
                 Streams[path] = stream;
             }
+
             return stream;
         }
 
@@ -46,9 +47,10 @@ namespace MSyics.Traceyi
         {
             if (string.IsNullOrEmpty(path)) return;
 
-            if (Streams.TryRemove(path, out var stream))
+            if (Streams.TryGetValue(path, out var stream))
             {
                 stream.Clean();
+                Streams.Remove(path);
             }
         }
 
@@ -56,9 +58,13 @@ namespace MSyics.Traceyi
         {
             if (Streams.Count == 0) { return; }
 
-            foreach (var item in Streams.ToArray())
+            lock (((ICollection)Streams).SyncRoot)
             {
-                Remove(item.Key);
+                foreach (var item in Streams.ToArray())
+                {
+                    item.Value.Clean();
+                    Streams.Remove(item.Key);
+                }
             }
         }
 
