@@ -19,12 +19,16 @@
       {
         "Name": "UsingCustomTraceListener",
         "Listeners": [ "custom" ]
+      },
+      {
+        "Name": "UsingTraceMethod",
+        "Listeners": [ "action message console" ]
       }
     ],
     "Listener": {
       "Console": [
         {
-          "Name": "defaultConsole",
+          "Name": "defaultConsole"
           //"UseGlobalLock": true,
           //"NewLine": "\r\n",
           //"Encoding": "utf-8",
@@ -37,6 +41,12 @@
           "Name": "messageOnlyConsole",
           "Layout": {
             "Format": "{message}"
+          }
+        },
+        {
+          "Name": "action message console",
+          "Layout": {
+            "Format": "{action}{tab}{message}"
           }
         }
       ],

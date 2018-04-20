@@ -22,9 +22,7 @@ namespace MSyics.Traceyi.Example
             {
                 using (Tracer.Scope())
                 {
-                    Tracer.Information("hogehoge");
                     Tracer.Start();
-                    Tracer.Information("hogehoge");
                 }
             }
         }
