@@ -3,7 +3,6 @@
 This software is released under the MIT License.
 http://opensource.org/licenses/mit-license.php
 ****************************************************************/
-
 using MSyics.Traceyi.Listeners;
 
 namespace MSyics.Traceyi.Configration
@@ -29,5 +28,4 @@ namespace MSyics.Traceyi.Configration
                  UseGlobalLock = UseGlobalLock,
              };
     }
-
 }

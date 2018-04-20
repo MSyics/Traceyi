@@ -15,23 +15,23 @@ namespace MSyics.Traceyi.Example
         static void Main(string[] args)
         {
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-
+           
             //var builder = new ConfigurationBuilder();
             //builder.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
             //       .AddJsonFile("Traceyi.json", false, true);
             //var config = builder.Build();
             //Traceable.AddConfiguration(config);
             Traceable.Add("Traceyi.json");
+            //Traceable.Add(null, usable => usable.In<ConsoleElement>("console"));
             //Traceable.Add(builder =>
             //    builder.Settings(name: "")
             //           .Attach(x => Console.WriteLine(x.Message)));
-
-            Traceable.Add(
-                "",
-                TraceFilters.All,
-                true,
-                    x => { Console.WriteLine(x.Message); },
-                    x => { });
+            //Traceable.Add(
+            //    "a",
+            //    TraceFilters.All,
+            //    true,
+            //        x => { Console.WriteLine(x.Message); },
+            //        x => { });
             //using (var scope = TracerManager.Default.Scope())
             //{
             //    TracerManager.Default.Information(Directory.GetCurrentDirectory());

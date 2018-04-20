@@ -15,7 +15,7 @@ namespace MSyics.Traceyi.Layout
         /// <summary>
         /// 初期レイアウトを示す固定値です。
         /// </summary>
-        public const string DefaultLayout = "{dateTime:yyyy/MM/dd}{tab}{dateTime:HH:mm:ss.ffff}{tab}{action}{tab}{operationId}{tab}{activityId}{tab}{class}{tab}{member}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}";
+        public readonly static string DefaultLayout = "{dateTime:yyyy/MM/dd}{tab}{dateTime:HH:mm:ss.ffff}{tab}{action}{tab}{operationId}{tab}{activityId}{tab}{class}{tab}{member}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}";
 
         /// <summary>
         /// TextLayout クラスのインスタンスを初期化します。
@@ -39,21 +39,21 @@ namespace MSyics.Traceyi.Layout
             SetFormattedLayout();
 
             return string.Format(
-                    FormatProvider,
-                    FormattedLayout,
-                    "\t",
-                    NewLine,
-                    e.Traced,
-                    e.Action,
-                    e.Message,
-                    e.ActivityId,
-                    e.OperationId,
-                    e.ClassName,
-                    e.MemberName,
-                    e.ThreadId,
-                    e.ProcessId,
-                    e.ProcessName,
-                    e.MachineName);
+                FormatProvider,
+                FormattedLayout,
+                "\t",
+                NewLine,
+                e.Traced,
+                e.Action,
+                e.Message,
+                e.ActivityId,
+                e.OperationId,
+                e.ClassName,
+                e.MemberName,
+                e.ThreadId,
+                e.ProcessId,
+                e.ProcessName,
+                e.MachineName);
         }
 
         private void SetFormattedLayout()

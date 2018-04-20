@@ -3,7 +3,6 @@
 This software is released under the MIT License.
 http://opensource.org/licenses/mit-license.php
 ****************************************************************/
-
 using MSyics.Traceyi.Listeners;
 
 namespace MSyics.Traceyi.Configration
@@ -11,7 +10,7 @@ namespace MSyics.Traceyi.Configration
     /// <summary>
     /// Listener 要素の基底クラスです。
     /// </summary>
-    public abstract class ListenerElement
+    public abstract class TraceListenerElement
     {
         /// <summary>
         /// 名前を取得または設定します。

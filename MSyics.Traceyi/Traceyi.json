@@ -105,7 +105,7 @@
         // LeaveFiles  : ファイルの最大バイト数を超えたファイルを残すかどうか
         {
           "Name": "file",
-          "UseGlobalLock": false,
+          "UseGlobalLock": true,
           "NewLine": "\r\n",
           "Encoding": "shift-jis",
           "Path": "Test.log",

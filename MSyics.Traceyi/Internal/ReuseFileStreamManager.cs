@@ -30,14 +30,16 @@ namespace MSyics.Traceyi
             }
             CurrentPath = path;
 
-            return Streams.AddOrUpdate(
-                path, 
-                new ReuseFileStream(path), 
-                (x, y) =>
-                {
-                    y.Position = y.Length;
-                    return y;
-                });
+            if (Streams.TryGetValue(path, out var stream))
+            {
+                stream.Position = stream.Length;
+            }
+            else
+            {
+                stream = new ReuseFileStream(path);
+                Streams[path] = stream;
+            }
+            return stream;
         }
 
         public void Remove(string path)

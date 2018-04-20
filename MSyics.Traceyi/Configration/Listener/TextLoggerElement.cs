@@ -11,7 +11,7 @@ namespace MSyics.Traceyi.Configration
     /// <summary>
     /// Listener セクション要素の中で Logger 要素の基底クラスです。
     /// </summary>
-    public abstract class TextLoggerElement : ListenerElement
+    public abstract class TextLoggerElement : TraceListenerElement
     {
         /// <summary>
         /// グローバルロックを使用するかどうかを示す値を取得または設定します。
