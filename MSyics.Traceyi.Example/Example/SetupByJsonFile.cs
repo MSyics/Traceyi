@@ -5,7 +5,7 @@ using System.Text;
 
 namespace MSyics.Traceyi.Example
 {
-    class SetupByJsonFile : ITrecyiExample
+    class SetupByJsonFile : IExample
     {
         public Tracer Tracer { get; set; }
 

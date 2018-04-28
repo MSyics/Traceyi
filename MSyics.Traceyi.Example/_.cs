@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace MSyics.Traceyi.Example
 {
-    class _ : ITrecyiExample
+    class _ : IExample
     {
         public Tracer Tracer { get; set; }
         public Tracer Tracer2 { get; set; }

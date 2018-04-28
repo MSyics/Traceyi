@@ -6,7 +6,7 @@ using System.Text;
 
 namespace MSyics.Traceyi.Example
 {
-    class UsingScope : ITrecyiExample
+    class UsingScope : IExample
     {
         public Tracer Tracer { get; set; }
 

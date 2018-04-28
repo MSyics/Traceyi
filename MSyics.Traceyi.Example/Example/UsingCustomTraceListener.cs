@@ -7,7 +7,7 @@ using System.Text;
 
 namespace MSyics.Traceyi.Example
 {
-    class UsingCustomTraceListener : ITrecyiExample
+    class UsingCustomTraceListener : IExample
     {
         public Tracer Tracer { get; set; }
 

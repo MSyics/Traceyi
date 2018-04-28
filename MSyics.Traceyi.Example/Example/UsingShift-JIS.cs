@@ -6,7 +6,7 @@ using System.Text;
 
 namespace MSyics.Traceyi.Example
 {
-    class UsingShiftrJIS : ITrecyiExample
+    class UsingShiftrJIS : IExample
     {
         public Tracer Tracer { get; set; }
 

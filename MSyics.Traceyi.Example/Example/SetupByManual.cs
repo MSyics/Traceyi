@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MSyics.Traceyi.Example
 {
-    class SetupByManual : ITrecyiExample
+    class SetupByManual : IExample
     {
         public Tracer Tracer { get; set; }
 
