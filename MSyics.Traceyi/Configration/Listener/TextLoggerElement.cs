@@ -14,9 +14,9 @@ namespace MSyics.Traceyi.Configration
     public abstract class TextLoggerElement : TraceListenerElement
     {
         /// <summary>
-        /// グローバルロックを使用するかどうかを示す値を取得または設定します。
+        /// ロックを使用するかどうかを示す値を取得または設定します。
         /// </summary>
-        public bool UseGlobalLock { get; set; } = true;
+        public bool UseLock { get; set; } = true;
 
         /// <summary>
         /// 改行文字を取得または設定します。

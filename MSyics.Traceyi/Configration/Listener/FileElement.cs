@@ -37,7 +37,7 @@ namespace MSyics.Traceyi.Configration
                 Layout = Layout.GetRuntimeObject(),
                 Name = Name,
                 NewLine = NewLine,
-                UseGlobalLock = UseGlobalLock,
+                UseLock = UseLock,
                 MaxLength = MaxLength,
                 LeaveFiles = LeaveFiles,
             };

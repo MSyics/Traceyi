@@ -12,7 +12,7 @@ namespace MSyics.Traceyi.Listeners
     /// <summary>
     /// Trace オブジェクトのトレースイベントを処理する機能を提供します。
     /// </summary>
-    public interface ITraceListener
+    public interface ITraceListener : IDisposable
     {
         void OnTracing(object sender, TraceEventArg e);
     }

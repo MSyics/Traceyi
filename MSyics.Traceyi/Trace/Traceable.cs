@@ -9,6 +9,7 @@ using MSyics.Traceyi.Listeners;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MSyics.Traceyi
 {
@@ -24,7 +25,7 @@ namespace MSyics.Traceyi
         [ThreadStatic]
         private static TraceContext _context;
 
-        private static Dictionary<string, Tracer> Tracers { get; } = new Dictionary<string, Tracer>();
+        private static Dictionary<string, (Tracer tracer, ITraceListener[] listeners)> Tracers { get; } = new Dictionary<string, (Tracer tracer, ITraceListener[] listeners)>();
 
         /// <summary>
         /// 構成ファイルで設定した Tracer オブジェクトを取得します。
@@ -32,7 +33,16 @@ namespace MSyics.Traceyi
         /// <param name="name">取得する Tracer オブジェクトの名前</param>
         public static Tracer Get(string name = "")
         {
-            return Tracers.TryGetValue(name.ToUpper(), out var tracer) ? tracer : new Tracer();
+            return Tracers.TryGetValue(name.ToUpper(), out var x) ? x.tracer : new Tracer();
+        }
+
+        /// <summary>
+        /// 終了処理を行います。
+        /// </summary>
+        public static void Shutdown()
+        {
+            var tasks = Tracers.SelectMany(x => x.Value.listeners).Select(x => Task.Run(() => x.Dispose()));
+            Task.WaitAll(tasks.ToArray());
         }
 
         #region Configuration
@@ -56,7 +66,7 @@ namespace MSyics.Traceyi
             {
                 tracer.Tracing += item.OnTracing;
             }
-            Tracers[name.ToUpper()] = tracer;
+            Tracers[name.ToUpper()] = (tracer, listeners);
         }
 
         /// <summary>

@@ -34,6 +34,10 @@ namespace MSyics.Traceyi.Example
 
     class CustomTraceListener : ITraceListener
     {
+        public void Dispose()
+        {
+        }
+
         public void OnTracing(object sender, TraceEventArg e)
         {
             Console.WriteLine(e.Message);

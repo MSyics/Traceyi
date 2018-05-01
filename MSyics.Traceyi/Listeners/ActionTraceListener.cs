@@ -19,5 +19,10 @@ namespace MSyics.Traceyi
         }
 
         public void OnTracing(object sender, TraceEventArg e) => Listener(e);
+
+        public void Dispose()
+        {
+            Listener = null;
+        }
     }
 }

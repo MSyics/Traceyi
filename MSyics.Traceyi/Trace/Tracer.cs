@@ -3,7 +3,9 @@
 This software is released under the MIT License.
 http://opensource.org/licenses/mit-license.php
 ****************************************************************/
+using MSyics.Traceyi.Listeners;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 

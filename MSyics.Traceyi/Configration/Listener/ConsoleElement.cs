@@ -25,7 +25,7 @@ namespace MSyics.Traceyi.Configration
              {
                  Name = Name,
                  NewLine = NewLine,
-                 UseGlobalLock = UseGlobalLock,
+                 UseLock = UseLock,
                  Encoding = GetEncoding(),
              };
     }

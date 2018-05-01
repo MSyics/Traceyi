@@ -93,7 +93,7 @@ namespace MSyics.Traceyi.Listeners
             {
                 Name = Name,
                 NewLine = NewLine,
-                UseGlobalLock = false,
+                UseLock = false,
             };
             using (log)
             {
@@ -129,14 +129,6 @@ namespace MSyics.Traceyi.Listeners
                     File.Delete(path);
                 }
             }
-        }
-
-        /// <summary>
-        /// デストラクタ
-        /// </summary>
-        ~FileLogger()
-        {
-            Dispose(false);
         }
 
         private IFormatProvider FormatProvider { get; set; } = new LogLayoutFormatProvider();

@@ -19,6 +19,8 @@ namespace MSyics.Traceyi.Example
             {
                 item.Setup();
                 item.Test();
+
+                Traceable.Shutdown();
             }
         }
     }

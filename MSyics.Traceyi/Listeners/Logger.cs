@@ -20,7 +20,7 @@ namespace MSyics.Traceyi.Listeners
         /// <summary>
         /// グローバルロックを使用するかどうか示す値を取得または設定します。
         /// </summary>
-        public bool UseGlobalLock { get; set; } = true;
+        public bool UseLock { get; set; } = true;
 
         /// <summary>
         /// 名前を取得または設定します。
@@ -29,9 +29,9 @@ namespace MSyics.Traceyi.Listeners
 
         void ITraceListener.OnTracing(object sender, TraceEventArg e)
         {
-            if (UseGlobalLock)
+            if (UseLock)
             {
-                lock (Logger.LockObj)
+                lock (LockObj)
                 {
                     Write(e);
                 }
@@ -52,7 +52,7 @@ namespace MSyics.Traceyi.Listeners
         /// </summary>
         public virtual void Close()
         {
-            Dispose();
+            Dispose(true);
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace MSyics.Traceyi.Listeners
         /// </summary>
         public void Dispose()
         {
-            Dispose(true);
+            Close();
             GC.SuppressFinalize(this);
         }
 

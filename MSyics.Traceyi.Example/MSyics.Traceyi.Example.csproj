@@ -16,7 +16,7 @@
 
   <ItemGroup>
     <None Update="Traceyi.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 
