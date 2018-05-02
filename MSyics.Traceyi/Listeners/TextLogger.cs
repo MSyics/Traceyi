@@ -43,7 +43,7 @@ namespace MSyics.Traceyi.Listeners
         /// <summary>
         /// トレースデータを書き込みます。
         /// </summary>
-        public override void Write(TraceEventArg e)
+        public override void WriteCore(TraceEventArg e)
         {
             try
             {

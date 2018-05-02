@@ -23,7 +23,10 @@ namespace MSyics.Traceyi.Configration
         /// </summary>
         public bool UseAsync { get; set; } = true;
 
-        public TimeSpan CloseTimeout { get; set; } //= "-0:0:0.001";
+        /// <summary>
+        /// 終了を待機する時間間隔を取得または設定します。
+        /// </summary>
+        public TimeSpan CloseTimeout { get; set; } = TimeSpan.FromMilliseconds(-1);
 
         /// <summary>
         /// 改行文字を取得または設定します。

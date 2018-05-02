@@ -22,6 +22,11 @@ namespace MSyics.Traceyi.Example
             //Tracer2 = Traceable.Get("test");
         }
 
+        public void Shutdown()
+        {
+            Traceable.Shutdown();
+        }
+
         public void Test()
         {
             var sw = Stopwatch.StartNew();

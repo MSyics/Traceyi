@@ -13,16 +13,21 @@ namespace MSyics.Traceyi.Example
         {
             var builder = new ConfigurationBuilder();
             builder.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-                   .AddJsonFile("Traceyi.json", false, true);
+                   .AddJsonFile(@"config\setByConfiguration.json", false, true);
             var config = builder.Build();
             Traceable.Add(config);
 
-            Tracer = Traceable.Get("messageOnly");
+            Tracer = Traceable.Get();
+        }
+
+        public void Shutdown()
+        {
         }
 
         public void Test()
         {
             Tracer.Information("SetupByConfiguration");
+            Traceable.Shutdown();
         }
     }
 }

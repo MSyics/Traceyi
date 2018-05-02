@@ -84,7 +84,7 @@ namespace MSyics.Traceyi.Listeners
         /// <summary>
         /// トレースデータを書き込みます。
         /// </summary>
-        public override void Write(TraceEventArg e)
+        public override void WriteCore(TraceEventArg e)
         {
             var path = MakePath(e);
             Rotate(path);
@@ -97,7 +97,7 @@ namespace MSyics.Traceyi.Listeners
             };
             using (log)
             {
-                log.Write(e);
+                log.WriteCore(e);
             }
         }
 

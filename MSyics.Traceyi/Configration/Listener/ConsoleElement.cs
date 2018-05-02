@@ -28,7 +28,7 @@ namespace MSyics.Traceyi.Configration
                  NewLine = NewLine,
                  UseLock = UseLock,
                  UseAsync = UseAsync,
-                 CloseTimeout = CloseTimeout, // TimeSpan.Parse(CloseTimeout),
+                 CloseTimeout = CloseTimeout,
                  Encoding = GetEncoding(),
              };
     }

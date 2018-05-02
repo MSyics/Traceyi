@@ -9,5 +9,6 @@ namespace MSyics.Traceyi.Example
         Tracer Tracer { get; set; }
         void Setup();
         void Test();
+        void Shutdown();
     }
 }

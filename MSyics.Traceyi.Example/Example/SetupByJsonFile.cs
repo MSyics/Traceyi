@@ -16,6 +16,10 @@ namespace MSyics.Traceyi.Example
             Tracer = Traceable.Get("messageOnly");
         }
 
+        public void Shutdown()
+        {
+        }
+
         public void Test()
         {
             Tracer.Information("SetupByJsonFile");

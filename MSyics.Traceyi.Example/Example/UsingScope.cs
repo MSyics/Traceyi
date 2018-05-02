@@ -16,6 +16,10 @@ namespace MSyics.Traceyi.Example
             Tracer = Traceable.Get();
         }
 
+        public void Shutdown()
+        {
+        }
+
         public void Test()
         {
             using (Tracer.Scope())

@@ -18,6 +18,10 @@ namespace MSyics.Traceyi.Example
             Tracer = Traceable.Get("UsingCustomTraceListener");
         }
 
+        public void Shutdown()
+        {
+        }
+
         public void Test()
         {
             Tracer.Information("UsingCustomTraceListener");

@@ -16,6 +16,10 @@ namespace MSyics.Traceyi.Example
             Tracer = Traceable.Get("UsingTraceMethod");
         }
 
+        public void Shutdown()
+        {
+        }
+
         public void Test()
         {
             Tracer.Information("UsingTraceMethod");
