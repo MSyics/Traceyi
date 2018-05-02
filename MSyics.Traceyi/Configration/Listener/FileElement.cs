@@ -10,7 +10,7 @@ namespace MSyics.Traceyi.Configration
     /// <summary>
     /// File 要素を表します。
     /// </summary>
-    public class FileElement : TextLoggerElement
+    public class FileElement : LoggerElement
     {
         /// <summary>
         /// パスを取得または設定します。
@@ -38,6 +38,8 @@ namespace MSyics.Traceyi.Configration
                 Name = Name,
                 NewLine = NewLine,
                 UseLock = UseLock,
+                UseAsync = UseAsync,
+                CloseTimeout = CloseTimeout,
                 MaxLength = MaxLength,
                 LeaveFiles = LeaveFiles,
             };

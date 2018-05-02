@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Diagnostics;
 
 namespace MSyics.Traceyi.Example
 {
@@ -15,22 +16,25 @@ namespace MSyics.Traceyi.Example
 
         public void Setup()
         {
-            //Traceable.Add("Traceyi.json");
-            Traceable.Add("", TraceFilters.All, true, new AsyncLogger<ConsoleLogger>() { Listener = new ConsoleLogger() { UseLock = false } });
-            //Traceable.Add("", TraceFilters.All, true, new AsyncLogger<FileLogger>() { Listener = new FileLogger() { UseLock = false } });
+            Traceable.Add("test.json");
+            //Traceable.Add("", TraceFilters.All, true, new AsyncListener<ConsoleLogger>() { Listener = new ConsoleLogger() { UseLock = false } });
             Tracer = Traceable.Get();
             //Tracer2 = Traceable.Get("test");
         }
 
         public void Test()
         {
+            var sw = Stopwatch.StartNew();
             using (Tracer.Scope())
             {
-                foreach (var item in Enumerable.Range(1, 1000))
+                sw.Start();
+                foreach (var item in Enumerable.Range(1, 10000))
                 {
                     Tracer.Information(item);
                 }
+                sw.Stop();
             }
+            Console.WriteLine($"sw {sw.Elapsed}");
             return;
 
             //for (int k = 0; k < 100; k++)
@@ -46,7 +50,6 @@ namespace MSyics.Traceyi.Example
                                 for (int j = 0; j < 3; j++)
                                 {
                                     Tracer.Information($"1 {j}");
-                                    Tracer2.Information($"2 {j}");
                                 }
                             });
                         }
@@ -60,7 +63,6 @@ namespace MSyics.Traceyi.Example
                                 for (int j = 0; j < 3; j++)
                                 {
                                     Tracer.Information($"1 {j}");
-                                    Tracer2.Information($"2 {j}");
                                 }
                             });
                         }

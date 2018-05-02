@@ -1,0 +1,30 @@
+﻿{
+  "Traceyi": {
+    "Tracer": [
+      {
+        "UseMemberInfo": true,
+        "Listeners": [ "file", "console" ]
+      }
+    ],
+    "Listener": {
+      "Console": [
+        {
+          "Name": "console",
+          "UseLock": true,
+          "UseAsync": true,
+          "CloseTimeout": "00:00:01.001"
+        }
+      ],
+      "File": [
+        {
+          "Name": "file",
+          "UseLock": true,
+          "UseAsync": true,
+          "CloseTimeout": "00:00:01.001",
+          "MaxLength": 5242880,
+          "LeaveFiles": true
+        }
+      ]
+    }
+  }
+}

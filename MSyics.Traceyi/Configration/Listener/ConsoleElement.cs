@@ -4,13 +4,14 @@ This software is released under the MIT License.
 http://opensource.org/licenses/mit-license.php
 ****************************************************************/
 using MSyics.Traceyi.Listeners;
+using System;
 
 namespace MSyics.Traceyi.Configration
 {
     /// <summary>
     /// Console 要素を表します。
     /// </summary>
-    public class ConsoleElement : TextLoggerElement
+    public class ConsoleElement : LoggerElement
     {
         /// <summary>
         /// エラーストリームを使用するかどうかを示す値を取得または設定します。
@@ -26,6 +27,8 @@ namespace MSyics.Traceyi.Configration
                  Name = Name,
                  NewLine = NewLine,
                  UseLock = UseLock,
+                 UseAsync = UseAsync,
+                 CloseTimeout = CloseTimeout, // TimeSpan.Parse(CloseTimeout),
                  Encoding = GetEncoding(),
              };
     }

@@ -41,8 +41,10 @@ namespace MSyics.Traceyi
         /// </summary>
         public static void Shutdown()
         {
-            var tasks = Tracers.SelectMany(x => x.Value.listeners).Select(x => Task.Run(() => x.Dispose()));
-            Task.WaitAll(tasks.ToArray());
+            Task.WhenAll(Tracers.SelectMany(x => x.Value.listeners)
+                                .Select(x => Task.Run(() => x.Dispose()))
+                                .ToArray())
+                .Wait();
         }
 
         #region Configuration

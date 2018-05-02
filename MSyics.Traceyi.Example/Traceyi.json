@@ -6,7 +6,7 @@
         //"Name":  "",
         //"Filters": "All",
         "UseMemberInfo": true,
-        "Listeners": [ "defaultConsole", /*"defaultFile"*/ ]
+        "Listeners": [ "file", "console" ]
       },
       {
         "Name": "test",
@@ -28,8 +28,9 @@
     "Listener": {
       "Console": [
         {
-          "Name": "defaultConsole"
-          //"UseLock": true,
+          "Name": "console",
+          "UseLock": false,
+          "UseAsync": true
           //"NewLine": "\r\n",
           //"Encoding": "utf-8",
           //"UseErrorStream": false,
@@ -52,8 +53,9 @@
       ],
       "File": [
         {
-          "Name": "defaultFile",
+          "Name": "file",
           "UseLock": true,
+          "UseAsync":  true
           //"NewLine": "\r\n",
           //"Encoding": "UTF-8",
           //"Path": "",
@@ -62,13 +64,6 @@
           //"Layout": {
           //  "Format": "{dateTime:yyyy/MM/dd}{tab}{dateTime:HH:mm:ss.ffff}{tab}{action}{tab}{operationId}{tab}{activityId}{tab}{class}{tab}{member}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}",
           //}
-        }
-      ],
-      "Async": [
-        {
-          "Name": "",
-          "UseLock": true,
-          "Listeners": [ "console" ]
         }
       ],
       "Custom": [

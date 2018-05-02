@@ -4,6 +4,8 @@ This software is released under the MIT License.
 http://opensource.org/licenses/mit-license.php
 ****************************************************************/
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MSyics.Traceyi.Listeners
 {
@@ -13,9 +15,11 @@ namespace MSyics.Traceyi.Listeners
     public abstract class Logger : IDisposable, ITraceListener
     {
         #region Static Members
-        private static object LockObj { get; } = new object();
-        static Logger() { }
+        private static Lazy<object> GlobalLock = new Lazy<object>(() => new object(), true);
+        private static Lazy<AsyncLock> AsyncLock = new Lazy<AsyncLock>(() => new AsyncLock(), true);
         #endregion
+
+        private long WritingCount = 0;
 
         /// <summary>
         /// グローバルロックを使用するかどうか示す値を取得または設定します。
@@ -23,22 +27,49 @@ namespace MSyics.Traceyi.Listeners
         public bool UseLock { get; set; } = true;
 
         /// <summary>
+        /// 非同期 I/O または同期 I/O のどちらを使用するかを示す値を取得または設定します。
+        /// </summary>
+        public bool UseAsync { get; set; } = true;
+
+        public TimeSpan CloseTimeout { get; set; } = TimeSpan.FromMilliseconds(-1);
+
+        private CancellationTokenSource TokenSource = new CancellationTokenSource();
+
+        /// <summary>
         /// 名前を取得または設定します。
         /// </summary>
         public string Name { get; protected internal set; }
 
-        void ITraceListener.OnTracing(object sender, TraceEventArg e)
+        async void ITraceListener.OnTracing(object sender, TraceEventArg e)
         {
-            if (UseLock)
+            if (UseAsync)
             {
-                lock (LockObj)
+                Interlocked.Increment(ref WritingCount);
+                if (UseLock)
                 {
-                    Write(e);
+                    using (await AsyncLock.Value.LockAsync())
+                    {
+                        if (TokenSource.Token.IsCancellationRequested) return;
+                        await Task.Run(() => Write(e), TokenSource.Token);
+                    }
                 }
+                else
+                {
+                    if (TokenSource.Token.IsCancellationRequested) return;
+                    await Task.Run(() => Write(e), TokenSource.Token);
+                }
+                Interlocked.Decrement(ref WritingCount);
             }
             else
             {
-                Write(e);
+                if (UseLock)
+                {
+                    lock (GlobalLock.Value) { Write(e); }
+                }
+                else
+                {
+                    Write(e);
+                }
             }
         }
 
@@ -50,9 +81,17 @@ namespace MSyics.Traceyi.Listeners
         /// <summary>
         /// 使用しているリソースを閉じます。
         /// </summary>
-        public virtual void Close()
+        public void Close()
         {
             Dispose(true);
+
+            Task.Run(() =>
+            {
+                while (WritingCount != 0) { }
+            }).Wait(CloseTimeout);
+            TokenSource.Cancel(false);
+
+            GC.SuppressFinalize(this);
         }
 
         /// <summary>
@@ -63,26 +102,14 @@ namespace MSyics.Traceyi.Listeners
         /// <summary>
         /// 使用しているリソースを破棄します。
         /// </summary>
-        public void Dispose()
-        {
-            Close();
-            GC.SuppressFinalize(this);
-        }
+        public void Dispose() => Close();
 
-        /// <summary>
-        /// 使用するリソースをすべて破棄します。
-        /// </summary>
-        protected virtual void Dispose(bool disposing)
+        private void Dispose(bool disposing)
         {
             if (!IsDisposed)
             {
                 IsDisposed = true;
-
-                if (disposing)
-                {
-                    DisposeManagedResources();
-                }
-
+                if (disposing) { DisposeManagedResources(); }
                 DisposeUnmanagedResources();
             }
         }

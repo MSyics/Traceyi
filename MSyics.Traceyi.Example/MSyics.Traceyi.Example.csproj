@@ -15,6 +15,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="test.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Traceyi.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -11,12 +11,19 @@ namespace MSyics.Traceyi.Configration
     /// <summary>
     /// Listener セクション要素の中で Logger 要素の基底クラスです。
     /// </summary>
-    public abstract class TextLoggerElement : TraceListenerElement
+    public abstract class LoggerElement : TraceListenerElement
     {
         /// <summary>
         /// ロックを使用するかどうかを示す値を取得または設定します。
         /// </summary>
         public bool UseLock { get; set; } = true;
+
+        /// <summary>
+        /// 非同期 I/O または同期 I/O のどちらを使用するかを示す値を取得または設定します。
+        /// </summary>
+        public bool UseAsync { get; set; } = true;
+
+        public TimeSpan CloseTimeout { get; set; } //= "-0:0:0.001";
 
         /// <summary>
         /// 改行文字を取得または設定します。
