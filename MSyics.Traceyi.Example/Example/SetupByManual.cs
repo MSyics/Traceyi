@@ -21,6 +21,7 @@ namespace MSyics.Traceyi.Example
 
         public void Shutdown()
         {
+            Traceable.Shutdown();
         }
 
         public void Test()

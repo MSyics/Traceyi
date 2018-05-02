@@ -125,11 +125,10 @@ namespace MSyics.Traceyi.Listeners
         /// </summary>
         public void Dispose()
         {
-            Dispose(true);
-
             Task.Run(() => { while (AsyncWriteCount != 0) { } }).Wait(CloseTimeout);
             CTS.Cancel(false);
 
+            Dispose(true);
             GC.SuppressFinalize(this);
         }
 

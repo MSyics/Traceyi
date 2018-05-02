@@ -42,6 +42,12 @@ namespace MSyics.Traceyi.Listeners
         {
         }
 
+        protected override void DisposeManagedResources()
+        {
+            base.DisposeManagedResources();
+            StreamManager.Clear();
+        }
+
         private void SetFormattedPathLayout()
         {
             var converter = new LogLayoutConverter(

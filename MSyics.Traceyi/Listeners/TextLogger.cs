@@ -40,6 +40,12 @@ namespace MSyics.Traceyi.Listeners
         {
         }
 
+        protected override void DisposeManagedResources()
+        {
+            base.DisposeManagedResources();
+            TextWriter.Dispose();
+        }
+
         /// <summary>
         /// トレースデータを書き込みます。
         /// </summary>

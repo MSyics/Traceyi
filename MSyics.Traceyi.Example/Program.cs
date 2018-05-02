@@ -6,16 +6,14 @@ namespace MSyics.Traceyi.Example
         static void Main(string[] args)
         {
             new Program()
-                //.Add<SetupByManual>()
-                //.Add<SetupByConfiguration>()
-                //.Add<SetupByJsonFile>()
-                //.Add<UsingTraceMethod>()
-                //.Add<UsingShiftrJIS>()
-                //.Add<UsingCustomTraceListener>()
-                //.Add<UsingScope>()
-
-                .Add<_>()
-
+                .Add<SetupByManual>()
+                .Add<SetupByConfiguration>()
+                .Add<SetupByJsonFile>()
+                .Add<UsingCustomTraceListener>()
+                .Add<UsingTraceMethod>()
+                .Add<UsingShiftrJIS>()
+                .Add<UsingScope>()
+                
                 .Test();
         }
     }

@@ -13,7 +13,7 @@ namespace MSyics.Traceyi.Example
         {
             var builder = new ConfigurationBuilder();
             builder.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-                   .AddJsonFile(@"config\setByConfiguration.json", false, true);
+                   .AddJsonFile(@"config\settings.json", false, true);
             var config = builder.Build();
             Traceable.Add(config);
 
@@ -22,12 +22,12 @@ namespace MSyics.Traceyi.Example
 
         public void Shutdown()
         {
+            Traceable.Shutdown();
         }
 
         public void Test()
         {
             Tracer.Information("SetupByConfiguration");
-            Traceable.Shutdown();
         }
     }
 }

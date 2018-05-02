@@ -1,0 +1,16 @@
+﻿{
+  "Traceyi": {
+    "Tracer": [
+      {
+        "Listeners": [ "custom" ]
+      }
+    ],
+    "Listener": {
+      "Custom": [
+        {
+          "Name": "custom"
+        }
+      ]
+    }
+  }
+}

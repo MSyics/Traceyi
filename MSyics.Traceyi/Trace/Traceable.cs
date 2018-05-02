@@ -18,23 +18,18 @@ namespace MSyics.Traceyi
     /// </summary>
     public static class Traceable
     {
-        /// <summary>
-        /// トレース基本情報を取得します。
-        /// </summary>
-        internal static TraceContext Context => _context ?? (_context = new TraceContext());
         [ThreadStatic]
-        private static TraceContext _context;
+        private static TraceContext ThreadContext;
+        private readonly static Dictionary<string, (Tracer tracer, ITraceListener[] listeners)> Tracers = new Dictionary<string, (Tracer tracer, ITraceListener[] listeners)>();
+        private readonly static TraceListenerElementConfiguration TraceListenerElementConfiguration = new TraceListenerElementConfiguration();
 
-        private static Dictionary<string, (Tracer tracer, ITraceListener[] listeners)> Tracers { get; } = new Dictionary<string, (Tracer tracer, ITraceListener[] listeners)>();
+        internal static TraceContext Context => ThreadContext ?? (ThreadContext = new TraceContext());
 
         /// <summary>
         /// 構成ファイルで設定した Tracer オブジェクトを取得します。
         /// </summary>
         /// <param name="name">取得する Tracer オブジェクトの名前</param>
-        public static Tracer Get(string name = "")
-        {
-            return Tracers.TryGetValue(name.ToUpper(), out var x) ? x.tracer : new Tracer();
-        }
+        public static Tracer Get(string name = "") => Tracers.TryGetValue(name.ToUpper(), out var x) ? x.tracer : new Tracer();
 
         /// <summary>
         /// 終了処理を行います。
@@ -45,11 +40,10 @@ namespace MSyics.Traceyi
                                 .Select(x => Task.Run(() => x.Dispose()))
                                 .ToArray())
                 .Wait();
+            Tracers.Clear();
         }
 
         #region Configuration
-
-        private static TraceListenerElementConfiguration TraceListenerElementConfiguration { get; } = new TraceListenerElementConfiguration();
 
         /// <summary>
         /// Tracer オブジェクトを登録します。
@@ -60,10 +54,12 @@ namespace MSyics.Traceyi
         /// <param name="listeners">トレース情報のリスナー</param>
         public static void Add(string name = "", TraceFilters filters = TraceFilters.All, bool useMemberInfo = true, params ITraceListener[] listeners)
         {
-            var tracer = new Tracer();
-            tracer.Name = name;
-            tracer.Filters = filters;
-            tracer.UseMemberInfo = useMemberInfo;
+            var tracer = new Tracer
+            {
+                Name = name,
+                Filters = filters,
+                UseMemberInfo = useMemberInfo
+            };
             foreach (var item in listeners)
             {
                 tracer.Tracing += item.OnTracing;

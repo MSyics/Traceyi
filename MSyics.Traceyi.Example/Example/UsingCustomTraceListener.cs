@@ -13,13 +13,14 @@ namespace MSyics.Traceyi.Example
 
         public void Setup()
         {
-            Traceable.Add("Traceyi.json", usable => usable.In<CustomElement>("Custom"));
+            Traceable.Add(@"config\custom.json", usable => usable.In<CustomElement>("Custom"));
 
-            Tracer = Traceable.Get("UsingCustomTraceListener");
+            Tracer = Traceable.Get();
         }
 
         public void Shutdown()
         {
+            Traceable.Shutdown();
         }
 
         public void Test()
