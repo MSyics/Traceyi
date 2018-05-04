@@ -12,7 +12,7 @@
           "Name": "console",
           "UseLock": true,
           "UseAsync": true,
-          "CloseTimeout": "00:00:00.101"
+          "CloseTimeout": "00:00:10.101"
         }
       ],
       "File": [

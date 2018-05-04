@@ -13,6 +13,8 @@ namespace MSyics.Traceyi.Example
                 .Add<UsingTraceMethod>()
                 .Add<UsingShiftrJIS>()
                 .Add<UsingScope>()
+
+                .Add<_>()
                 
                 .Test();
         }

@@ -41,6 +41,34 @@ namespace MSyics.Traceyi.Listeners
         {
         }
 
+        public override void WriteCore(TraceEventArg e)
+        {
+            var color = Console.ForegroundColor;
+            switch (e.Action)
+            {
+                case TraceAction.Debug:
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    break;
+                case TraceAction.Warning:
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    break;
+                case TraceAction.Error:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    break;
+                case TraceAction.Start:
+                case TraceAction.Calling:
+                case TraceAction.Elapsed:
+                case TraceAction.Stop:
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    break;
+                case TraceAction.Info:
+                default:
+                    break;
+            }
+            base.WriteCore(e);
+            Console.ForegroundColor = color;
+        }
+
         public override Encoding Encoding
         {
             get => base.Encoding;
