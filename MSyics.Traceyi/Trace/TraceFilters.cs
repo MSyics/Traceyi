@@ -49,14 +49,9 @@ namespace MSyics.Traceyi
         Error = 0x20,
 
         /// <summary>
-        /// 実行中の操作
-        /// </summary>
-        Calling = 0x40,
-
-        /// <summary>
         /// 経過時間
         /// </summary>
-        Elapsed = 0x80,
+        Elapsed = 0x40,
 
         /// <summary>
         /// Info | Start | Stop | Warning | Error
@@ -66,6 +61,6 @@ namespace MSyics.Traceyi
         /// <summary>
         /// すべて
         /// </summary>
-        All = Debug | Actions | Calling | Elapsed,
+        All = Debug | Actions | Elapsed,
     }
 }

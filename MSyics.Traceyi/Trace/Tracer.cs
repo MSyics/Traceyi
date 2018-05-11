@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Linq;
 
 namespace MSyics.Traceyi
 {
@@ -121,7 +122,8 @@ namespace MSyics.Traceyi
         {
             var operation = new TraceOperation()
             {
-                OperationId = operationId ?? $"{new String('+', Context.OperationStack.Count)}", //TraceUtility.GetOperationId(),
+                //OperationId = operationId ?? $"{new String('+', Context.OperationStack.Count)}", //TraceUtility.GetOperationId(),
+                OperationId = operationId ?? Context.OperationStack.Count,
                 ScopeId = scopeId,
                 StartedDate = DateTime.Now,
             };
@@ -129,14 +131,7 @@ namespace MSyics.Traceyi
 
             if (Filters.Contains(TraceAction.Start))
             {
-                RaiseTracing(operation.StartedDate, TraceAction.Start, message ?? operation.OperationId);
-            }
-
-            if (Filters.Contains(TraceAction.Calling))
-            {
-                var sb = new StringBuilder(Context.CurrentOperation.OperationId.ToString());
-                //Context.Operations.Skip(1).Aggregate(sb, (x, y) => x.Insert(0, y.OperationId.ToString() + ">"));
-                RaiseTracing(operation.StartedDate, TraceAction.Calling, sb);
+                RaiseTracing(operation.StartedDate, TraceAction.Start, message);
             }
         }
 
@@ -178,7 +173,7 @@ namespace MSyics.Traceyi
                 }
                 if (Filters.Contains(TraceAction.Stop))
                 {
-                    RaiseTracing(stopedDateTime, TraceAction.Stop, message ?? currentOperation.OperationId);
+                    RaiseTracing(stopedDateTime, TraceAction.Stop, message);
                 }
 
                 var popOperation = Context.OperationStack.Pop();

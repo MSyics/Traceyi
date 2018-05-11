@@ -19,7 +19,7 @@ namespace MSyics.Traceyi.Listeners
         private static Lazy<AsyncLock> AsyncLock = new Lazy<AsyncLock>(() => new AsyncLock(), true);
         #endregion
 
-        private CancellationTokenSource CTS = new CancellationTokenSource();
+        private CancellationTokenSource Cancellation = new CancellationTokenSource();
         private long AsyncWriteCount = 0;
 
         /// <summary>
@@ -49,7 +49,7 @@ namespace MSyics.Traceyi.Listeners
         {
             if (UseAsync)
             {
-                if (CTS.IsCancellationRequested) return;
+                if (Cancellation.IsCancellationRequested) return;
                 try
                 {
                     await WriteAsync(e);
@@ -69,7 +69,7 @@ namespace MSyics.Traceyi.Listeners
         /// </summary>
         public async Task WriteAsync(TraceEventArg e)
         {
-            if (CTS.IsCancellationRequested) return;
+            if (Cancellation.IsCancellationRequested) return;
             try
             {
                 Interlocked.Increment(ref AsyncWriteCount);
@@ -78,14 +78,14 @@ namespace MSyics.Traceyi.Listeners
                 {
                     using (await AsyncLock.Value.LockAsync())
                     {
-                        if (CTS.IsCancellationRequested) return;
-                        await Task.Run(() => WriteCore(e), CTS.Token);
+                        if (Cancellation.IsCancellationRequested) return;
+                        await Task.Run(() => WriteCore(e), Cancellation.Token);
                     }
                 }
                 else
                 {
-                    if (CTS.IsCancellationRequested) return;
-                    await Task.Run(() => WriteCore(e), CTS.Token);
+                    if (Cancellation.IsCancellationRequested) return;
+                    await Task.Run(() => WriteCore(e), Cancellation.Token);
                 }
 
             }
@@ -126,7 +126,7 @@ namespace MSyics.Traceyi.Listeners
         public void Dispose()
         {
             Task.Run(() => { while (AsyncWriteCount != 0) { } }).Wait(CloseTimeout);
-            CTS.Cancel(false);
+            Cancellation.Cancel(false);
 
             Dispose(true);
             GC.SuppressFinalize(this);

@@ -14,6 +14,8 @@ namespace MSyics.Traceyi.Example
                 .Add<UsingShiftrJIS>()
                 .Add<UsingScope>()
 
+                //.Add<_>()
+
                 .Test();
         }
     }

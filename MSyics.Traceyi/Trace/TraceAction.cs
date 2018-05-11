@@ -42,11 +42,6 @@ namespace MSyics.Traceyi
         Error,
 
         /// <summary>
-        /// 実行中の操作
-        /// </summary>
-        Calling,
-
-        /// <summary>
         /// 経過時間
         /// </summary>
         Elapsed,

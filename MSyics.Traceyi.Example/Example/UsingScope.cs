@@ -23,12 +23,34 @@ namespace MSyics.Traceyi.Example
 
         public void Test()
         {
+            Tracer.Context.ActivityId = 100;
+            using (Tracer.Scope(1))
+            {
+                Hoge();
+            }
+        }
+
+        private void Hoge()
+        {
+            using (Tracer.Scope(2))
+            {
+                Piyo();
+            }
+        }
+
+        private void Piyo()
+        {
+            using (Tracer.Scope(3))
+            {
+                Fuga();
+            }
+        }
+
+        private void Fuga()
+        {
             using (Tracer.Scope())
             {
-                using (Tracer.Scope())
-                {
-                    Tracer.Start();
-                }
+                Tracer.Information("fugafuga");
             }
         }
     }

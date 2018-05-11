@@ -16,7 +16,7 @@ namespace MSyics.Traceyi.Example
 
         public void Setup()
         {
-            Traceable.Add("test.json");
+            Traceable.Add(@"config\test.json");
             //Traceable.Add("", TraceFilters.All, true, new AsyncListener<ConsoleLogger>() { Listener = new ConsoleLogger() { UseLock = false } });
             Tracer = Traceable.Get();
             //Tracer2 = Traceable.Get("test");
@@ -29,37 +29,40 @@ namespace MSyics.Traceyi.Example
 
         public void Test()
         {
-            var sw = Stopwatch.StartNew();
-            using (Tracer.Scope())
-            {
-                sw.Start();
-                foreach (var item in Enumerable.Range(1, 10000))
-                {
-                    Tracer.Information(item);
-                }
-                sw.Stop();
-            }
-            Console.WriteLine($"sw {sw.Elapsed}");
-            return;
+            //var sw = Stopwatch.StartNew();
+            //using (Tracer.Scope())
+            //{
+            //    sw.Start();
+            //    foreach (var item in Enumerable.Range(1, 10000))
+            //    {
+            //        Tracer.Information(item);
+            //    }
+            //    sw.Stop();
+            //}
+            //Console.WriteLine($"sw {sw.Elapsed}");
+            //return;
 
-            //for (int k = 0; k < 100; k++)
+            for (int k = 0; k < 10; k++)
             {
                 using (Tracer.Scope())
                 {
-                    var tasks = new Task[1000];
+                    var tasks = new Task[10];
                     {
                         for (int i = 0; i < tasks.Length; i++)
                         {
                             tasks[i] = Task.Run(() =>
                             {
-                                for (int j = 0; j < 3; j++)
+                                using (Tracer.Scope())
                                 {
-                                    Tracer.Information($"1 {j}");
+                                    for (int j = 0; j < 3; j++)
+                                    {
+                                        Tracer.Information($"1 {j}");
+                                    }
                                 }
                             });
                         }
                     }
-                    var tasks2 = new Task[1000];
+                    var tasks2 = new Task[10];
                     {
                         for (int i = 0; i < tasks2.Length; i++)
                         {

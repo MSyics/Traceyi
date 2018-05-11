@@ -47,19 +47,18 @@ namespace MSyics.Traceyi.Listeners
             switch (e.Action)
             {
                 case TraceAction.Debug:
-                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.ForegroundColor = ConsoleColor.DarkGreen;
                     break;
                 case TraceAction.Warning:
-                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.ForegroundColor = ConsoleColor.DarkYellow;
                     break;
                 case TraceAction.Error:
-                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.ForegroundColor = ConsoleColor.DarkRed;
                     break;
                 case TraceAction.Start:
-                case TraceAction.Calling:
-                case TraceAction.Elapsed:
                 case TraceAction.Stop:
-                    Console.ForegroundColor = ConsoleColor.Blue;
+                case TraceAction.Elapsed:
+                    Console.ForegroundColor = ConsoleColor.DarkCyan;
                     break;
                 case TraceAction.Info:
                 default:

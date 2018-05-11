@@ -73,7 +73,7 @@ namespace MSyics.Traceyi
         /// <param name="name">名前</param>
         /// <param name="filters">選別するトレース動作</param>
         /// <param name="useMemberInfo">クラスメンバー情報を取得するかどうかを示す値</param>
-        /// <param name="listeners">トレース情報のリスナー/param>
+        /// <param name="listeners">トレース情報のリスナー</param>
         public static void Add(string name = "", TraceFilters filters = TraceFilters.All, bool useMemberInfo = true, params Action<TraceEventArg>[] listeners)
         {
             Add(name, filters, useMemberInfo, listeners.Select(x => new ActionTraceListener(x)).ToArray());

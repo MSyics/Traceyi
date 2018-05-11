@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <SignAssembly>false</SignAssembly>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>2.4.0</Version>
+    <Version>2.5.0</Version>
     <PackageId>Traceyi</PackageId>
     <Authors>MSyics</Authors>
     <Company>MSyics</Company>
@@ -16,6 +16,11 @@
     <Description>Traceyi is an asynchronous logging library for .NET Standard 2.0.</Description>
     <Platforms>AnyCPU;x64</Platforms>
     <PackageTags>logging trace log async</PackageTags>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>bin\Release\netstandard2.0\MSyics.Traceyi.xml</DocumentationFile>
+    <NoWarn>1701;1702;1705,1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
