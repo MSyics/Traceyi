@@ -106,7 +106,8 @@ namespace MSyics.Traceyi
                       .Where(x => TraceListenerElementConfiguration.ContainsKey(x.Name))
                       .SelectMany(x => TraceListenerElementConfiguration[x.Name](x.Value))
                       .Where(x => te.Listeners.Exists(y => x.Name?.ToUpper() == y.ToUpper()))
-                      .Select(x => x.GetRuntimeObject()).ToArray());
+                      .Select(x => x.GetRuntimeObject())
+                      .ToArray());
             }
         }
 
