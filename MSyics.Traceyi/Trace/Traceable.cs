@@ -31,10 +31,9 @@ namespace MSyics.Traceyi
         /// </summary>
         public static void Shutdown()
         {
-            Task.WhenAll(Tracers.SelectMany(x => x.Value.listeners)
+            Task.WaitAll(Tracers.SelectMany(x => x.Value.listeners)
                                 .Select(x => Task.Run(() => x.Dispose()))
-                                .ToArray())
-                .Wait();
+                                .ToArray());
             Tracers.Clear();
         }
 

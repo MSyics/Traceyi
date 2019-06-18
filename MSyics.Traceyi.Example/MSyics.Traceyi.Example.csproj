@@ -19,9 +19,6 @@
     <None Update="config\custom.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="config\hoge.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="config\settings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

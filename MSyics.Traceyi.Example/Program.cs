@@ -5,7 +5,7 @@ namespace MSyics.Traceyi.Example
 {
     class Program : ExampleAggregator
     {
-        static async Task Main(string[] args)
+        static void Main(string[] args)
         {
             new Program()
                 //.Add<SetupByManual>()
@@ -14,14 +14,9 @@ namespace MSyics.Traceyi.Example
                 //.Add<UsingCustomTraceListener>()
                 //.Add<UsingTraceMethod>()
                 //.Add<UsingShiftrJIS>()
-                //.Add<UsingScope>()
-                //.Add<UsingScope2>()
-                .Add<Class1>()
-
+                .Add<UsingScope>()
 
                 .Show();
-
-            await Task.CompletedTask;
         }
     }
 }
