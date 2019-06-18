@@ -9,6 +9,8 @@ namespace MSyics.Traceyi.Example
     {
         public Tracer Tracer { get; set; }
 
+        public string Name => nameof(SetupByJsonFile);
+
         public void Setup()
         {
             Traceable.Add(@"config\settings.json");
@@ -16,14 +18,14 @@ namespace MSyics.Traceyi.Example
             Tracer = Traceable.Get();
         }
 
-        public void Shutdown()
-        {
-            Traceable.Shutdown();
-        }
-
-        public void Test()
+        public void Show()
         {
             Tracer.Information("SetupByJsonFile");
+        }
+
+        public void Teardown()
+        {
+            Traceable.Shutdown();
         }
     }
 }

@@ -11,6 +11,8 @@ namespace MSyics.Traceyi.Example
     {
         public Tracer Tracer { get; set; }
 
+        public string Name => nameof(UsingCustomTraceListener);
+
         public void Setup()
         {
             Traceable.Add(@"config\custom.json", usable => usable.In<CustomElement>("Custom"));
@@ -18,14 +20,14 @@ namespace MSyics.Traceyi.Example
             Tracer = Traceable.Get();
         }
 
-        public void Shutdown()
-        {
-            Traceable.Shutdown();
-        }
-
-        public void Test()
+        public void Show()
         {
             Tracer.Information("UsingCustomTraceListener");
+        }
+
+        public void Teardown()
+        {
+            Traceable.Shutdown();
         }
     }
 

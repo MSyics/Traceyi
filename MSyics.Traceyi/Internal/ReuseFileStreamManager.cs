@@ -1,9 +1,4 @@
-﻿/****************************************************************
-© 2018 MSyics
-This software is released under the MIT License.
-http://opensource.org/licenses/mit-license.php
-****************************************************************/
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +10,7 @@ namespace MSyics.Traceyi
     {
         [ThreadStatic]
         private static string CurrentPath;
-        private static Dictionary<string, ReuseFileStream> Streams = new Dictionary<string, ReuseFileStream>();
+        private static readonly Dictionary<string, ReuseFileStream> Streams = new Dictionary<string, ReuseFileStream>();
 
         public bool Exists(string path) => Streams.ContainsKey(path);
 

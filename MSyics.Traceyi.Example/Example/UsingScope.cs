@@ -10,18 +10,15 @@ namespace MSyics.Traceyi.Example
     {
         public Tracer Tracer { get; set; }
 
+        public string Name => nameof(UsingScope);
+
         public void Setup()
         {
             Traceable.Add(@"config\settings.json");
             Tracer = Traceable.Get();
         }
 
-        public void Shutdown()
-        {
-            Traceable.Shutdown();
-        }
-
-        public void Test()
+        public void Show()
         {
             Tracer.Context.ActivityId = 100;
             using (Tracer.Scope(1))
@@ -52,6 +49,11 @@ namespace MSyics.Traceyi.Example
             {
                 Tracer.Information("fugafuga");
             }
+        }
+
+        public void Teardown()
+        {
+            Traceable.Shutdown();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 
 namespace MSyics.Traceyi.Example
@@ -9,10 +10,12 @@ namespace MSyics.Traceyi.Example
     {
         public Tracer Tracer { get; set; }
 
+        public string Name => nameof(SetupByConfiguration);
+
         public void Setup()
         {
             var builder = new ConfigurationBuilder();
-            builder.SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+            builder.SetBasePath(Directory.GetCurrentDirectory())
                    .AddJsonFile(@"config\settings.json", false, true);
             var config = builder.Build();
             Traceable.Add(config);
@@ -20,14 +23,14 @@ namespace MSyics.Traceyi.Example
             Tracer = Traceable.Get();
         }
 
-        public void Shutdown()
-        {
-            Traceable.Shutdown();
-        }
-
-        public void Test()
+        public void Show()
         {
             Tracer.Information("SetupByConfiguration");
+        }
+
+        public void Teardown()
+        {
+            Traceable.Shutdown();
         }
     }
 }

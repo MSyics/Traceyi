@@ -1,9 +1,4 @@
-﻿/****************************************************************
-© 2018 MSyics
-This software is released under the MIT License.
-http://opensource.org/licenses/mit-license.php
-****************************************************************/
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Threading;
 
@@ -14,9 +9,9 @@ namespace MSyics.Traceyi
     /// </summary>
     public sealed class TraceEventArg : EventArgs
     {
-        private static int m_processId;
-        private static string m_processName;
-        private static string m_machineName = Environment.MachineName;
+        private static readonly int m_processId;
+        private static readonly string m_processName;
+        private static readonly string m_machineName = Environment.MachineName;
 
         static TraceEventArg()
         {

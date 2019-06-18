@@ -1,9 +1,4 @@
-﻿/****************************************************************
-© 2018 MSyics
-This software is released under the MIT License.
-http://opensource.org/licenses/mit-license.php
-****************************************************************/
-using MSyics.Traceyi.Listeners;
+﻿using MSyics.Traceyi.Listeners;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -122,8 +117,8 @@ namespace MSyics.Traceyi
         {
             var operation = new TraceOperation()
             {
+                OperationId = operationId ?? $"{TraceUtility.GetOperationId()}__{scopeId}",
                 //OperationId = operationId ?? $"{new String('+', Context.OperationStack.Count)}", //TraceUtility.GetOperationId(),
-                OperationId = operationId ?? Context.OperationStack.Count,
                 ScopeId = scopeId,
                 StartedDate = DateTime.Now,
             };

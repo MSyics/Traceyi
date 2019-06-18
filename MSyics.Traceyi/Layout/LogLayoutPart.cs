@@ -1,10 +1,4 @@
-﻿/****************************************************************
-© 2018 MSyics
-This software is released under the MIT License.
-http://opensource.org/licenses/mit-license.php
-****************************************************************/
-
-namespace MSyics.Traceyi.Layout
+﻿namespace MSyics.Traceyi.Layout
 {
     /// <summary>
     /// ログの記録項目を表します。

@@ -10,6 +10,8 @@ namespace MSyics.Traceyi.Example
     {
         public Tracer Tracer { get; set; }
 
+        public string Name => nameof(UsingShiftrJIS);
+
         public void Setup()
         {
             // Install-Package System.Text.Encoding.CodePages
@@ -25,14 +27,14 @@ namespace MSyics.Traceyi.Example
             Tracer = Traceable.Get();
         }
 
-        public void Shutdown()
-        {
-            Traceable.Shutdown();
-        }
-
-        public void Test()
+        public void Show()
         {
             Tracer.Information("UsingShiftJIS ほげほげ");
+        }
+
+        public void Teardown()
+        {
+            Traceable.Shutdown();
         }
     }
 }

@@ -8,6 +8,8 @@ namespace MSyics.Traceyi.Example
     {
         public Tracer Tracer { get; set; }
 
+        public string Name => nameof(SetupByManual);
+
         public void Setup()
         {
             Traceable.Add(
@@ -19,14 +21,14 @@ namespace MSyics.Traceyi.Example
             Tracer = Traceable.Get("SetupByManual");
         }
 
-        public void Shutdown()
-        {
-            Traceable.Shutdown();
-        }
-
-        public void Test()
+        public void Show()
         {
             Tracer.Information("SetupByManual");
+        }
+
+        public void Teardown()
+        {
+            Traceable.Shutdown();
         }
     }
 }

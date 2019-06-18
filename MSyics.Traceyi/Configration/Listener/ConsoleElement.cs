@@ -1,10 +1,4 @@
-﻿/****************************************************************
-© 2018 MSyics
-This software is released under the MIT License.
-http://opensource.org/licenses/mit-license.php
-****************************************************************/
-using MSyics.Traceyi.Listeners;
-using System;
+﻿using MSyics.Traceyi.Listeners;
 
 namespace MSyics.Traceyi.Configration
 {

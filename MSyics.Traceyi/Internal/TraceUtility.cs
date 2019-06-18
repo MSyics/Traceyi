@@ -1,9 +1,4 @@
-﻿/****************************************************************
-© 2018 MSyics
-This software is released under the MIT License.
-http://opensource.org/licenses/mit-license.php
-****************************************************************/
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -28,7 +23,7 @@ namespace MSyics.Traceyi
             return stack.GetFrames()
                         .Reverse()
                         .Select(x => x.GetMethod())
-                        .TakeWhile(x => !TraceUtility.LibraryTypes.Any(y => y.Equals(x.ReflectedType)))
+                        .TakeWhile(x => !LibraryTypes.Any(y => y.Equals(x.ReflectedType)))
                         .Last();
         }
 
@@ -43,7 +38,7 @@ namespace MSyics.Traceyi
             var method = stack.GetFrames()
                               .Reverse()
                               .Select(x => x.GetMethod())
-                              .TakeWhile(x => !TraceUtility.LibraryTypes.Any(y => y.Equals(x.ReflectedType)))
+                              .TakeWhile(x => !LibraryTypes.Any(y => y.Equals(x.ReflectedType)))
                               .Last();
             return $"{method.ReflectedType.FullName}.{method.Name}";
         }
