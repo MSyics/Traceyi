@@ -3,6 +3,8 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MSyics.Traceyi.Listeners
 {
@@ -85,21 +87,27 @@ namespace MSyics.Traceyi.Listeners
         /// <summary>
         /// トレースデータを書き込みます。
         /// </summary>
-        public override void WriteCore(TraceEventArg e)
+        protected internal override void WriteCore(TraceEventArg e)
         {
             var path = MakePath(e);
-            Rotate(path);
-
-            var log = new BasicFileLogger(StreamManager.GetOrAdd(path), Encoding, Layout)
+            //try
             {
-                Name = Name,
-                NewLine = NewLine,
-                UseLock = false,
-            };
-            using (log)
-            {
-                log.WriteCore(e);
+                Rotate(path);
+                var log = new BasicFileLogger(StreamManager.GetOrAdd(path), Encoding, Layout)
+                {
+                    Name = Name,
+                    NewLine = NewLine,
+                    UseLock = false,
+                };
+                using (log)
+                {
+                    log.WriteCore(e);
+                }
             }
+            //catch (Exception)
+            //{
+            //    return;
+            //}
         }
 
         /// <summary>
@@ -108,27 +116,24 @@ namespace MSyics.Traceyi.Listeners
         private void Rotate(string path)
         {
             if (MaxLength <= 0) { return; }
-
             if (!StreamManager.TryGet(path, out var stream)) { return; }
             if (MaxLength >= stream.Length) { return; }
+            if (!File.Exists(path)) { return; }
 
-            if (File.Exists(path))
+            StreamManager.Remove(path);
+            if (LeaveFiles)
             {
-                StreamManager.Remove(path);
-                if (LeaveFiles)
-                {
-                    // 指定サイズ以上になるファイルの名前を変える。
-                    var fileName = System.IO.Path.GetFileNameWithoutExtension(path);
-                    var extension = System.IO.Path.GetExtension(path);
-                    var directoryName = System.IO.Path.GetDirectoryName(path);
-                    var fileCount = Directory.GetFiles(directoryName, fileName + "-?*" + extension, SearchOption.TopDirectoryOnly).Count() + 1;
+                // 指定サイズ以上になるファイルの名前を変える。
+                var fileName = System.IO.Path.GetFileNameWithoutExtension(path);
+                var extension = System.IO.Path.GetExtension(path);
+                var directoryName = System.IO.Path.GetDirectoryName(path);
+                var fileCount = Directory.GetFiles(directoryName, fileName + "-?*" + extension, SearchOption.TopDirectoryOnly).Count() + 1;
 
-                    File.Move(path, directoryName + "\\" + fileName + "-" + fileCount + extension);
-                }
-                else
-                {
-                    File.Delete(path);
-                }
+                File.Move(path, directoryName + "\\" + fileName + "-" + fileCount + extension);
+            }
+            else
+            {
+                File.Delete(path);
             }
         }
 

@@ -2,6 +2,8 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MSyics.Traceyi.Listeners
 {
@@ -44,7 +46,7 @@ namespace MSyics.Traceyi.Listeners
         /// <summary>
         /// トレースデータを書き込みます。
         /// </summary>
-        public override void WriteCore(TraceEventArg e)
+        protected internal override void WriteCore(TraceEventArg e)
         {
             try
             {
@@ -63,7 +65,7 @@ namespace MSyics.Traceyi.Listeners
         }
 
         /// <summary>
-        /// ライターのすべてのバッファーをクリアし、基になるデバイスに書き込みます。
+        /// ライターのすべてのバッファーをクリアして基になるデバイスに書き込みます。
         /// </summary>
         public virtual void Flush() => TextWriter.Flush();
 

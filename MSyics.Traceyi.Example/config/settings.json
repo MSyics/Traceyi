@@ -2,13 +2,31 @@
   "Traceyi": {
     "Tracer": [
       {
-        "Listeners": [ "console" ]
+        "Listeners": [ "console", "file" ],
+        "Filters": "Elapsed",
+        "UseMemberInfo": false
       }
     ],
     "Listener": {
       "Console": [
         {
-          "Name": "console"
+          "Name": "console",
+          "UseLock": true,
+          "UseAsync": true
+        }
+      ],
+      "File": [
+        {
+          "Name": "file",
+          "UseLock": true,
+          "UseAsync": true,
+          "CloseTimeout": "01:00:01.001",
+          "MaxLength": 5242880,
+          "LeaveFiles": false,
+          "Layout": {
+            "Format": "{message}"
+          },
+          "Path": "app.log"
         }
       ]
     }

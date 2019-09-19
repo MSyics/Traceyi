@@ -14,7 +14,8 @@ namespace MSyics.Traceyi.Example
                 //.Add<UsingCustomTraceListener>()
                 //.Add<UsingTraceMethod>()
                 //.Add<UsingShiftrJIS>()
-                .Add<UsingScope>()
+                //.Add<UsingScope>()
+                .Add<UsingAsync>()
 
                 .Show();
         }

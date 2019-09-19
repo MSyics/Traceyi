@@ -37,13 +37,15 @@
         // コンソールに出力する
         // ................................................................
         // Name           : 要素の名前
-        // UseGlobalLock  : グローバルロックをかけるかどうか（省略：false）
+        // UseLock        : ロックをかけるかどうか（省略：false）
+        // UseAsync       : 非同期 I/O または同期 I/O のどちらを使用するか（省略：false）
         // NewLine        : 改行文字（省略：\r\n）
         // Encoding       : エンコーディング（省略：UTF-8）
         // UseErrorStream : エラーストリームを使用するかどうか（省略：false）
         {
           "Name": "console",
-          "UseGlobalLock": true,
+          "UseLock": true,
+          "UseAsync": false,
           "NewLine": "\r\n",
           "Encoding": "shift-jis",
           "UseErrorStream": false,
@@ -105,11 +107,13 @@
         // LeaveFiles  : ファイルの最大バイト数を超えたファイルを残すかどうか
         {
           "Name": "file",
-          "UseGlobalLock": true,
+          "UseLock": true,
+          "UseAsync": true,
           "NewLine": "\r\n",
           "Encoding": "shift-jis",
           "Path": "Test.log",
           "MaxLength": 0,
+          "TempLength": 1048576,
           "LeaveFiles": true,
           "Layout": {
             "Format": "{dateTime}{tab}{message}"

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -10,15 +12,16 @@ namespace MSyics.Traceyi.Listeners
     public abstract class Logger : IDisposable, ITraceListener
     {
         #region Static Members
-        private static object GlobalLock = new object();
-        private static Lazy<AsyncLock> AsyncLock = new Lazy<AsyncLock>(() => new AsyncLock(), true);
+        private static readonly object GlobalLock = new object();
+        private static readonly Lazy<AsyncLock> AsyncLock = new Lazy<AsyncLock>(() => new AsyncLock(), true);
         #endregion
 
-        private CancellationTokenSource Cancellation = new CancellationTokenSource();
-        private long AsyncWriteCount = 0;
+        private readonly CancellationTokenSource Cancellation = new CancellationTokenSource();
+        private readonly ConcurrentQueue<TraceEventArg> TraceEventQueue = new ConcurrentQueue<TraceEventArg>();
+        private long Dequeuing = 0;
 
         /// <summary>
-        /// グローバルロックを使用するかどうか示す値を取得または設定します。
+        /// ロックを使用するかどうかを示す値を取得または設定します。
         /// </summary>
         public bool UseLock { get; set; } = true;
 
@@ -40,14 +43,14 @@ namespace MSyics.Traceyi.Listeners
         /// <summary>
         /// トレースイベントを処理します。
         /// </summary>
-        public async void OnTracing(object sender, TraceEventArg e)
+        public void OnTracing(object sender, TraceEventArg e)
         {
             if (UseAsync)
             {
                 if (Cancellation.IsCancellationRequested) return;
                 try
                 {
-                    await WriteAsync(e);
+                    _ = WriteAsync(e);
                 }
                 catch (TaskCanceledException)
                 {
@@ -56,37 +59,6 @@ namespace MSyics.Traceyi.Listeners
             else
             {
                 Write(e);
-            }
-        }
-
-        /// <summary>
-        /// トレースイベント情報を書き込みます。
-        /// </summary>
-        public async Task WriteAsync(TraceEventArg e)
-        {
-            if (Cancellation.IsCancellationRequested) return;
-            try
-            {
-                Interlocked.Increment(ref AsyncWriteCount);
-
-                if (UseLock)
-                {
-                    using (await AsyncLock.Value.LockAsync())
-                    {
-                        if (Cancellation.IsCancellationRequested) return;
-                        await Task.Run(() => WriteCore(e), Cancellation.Token);
-                    }
-                }
-                else
-                {
-                    if (Cancellation.IsCancellationRequested) return;
-                    await Task.Run(() => WriteCore(e), Cancellation.Token);
-                }
-
-            }
-            finally
-            {
-                Interlocked.Decrement(ref AsyncWriteCount);
             }
         }
 
@@ -106,22 +78,51 @@ namespace MSyics.Traceyi.Listeners
         }
 
         /// <summary>
+        /// トレースイベント情報を書き込みます。
+        /// </summary>
+        public async Task WriteAsync(TraceEventArg e)
+        {
+            if (Cancellation.IsCancellationRequested) return;
+
+            TraceEventQueue.Enqueue(e);
+
+            if (Interlocked.CompareExchange(ref Dequeuing, 1, 0) != 0) return;
+            try
+            {
+                await Task.Run(() =>
+                {
+                    while (TraceEventQueue.TryDequeue(out var traceEvent) && !Cancellation.IsCancellationRequested)
+                    {
+                        Write(traceEvent);
+                    }
+                });
+            }
+            finally
+            {
+                Interlocked.Exchange(ref Dequeuing, 0);
+            }
+        }
+
+        /// <summary>
         /// トレースデータを書き込みます。
         /// </summary>
-        public abstract void WriteCore(TraceEventArg e);
+        protected internal abstract void WriteCore(TraceEventArg e);
 
         /// <summary>
         /// リソースを破棄したかどうかを示す値を取得します。
         /// </summary>
-        public bool IsDisposed { get; private set; } = false;
+        public bool Disposed { get; private set; } = false;
 
         /// <summary>
         /// 使用しているリソースを破棄します。
         /// </summary>
         public void Dispose()
         {
-            Task.Run(() => { while (AsyncWriteCount != 0) { } }).Wait(CloseTimeout);
+            //Task.Run(() => { while (AsyncWriteCount != 0) { } }).Wait(CloseTimeout);
+
+            Task.Run(() => { while (TraceEventQueue.Count != 0) ; }).Wait(CloseTimeout);
             Cancellation.Cancel(false);
+            Cancellation.Dispose();
 
             Dispose(true);
             GC.SuppressFinalize(this);
@@ -129,9 +130,9 @@ namespace MSyics.Traceyi.Listeners
 
         private void Dispose(bool disposing)
         {
-            if (!IsDisposed)
+            if (!Disposed)
             {
-                IsDisposed = true;
+                Disposed = true;
                 if (disposing) { DisposeManagedResources(); }
                 DisposeUnmanagedResources();
             }

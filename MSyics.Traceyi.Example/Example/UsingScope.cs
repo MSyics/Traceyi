@@ -22,8 +22,18 @@ namespace MSyics.Traceyi.Example
         {
             Tracer.Context.ActivityId = 100;
             using (Tracer.Scope(1))
+
+
             {
-                Hoge();
+                try
+                {
+                    Hoge();
+                }
+                catch (Exception e)
+                {
+
+                    Tracer.Error(e);
+                }
             }
         }
 
@@ -48,6 +58,8 @@ namespace MSyics.Traceyi.Example
             using (Tracer.Scope())
             {
                 Tracer.Information("fugafuga");
+
+                //throw new ApplicationException("hogehoge");
             }
         }
 

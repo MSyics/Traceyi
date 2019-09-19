@@ -1,6 +1,8 @@
 ﻿using MSyics.Traceyi.Layout;
 using System;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace MSyics.Traceyi.Listeners
 {
@@ -9,6 +11,10 @@ namespace MSyics.Traceyi.Listeners
     /// </summary>
     public class ConsoleLogger : TextLogger
     {
+        #region Static Members
+        private static readonly Lazy<AsyncLock> AsyncLock = new Lazy<AsyncLock>(() => new AsyncLock(), true);
+        #endregion
+
         /// <summary>
         /// クラスのインスタンスを初期化します。
         /// </summary>
@@ -36,10 +42,17 @@ namespace MSyics.Traceyi.Listeners
         {
         }
 
-        public override void WriteCore(TraceEventArg e)
+        protected internal override void WriteCore(TraceEventArg e)
         {
-            var color = Console.ForegroundColor;
-            switch (e.Action)
+            SetConsoleColor(e.Action, out var color);
+            base.WriteCore(e);
+            Console.ForegroundColor = color;
+        }
+
+        private void SetConsoleColor(TraceAction traceAction, out ConsoleColor undoColor)
+        {
+            undoColor = Console.ForegroundColor;
+            switch (traceAction)
             {
                 case TraceAction.Debug:
                     Console.ForegroundColor = ConsoleColor.DarkGreen;
@@ -59,8 +72,6 @@ namespace MSyics.Traceyi.Listeners
                 default:
                     break;
             }
-            base.WriteCore(e);
-            Console.ForegroundColor = color;
         }
 
         public override Encoding Encoding

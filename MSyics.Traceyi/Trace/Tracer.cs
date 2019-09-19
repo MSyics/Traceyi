@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace MSyics.Traceyi
 {
@@ -52,13 +53,8 @@ namespace MSyics.Traceyi
         /// </summary>
         public event EventHandler<TraceEventArg> Tracing;
 
-        private void RaiseTracing(DateTime traced, TraceAction action, object message)
-        {
-            var eh = Tracing;
-            if (eh == null) { return; }
-
-            eh(this, new TraceEventArg(traced, action, message, UseMemberInfo));
-        }
+        private void RaiseTracing(DateTime traced, TraceAction action, object message) =>
+            Tracing?.Invoke(this, new TraceEventArg(traced, action, message, UseMemberInfo));
 
         #region Debug
         /// <summary>
@@ -133,18 +129,12 @@ namespace MSyics.Traceyi
         /// <summary>
         /// 操作の開始メッセージを残します。
         /// </summary>
-        public void Start(object message)
-        {
-            Start(null, message, Guid.Empty);
-        }
+        public void Start(object message) => Start(null, message, Guid.Empty);
 
         /// <summary>
         /// 操作の開始メッセージを残します。
         /// </summary>
-        public void Start()
-        {
-            Start(null, null, Guid.Empty);
-        }
+        public void Start() => Start(null, null, Guid.Empty);
         #endregion
 
         #region Stop
@@ -179,18 +169,12 @@ namespace MSyics.Traceyi
         /// <summary>
         /// 操作の終了メッセージを残します。
         /// </summary>
-        public void Stop(object message)
-        {
-            Stop(message, Guid.Empty);
-        }
+        public void Stop(object message) => Stop(message, Guid.Empty);
 
         /// <summary>
         /// 操作の終了メッセージを残します。
         /// </summary>
-        public void Stop()
-        {
-            Stop(null, Guid.Empty);
-        }
+        public void Stop() => Stop(null, Guid.Empty);
         #endregion
     }
 }

@@ -49,5 +49,10 @@ namespace MSyics.Traceyi.Example
         {
             Console.WriteLine(e.Message);
         }
+
+        public void OnTracing(TraceEventArg e)
+        {
+            Console.WriteLine(e.Message);
+        }
     }
 }
