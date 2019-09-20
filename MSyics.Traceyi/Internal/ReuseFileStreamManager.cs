@@ -39,8 +39,7 @@ namespace MSyics.Traceyi
 
         public void Remove(string path)
         {
-            if (string.IsNullOrEmpty(path)) return;
-
+            if (string.IsNullOrEmpty(path)) { return; }
             if (Streams.TryGetValue(path, out var stream))
             {
                 stream.Clean();
@@ -51,7 +50,6 @@ namespace MSyics.Traceyi
         public void Clear()
         {
             if (Streams.Count == 0) { return; }
-
             lock (((ICollection)Streams).SyncRoot)
             {
                 foreach (var item in Streams.ToArray())
@@ -62,10 +60,6 @@ namespace MSyics.Traceyi
             }
         }
 
-        public ReuseFileStream this[string path]
-        {
-            get { return Streams[path]; }
-            set { Streams[path] = value; }
-        }
+        public ReuseFileStream this[string path] { get => Streams[path]; set => Streams[path] = value; }
     }
 }

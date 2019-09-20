@@ -14,7 +14,7 @@ namespace MSyics.Traceyi.Example
 
         public void Setup()
         {
-            Traceable.Add(@"config\settings.json");
+            Traceable.Add(@"example\UsingScope\traceyi.json");
             Tracer = Traceable.Get();
         }
 
@@ -22,18 +22,8 @@ namespace MSyics.Traceyi.Example
         {
             Tracer.Context.ActivityId = 100;
             using (Tracer.Scope(1))
-
-
             {
-                try
-                {
-                    Hoge();
-                }
-                catch (Exception e)
-                {
-
-                    Tracer.Error(e);
-                }
+                Hoge();
             }
         }
 
@@ -58,8 +48,6 @@ namespace MSyics.Traceyi.Example
             using (Tracer.Scope())
             {
                 Tracer.Information("fugafuga");
-
-                //throw new ApplicationException("hogehoge");
             }
         }
 

@@ -11,10 +11,6 @@ namespace MSyics.Traceyi.Listeners
     /// </summary>
     public class ConsoleLogger : TextLogger
     {
-        #region Static Members
-        private static readonly Lazy<AsyncLock> AsyncLock = new Lazy<AsyncLock>(() => new AsyncLock(), true);
-        #endregion
-
         /// <summary>
         /// クラスのインスタンスを初期化します。
         /// </summary>
@@ -54,6 +50,7 @@ namespace MSyics.Traceyi.Listeners
             undoColor = Console.ForegroundColor;
             switch (traceAction)
             {
+                case TraceAction.Trace:
                 case TraceAction.Debug:
                     Console.ForegroundColor = ConsoleColor.DarkGreen;
                     break;
@@ -61,6 +58,7 @@ namespace MSyics.Traceyi.Listeners
                     Console.ForegroundColor = ConsoleColor.DarkYellow;
                     break;
                 case TraceAction.Error:
+                case TraceAction.Critical:
                     Console.ForegroundColor = ConsoleColor.DarkRed;
                     break;
                 case TraceAction.Start:

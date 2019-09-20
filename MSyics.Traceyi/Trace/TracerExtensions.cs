@@ -23,20 +23,46 @@ namespace MSyics.Traceyi
         /// <summary>
         /// 指定したフィルターに動作が含まれているかどうかを判定します。
         /// </summary>
-        /// <param name="filter">トレースフィルター</param>
+        /// <param name="filters">トレースフィルター</param>
         /// <param name="action">トレース動作</param>
         /// <returns>含まれている場合は true、それ以外の場合は false。</returns>
-        internal static bool Contains(this TraceFilters filter, TraceAction action)
+        internal static bool Contains(this TraceFilters filters, TraceAction action)
         {
-            try
+            TraceFilters filter;
+            switch (action)
             {
-                var actions = (TraceFilters)Enum.Parse(typeof(TraceFilters), action.ToString());
-                return (actions & filter) == actions;
+                case TraceAction.Trace:
+                    filter = TraceFilters.Trace;
+                    break;
+                case TraceAction.Debug:
+                    filter = TraceFilters.Debug;
+                    break;
+                case TraceAction.Info:
+                    filter = TraceFilters.Info;
+                    break;
+                case TraceAction.Warning:
+                    filter = TraceFilters.Warning;
+                    break;
+                case TraceAction.Error:
+                    filter = TraceFilters.Error;
+                    break;
+                case TraceAction.Critical:
+                    filter = TraceFilters.Critical;
+                    break;
+                case TraceAction.Start:
+                    filter = TraceFilters.Start;
+                    break;
+                case TraceAction.Stop:
+                    filter = TraceFilters.Stop;
+                    break;
+                case TraceAction.Elapsed:
+                    filter = TraceFilters.Elapsed;
+                    break;
+                default:
+                    filter = TraceFilters.None;
+                    break;
             }
-            catch (Exception)
-            {
-                return false;
-            }
+            return (filter & filters) == filter;
         }
     }
 }

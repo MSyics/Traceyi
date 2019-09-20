@@ -20,11 +20,12 @@ namespace MSyics.Traceyi
         {
             var stack = new StackTrace(false);
             if (stack.FrameCount == 0) { return null; }
-            return stack.GetFrames()
-                        .Reverse()
-                        .Select(x => x.GetMethod())
-                        .TakeWhile(x => !LibraryTypes.Any(y => y.Equals(x.ReflectedType)))
-                        .Last();
+            return stack.
+                GetFrames().
+                Reverse().
+                Select(x => x.GetMethod()).
+                TakeWhile(x => !LibraryTypes.Any(y => y.Equals(x.ReflectedType))).
+                Last();
         }
 
         /// <summary>
@@ -35,11 +36,12 @@ namespace MSyics.Traceyi
         {
             var stack = new StackTrace(false);
             if (stack.FrameCount == 0) { return string.Empty; }
-            var method = stack.GetFrames()
-                              .Reverse()
-                              .Select(x => x.GetMethod())
-                              .TakeWhile(x => !LibraryTypes.Any(y => y.Equals(x.ReflectedType)))
-                              .Last();
+            var method = stack.
+                GetFrames().
+                Reverse().
+                Select(x => x.GetMethod()).
+                TakeWhile(x => !LibraryTypes.Any(y => y.Equals(x.ReflectedType))).
+                Last();
             return $"{method.ReflectedType.FullName}.{method.Name}";
         }
     }

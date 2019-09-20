@@ -31,18 +31,16 @@ namespace MSyics.Traceyi
             Target = target;
             Target.Start(null, null, Id);
         }
-      
+
         #region IDisposable Members
         /// <summary>
         /// トレースのコードブロックから脱退します。
         /// </summary>
         public void Dispose()
         {
-            if (!_disposed)
-            {
-                Target.Stop(null, Id);
-                _disposed = true;
-            }
+            if (_disposed) { return; }
+            Target.Stop(null, Id);
+            _disposed = true;
         }
         private bool _disposed = false;
         #endregion // End IDisposable Members

@@ -1,0 +1,20 @@
+﻿{
+  "Traceyi": {
+    "Tracer": [
+      {
+        "Listeners": [ "console" ],
+        "Filters": "all",
+        "UseMemberInfo": true
+      }
+    ],
+    "Listener": {
+      "Console": [
+        {
+          "Name": "console",
+          "UseLock": true,
+          "UseAsync": false
+        }
+      ]
+    }
+  }
+}

@@ -90,5 +90,10 @@ namespace MSyics.Traceyi
         /// マシン名を取得します。
         /// </summary>
         public string MachineName { get; } = m_machineName;
+
+        public override string ToString()
+        {
+            return $"{Traced}\t{Action}\t{OperationId}\t{ActivityId}\t{ClassName}\t{MemberName}\t{ThreadId}\t{ProcessId}\t{ProcessName}\t{MachineName}\t{Message}";
+        }
     }
 }

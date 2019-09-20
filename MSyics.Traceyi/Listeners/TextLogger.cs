@@ -51,7 +51,7 @@ namespace MSyics.Traceyi.Listeners
             try
             {
                 var line = Layout.Format(e);
-                if(string.IsNullOrEmpty(line)) { return; }
+                if (string.IsNullOrEmpty(line)) { return; }
                 TextWriter.WriteLine(line);
             }
             catch (FormatException)
@@ -74,7 +74,7 @@ namespace MSyics.Traceyi.Listeners
         /// </summary>
         public string NewLine
         {
-            get { return TextWriter.NewLine; }
+            get => TextWriter.NewLine;
             set
             {
                 TextWriter.NewLine = value;

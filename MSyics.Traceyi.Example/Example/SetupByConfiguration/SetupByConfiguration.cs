@@ -14,18 +14,19 @@ namespace MSyics.Traceyi.Example
 
         public void Setup()
         {
-            var builder = new ConfigurationBuilder();
-            builder.SetBasePath(Directory.GetCurrentDirectory())
-                   .AddJsonFile(@"config\settings.json", false, true);
-            var config = builder.Build();
-            Traceable.Add(config);
-
+            Traceable.Add(
+                new ConfigurationBuilder().
+                SetBasePath(Directory.GetCurrentDirectory()).
+                AddJsonFile(@"Example\SetupByConfiguration\traceyi.json", false, true).Build());
             Tracer = Traceable.Get();
         }
 
         public void Show()
         {
-            Tracer.Information("SetupByConfiguration");
+            using (Tracer.Scope())
+            {
+                Tracer.Information(Name);
+            }
         }
 
         public void Teardown()

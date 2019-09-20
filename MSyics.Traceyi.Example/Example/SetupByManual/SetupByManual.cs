@@ -13,17 +13,20 @@ namespace MSyics.Traceyi.Example
         public void Setup()
         {
             Traceable.Add(
-                name: "SetupByManual",
+                name: Name,
                 filters: TraceFilters.All,
-                useMemberInfo: false,
-                listeners: x => Console.WriteLine(x.Message));
+                useMemberInfo: true,
+                listeners: x => Console.WriteLine(x));
 
-            Tracer = Traceable.Get("SetupByManual");
+            Tracer = Traceable.Get(Name);
         }
 
         public void Show()
         {
-            Tracer.Information("SetupByManual");
+            using (Tracer.Scope())
+            {
+                Tracer.Information(Name);
+            }
         }
 
         public void Teardown()

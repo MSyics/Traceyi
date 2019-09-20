@@ -13,19 +13,6 @@ namespace MSyics.Traceyi
     /// </summary>
     public sealed class Tracer
     {
-        private static int ProcessId { get; set; }
-        private static string ProcessName { get; set; }
-        private static string MachineName { get; } = Environment.MachineName;
-
-        static Tracer()
-        {
-            using (var process = Process.GetCurrentProcess())
-            {
-                ProcessId = process.Id;
-                ProcessName = process.ProcessName;
-            }
-        }
-
         internal Tracer() { }
 
         /// <summary>
@@ -55,6 +42,19 @@ namespace MSyics.Traceyi
 
         private void RaiseTracing(DateTime traced, TraceAction action, object message) =>
             Tracing?.Invoke(this, new TraceEventArg(traced, action, message, UseMemberInfo));
+
+        #region Trace
+        /// <summary>
+        /// トレースに必要なメッセージを残します。
+        /// </summary>
+        public void Trace(object message)
+        {
+            if (Filters.Contains(TraceAction.Trace))
+            {
+                RaiseTracing(DateTime.Now, TraceAction.Trace, message);
+            }
+        }
+        #endregion
 
         #region Debug
         /// <summary>
@@ -104,6 +104,19 @@ namespace MSyics.Traceyi
             if (Filters.Contains(TraceAction.Error))
             {
                 RaiseTracing(DateTime.Now, TraceAction.Error, message);
+            }
+        }
+        #endregion
+
+        #region Critical
+        /// <summary>
+        /// 重大メッセージを残します。
+        /// </summary>
+        public void Critical(object message)
+        {
+            if (Filters.Contains(TraceAction.Critical))
+            {
+                RaiseTracing(DateTime.Now, TraceAction.Critical, message);
             }
         }
         #endregion

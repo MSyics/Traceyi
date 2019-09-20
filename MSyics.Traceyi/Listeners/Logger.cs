@@ -12,8 +12,8 @@ namespace MSyics.Traceyi.Listeners
     public abstract class Logger : IDisposable, ITraceListener
     {
         #region Static Members
-        private static readonly object GlobalLock = new object();
-        private static readonly Lazy<AsyncLock> AsyncLock = new Lazy<AsyncLock>(() => new AsyncLock(), true);
+        protected static readonly object GlobalLock = new object();
+        //private static readonly Lazy<AsyncLock> AsyncLock = new Lazy<AsyncLock>(() => new AsyncLock(), true);
         #endregion
 
         private readonly CancellationTokenSource Cancellation = new CancellationTokenSource();
@@ -47,7 +47,7 @@ namespace MSyics.Traceyi.Listeners
         {
             if (UseAsync)
             {
-                if (Cancellation.IsCancellationRequested) return;
+                if (Cancellation.IsCancellationRequested) { return; }
                 try
                 {
                     _ = WriteAsync(e);
@@ -82,24 +82,22 @@ namespace MSyics.Traceyi.Listeners
         /// </summary>
         public async Task WriteAsync(TraceEventArg e)
         {
-            if (Cancellation.IsCancellationRequested) return;
+            if (Cancellation.IsCancellationRequested) { return; }
+
+            await Task.Yield();
 
             TraceEventQueue.Enqueue(e);
 
-            if (Interlocked.CompareExchange(ref Dequeuing, 1, 0) != 0) return;
-            try
+            if (Interlocked.CompareExchange(ref Dequeuing, 1, 0) == 0)
             {
-                await Task.Run(() =>
-                {
-                    while (TraceEventQueue.TryDequeue(out var traceEvent) && !Cancellation.IsCancellationRequested)
+                _ = Task.Run(() =>
                     {
-                        Write(traceEvent);
-                    }
-                });
-            }
-            finally
-            {
-                Interlocked.Exchange(ref Dequeuing, 0);
+                        while (TraceEventQueue.TryDequeue(out var traceEvent) && !Cancellation.IsCancellationRequested)
+                        {
+                            Write(traceEvent);
+                        }
+                        Interlocked.Exchange(ref Dequeuing, 0);
+                    });
             }
         }
 
@@ -118,9 +116,9 @@ namespace MSyics.Traceyi.Listeners
         /// </summary>
         public void Dispose()
         {
-            //Task.Run(() => { while (AsyncWriteCount != 0) { } }).Wait(CloseTimeout);
+            Task.Run(() => { while (TraceEventQueue.Count != 0) ; }).
+                 Wait(CloseTimeout);
 
-            Task.Run(() => { while (TraceEventQueue.Count != 0) ; }).Wait(CloseTimeout);
             Cancellation.Cancel(false);
             Cancellation.Dispose();
 
@@ -130,12 +128,10 @@ namespace MSyics.Traceyi.Listeners
 
         private void Dispose(bool disposing)
         {
-            if (!Disposed)
-            {
-                Disposed = true;
-                if (disposing) { DisposeManagedResources(); }
-                DisposeUnmanagedResources();
-            }
+            if (Disposed) { return; }
+            Disposed = true;
+            if (disposing) { DisposeManagedResources(); }
+            DisposeUnmanagedResources();
         }
 
         /// <summary>

@@ -23,7 +23,7 @@ namespace MSyics.Traceyi.Layout
         {
             if (arg == null)
             {
-                return String.Empty;
+                return string.Empty;
             }
             if (arg is IFormattable)
             {
@@ -85,8 +85,7 @@ namespace MSyics.Traceyi.Layout
                     }
 
                     // 文字数の取得
-                    int count;
-                    if (!int.TryParse(customFormats[1], out count))
+                    if (!int.TryParse(customFormats[1], out var count))
                     {
                         throw new FormatException("入力文字列の形式が正しくありません。");
                     }

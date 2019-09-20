@@ -79,7 +79,7 @@ namespace MSyics.Traceyi.Layout
         /// </summary>
         public string Layout
         {
-            get { return _layout; }
+            get => _layout;
             set
             {
                 if (_layout == value) { return; }

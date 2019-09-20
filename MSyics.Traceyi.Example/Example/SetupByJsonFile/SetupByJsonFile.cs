@@ -13,14 +13,16 @@ namespace MSyics.Traceyi.Example
 
         public void Setup()
         {
-            Traceable.Add(@"config\settings.json");
-
+            Traceable.Add(@"example\SetupByJsonFile\traceyi.json");
             Tracer = Traceable.Get();
         }
 
         public void Show()
         {
-            Tracer.Information("SetupByJsonFile");
+            using (Tracer.Scope())
+            {
+                Tracer.Information(Name);
+            }
         }
 
         public void Teardown()

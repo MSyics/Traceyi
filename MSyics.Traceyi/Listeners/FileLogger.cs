@@ -18,7 +18,9 @@ namespace MSyics.Traceyi.Listeners
         /// </summary>
         public FileLogger(string pathLayout, ILogLayout layout)
         {
-            Path = string.IsNullOrEmpty(pathLayout) ? System.IO.Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName) + ".log" : pathLayout;
+            Path = string.IsNullOrEmpty(pathLayout) 
+                ? System.IO.Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName) + ".log" 
+                : pathLayout;
             Layout = layout;
             SetFormattedPathLayout();
         }
@@ -90,7 +92,7 @@ namespace MSyics.Traceyi.Listeners
         protected internal override void WriteCore(TraceEventArg e)
         {
             var path = MakePath(e);
-            //try
+            try
             {
                 Rotate(path);
                 var log = new BasicFileLogger(StreamManager.GetOrAdd(path), Encoding, Layout)
@@ -104,10 +106,10 @@ namespace MSyics.Traceyi.Listeners
                     log.WriteCore(e);
                 }
             }
-            //catch (Exception)
-            //{
-            //    return;
-            //}
+            catch (Exception)
+            {
+                return;
+            }
         }
 
         /// <summary>

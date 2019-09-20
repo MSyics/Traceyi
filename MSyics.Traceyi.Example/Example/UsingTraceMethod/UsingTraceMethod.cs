@@ -14,7 +14,7 @@ namespace MSyics.Traceyi.Example
 
         public void Setup()
         {
-            Traceable.Add(@"config\settings.json");
+            Traceable.Add(@"Example\UsingTraceMethod\traceyi.json");
             Tracer = Traceable.Get();
         }
 
@@ -25,12 +25,19 @@ namespace MSyics.Traceyi.Example
 
         public void Show()
         {
-            Tracer.Information("UsingTraceMethod");
-            Tracer.Debug("UsingTraceMethod");
-            Tracer.Warning("UsingTraceMethod");
-            Tracer.Error("UsingTraceMethod");
-            Tracer.Start("UsingTraceMethod");
-            Tracer.Stop("UsingTraceMethod");
+            using (Tracer.Scope())
+            {
+                Tracer.Start(Name);
+
+                Tracer.Trace(Name);
+                Tracer.Debug(Name);
+                Tracer.Information(Name);
+                Tracer.Warning(Name);
+                Tracer.Error(Name);
+                Tracer.Critical(Name);
+
+                Tracer.Stop(Name);
+            }
         }
     }
 }

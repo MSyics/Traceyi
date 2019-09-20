@@ -7,6 +7,11 @@ namespace MSyics.Traceyi
     public enum TraceAction
     {
         /// <summary>
+        /// トレース
+        /// </summary>
+        Trace,
+
+        /// <summary>
         /// デバッグ
         /// </summary>
         Debug,
@@ -17,16 +22,6 @@ namespace MSyics.Traceyi
         Info,
 
         /// <summary>
-        /// 操作開始
-        /// </summary>
-        Start,
-
-        /// <summary>
-        /// 操作停止
-        /// </summary>
-        Stop,
-
-        /// <summary>
         /// 注意
         /// </summary>
         Warning,
@@ -35,6 +30,21 @@ namespace MSyics.Traceyi
         /// エラー
         /// </summary>
         Error,
+
+        /// <summary>
+        /// 重大
+        /// </summary>
+        Critical,
+
+        /// <summary>
+        /// 操作開始
+        /// </summary>
+        Start,
+
+        /// <summary>
+        /// 操作停止
+        /// </summary>
+        Stop,
 
         /// <summary>
         /// 経過時間

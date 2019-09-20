@@ -31,14 +31,14 @@ namespace MSyics.Traceyi
         /// </summary>
         public static void Shutdown()
         {
-            Task.WaitAll(Tracers.SelectMany(x => x.Value.listeners)
-                                .Select(x => Task.Run(() => x.Dispose()))
-                                .ToArray());
+            Task.WaitAll(Tracers.
+                SelectMany(x => x.Value.listeners).
+                Select(x => Task.Run(() => x.Dispose())).
+                ToArray());
             Tracers.Clear();
         }
 
         #region Configuration
-
         /// <summary>
         /// Tracer オブジェクトを登録します。
         /// </summary>
@@ -70,7 +70,9 @@ namespace MSyics.Traceyi
         /// <param name="listeners">トレース情報のリスナー</param>
         public static void Add(string name = "", TraceFilters filters = TraceFilters.All, bool useMemberInfo = true, params Action<TraceEventArg>[] listeners)
         {
-            Add(name, filters, useMemberInfo, listeners.Select(x => new ActionTraceListener(x)).ToArray());
+            Add(name, filters, useMemberInfo, listeners.
+                Select(x => new ActionTraceListener(x)).
+                ToArray());
         }
 
         /// <summary>
@@ -80,13 +82,13 @@ namespace MSyics.Traceyi
         /// <param name="usable">カスタムリスナーを登録することで構成情報からリスナーオブジェクトを取得できるようにします。</param>
         public static void Add(IConfiguration configuration, Action<ITraceListenerElementConfiguration> usable = null)
         {
-            if (configuration == null) return;
+            if (configuration == null) { return; }
 
             var ts = configuration.GetSection("Traceyi:Tracer");
-            if (!ts.Exists()) return;
+            if (!ts.Exists()) { return; }
 
             var ls = configuration.GetSection("Traceyi:Listener");
-            if (!ls.Exists()) return;
+            if (!ls.Exists()) { return; }
 
             usable?.Invoke(TraceListenerElementConfiguration);
 
@@ -95,13 +97,13 @@ namespace MSyics.Traceyi
                 Add(te.Name,
                     te.Filters,
                     te.UseMemberInfo,
-                    ls.GetChildren()
-                      .Select(x => new { Name = x.Key.ToUpper(), Value = x })
-                      .Where(x => TraceListenerElementConfiguration.ContainsKey(x.Name))
-                      .SelectMany(x => TraceListenerElementConfiguration[x.Name](x.Value))
-                      .Where(x => te.Listeners.Exists(y => x.Name?.ToUpper() == y.ToUpper()))
-                      .Select(x => x.GetRuntimeObject())
-                      .ToArray());
+                    ls.GetChildren().
+                    Select(x => new { Name = x.Key.ToUpper(), Value = x }).
+                    Where(x => TraceListenerElementConfiguration.ContainsKey(x.Name)).
+                    SelectMany(x => TraceListenerElementConfiguration[x.Name](x.Value)).
+                    Where(x => te.Listeners.Exists(y => x.Name?.ToUpper() == y.ToUpper())).
+                    Select(x => x.GetRuntimeObject()).
+                    ToArray());
             }
         }
 
@@ -112,9 +114,9 @@ namespace MSyics.Traceyi
         /// <param name="usable">カスタムリスナーを登録することで構成情報からリスナーオブジェクトを取得できるようにします。</param>
         public static void Add(string jsonFile, Action<ITraceListenerElementConfiguration> usable = null)
         {
-            Add(new ConfigurationBuilder().AddJsonFile(jsonFile, false, true).Build(), usable);
+            Add(new ConfigurationBuilder().AddJsonFile(jsonFile, false, true).Build(), 
+                usable);
         }
-
         #endregion
     }
 }
