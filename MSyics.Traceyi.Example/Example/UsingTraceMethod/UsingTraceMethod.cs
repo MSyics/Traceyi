@@ -3,27 +3,26 @@ using MSyics.Traceyi.Listeners;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace MSyics.Traceyi.Example
+namespace MSyics.Traceyi
 {
-    class UsingTraceMethod : IExample
+    class UsingTraceMethod : Example
     {
-        public Tracer Tracer { get; set; }
+        public override string Name => nameof(UsingTraceMethod);
 
-        public string Name => nameof(UsingTraceMethod);
-
-        public void Setup()
+        public override void Setup()
         {
             Traceable.Add(@"Example\UsingTraceMethod\traceyi.json");
             Tracer = Traceable.Get();
         }
 
-        public void Teardown()
+        public override void Teardown()
         {
             Traceable.Shutdown();
         }
 
-        public void Show()
+        public override Task ShowAsync()
         {
             using (Tracer.Scope())
             {
@@ -38,6 +37,8 @@ namespace MSyics.Traceyi.Example
 
                 Tracer.Stop(Name);
             }
+
+            return Task.CompletedTask;
         }
     }
 }

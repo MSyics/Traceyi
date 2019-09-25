@@ -3,16 +3,15 @@ using MSyics.Traceyi.Listeners;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace MSyics.Traceyi.Example
+namespace MSyics.Traceyi
 {
-    class UsingShiftrJIS : IExample
+    class UsingShiftrJIS : Example
     {
-        public Tracer Tracer { get; set; }
+        public override string Name => nameof(UsingShiftrJIS);
 
-        public string Name => nameof(UsingShiftrJIS);
-
-        public void Setup()
+        public override void Setup()
         {
             // Install-Package System.Text.Encoding.CodePages
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -27,12 +26,15 @@ namespace MSyics.Traceyi.Example
             Tracer = Traceable.Get();
         }
 
-        public void Show()
+        public override Task ShowAsync()
         {
             Tracer.Information("UsingShiftJIS ほげほげ");
+            Tracer.Information("UsingShiftJIS ほげほげ");
+
+            return Task.CompletedTask;
         }
 
-        public void Teardown()
+        public override void Teardown()
         {
             Traceable.Shutdown();
         }

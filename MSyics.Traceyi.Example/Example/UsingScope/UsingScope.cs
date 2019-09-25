@@ -3,28 +3,28 @@ using MSyics.Traceyi.Listeners;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace MSyics.Traceyi.Example
+namespace MSyics.Traceyi
 {
-    class UsingScope : IExample
+    class UsingScope : Example
     {
-        public Tracer Tracer { get; set; }
+        public override string Name => nameof(UsingScope);
 
-        public string Name => nameof(UsingScope);
-
-        public void Setup()
+        public override void Setup()
         {
             Traceable.Add(@"example\UsingScope\traceyi.json");
             Tracer = Traceable.Get();
         }
 
-        public void Show()
+        public override Task ShowAsync()
         {
             Tracer.Context.ActivityId = 100;
             using (Tracer.Scope(1))
             {
                 Hoge();
             }
+            return Task.CompletedTask;
         }
 
         private void Hoge()
@@ -51,7 +51,7 @@ namespace MSyics.Traceyi.Example
             }
         }
 
-        public void Teardown()
+        public override void Teardown()
         {
             Traceable.Shutdown();
         }

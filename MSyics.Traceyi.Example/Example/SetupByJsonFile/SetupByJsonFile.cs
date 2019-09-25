@@ -2,30 +2,31 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace MSyics.Traceyi.Example
+namespace MSyics.Traceyi
 {
-    class SetupByJsonFile : IExample
+    class SetupByJsonFile : Example
     {
-        public Tracer Tracer { get; set; }
+        public override string Name => nameof(SetupByJsonFile);
 
-        public string Name => nameof(SetupByJsonFile);
-
-        public void Setup()
+        public override void Setup()
         {
             Traceable.Add(@"example\SetupByJsonFile\traceyi.json");
             Tracer = Traceable.Get();
         }
 
-        public void Show()
+        public override Task ShowAsync()
         {
             using (Tracer.Scope())
             {
                 Tracer.Information(Name);
             }
+
+            return Task.CompletedTask;
         }
 
-        public void Teardown()
+        public override void Teardown()
         {
             Traceable.Shutdown();
         }

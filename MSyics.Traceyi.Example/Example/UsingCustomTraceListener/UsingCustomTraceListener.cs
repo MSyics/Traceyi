@@ -4,28 +4,29 @@ using MSyics.Traceyi.Listeners;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace MSyics.Traceyi.Example
+namespace MSyics.Traceyi
 {
-    class UsingCustomTraceListener : IExample
+    class UsingCustomTraceListener : Example
     {
-        public Tracer Tracer { get; set; }
+        public override string Name => nameof(UsingCustomTraceListener);
 
-        public string Name => nameof(UsingCustomTraceListener);
-
-        public void Setup()
+        public override void Setup()
         {
             Traceable.Add(@"example\UsingCustomTraceListener\traceyi.json", usable => usable.In<CustomElement>("Custom"));
 
             Tracer = Traceable.Get();
         }
 
-        public void Show()
+        public override Task ShowAsync()
         {
             Tracer.Information(Name);
+
+            return Task.CompletedTask;
         }
 
-        public void Teardown()
+        public override void Teardown()
         {
             Traceable.Shutdown();
         }

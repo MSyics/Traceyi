@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace MSyics.Traceyi.Example
+namespace MSyics.Traceyi
 {
-    class SetupByManual : IExample
+    class SetupByManual : Example
     {
-        public Tracer Tracer { get; set; }
+        public override string Name => nameof(SetupByManual);
 
-        public string Name => nameof(SetupByManual);
-
-        public void Setup()
+        public override void Setup()
         {
             Traceable.Add(
                 name: Name,
@@ -21,15 +20,17 @@ namespace MSyics.Traceyi.Example
             Tracer = Traceable.Get(Name);
         }
 
-        public void Show()
+        public override Task ShowAsync()
         {
             using (Tracer.Scope())
             {
                 Tracer.Information(Name);
             }
+
+            return Task.CompletedTask;
         }
 
-        public void Teardown()
+        public override void Teardown()
         {
             Traceable.Shutdown();
         }

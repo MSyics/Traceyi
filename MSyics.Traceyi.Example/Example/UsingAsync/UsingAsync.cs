@@ -6,30 +6,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MSyics.Traceyi.Example
+namespace MSyics.Traceyi
 {
-    class UsingAsync : IExample
+    class UsingAsync : Example
     {
-        public Tracer Tracer { get; set; }
+        public override string Name => nameof(UsingAsync);
 
-        public string Name => nameof(UsingAsync);
-
-        public void Setup()
+        public override void Setup()
         {
             Traceable.Add(@"example\UsingAsync\traceyi.json");
             Tracer = Traceable.Get();
         }
 
-        public void Show()
+        public override async Task ShowAsync()
         {
-            Parallel.For(1, 10, i =>
+            var result = Parallel.For(0, 3, i =>
             {
-                Parallel.For(1, 10, j =>
+                Parallel.For(0, 3, j =>
                 {
                     Hoge($"{i} {j}");
                 });
             });
-
+            await Task.CompletedTask;
         }
 
         public void Hoge(object obj)
@@ -40,7 +38,7 @@ namespace MSyics.Traceyi.Example
             }
         }
 
-        public void Teardown()
+        public override void Teardown()
         {
             Traceable.Shutdown();
         }

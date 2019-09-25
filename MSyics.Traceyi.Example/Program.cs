@@ -1,13 +1,13 @@
 ﻿
 using System.Threading.Tasks;
 
-namespace MSyics.Traceyi.Example
+namespace MSyics.Traceyi
 {
     class Program : ExampleAggregator
     {
-        static void Main(string[] args)
+        static Task Main(string[] args)
         {
-            new Program().
+            return new Program().
                 //Add<SetupByManual>().
                 //Add<SetupByJsonFile>().
                 //Add<SetupByConfiguration>().
@@ -17,7 +17,7 @@ namespace MSyics.Traceyi.Example
                 //Add<UsingScope>().
                 Add<UsingAsync>().
 
-                Show();
+                ShowAsync();
         }
     }
 }

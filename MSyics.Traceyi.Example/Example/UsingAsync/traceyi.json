@@ -3,7 +3,7 @@
     "Tracer": [
       {
         "Listeners": [ "console", "file" ],
-        "Filters": "info",
+        "Filters": "all",
         "UseMemberInfo": true
       }
     ],
