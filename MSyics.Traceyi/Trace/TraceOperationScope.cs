@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace MSyics.Traceyi
 {
@@ -12,7 +13,7 @@ namespace MSyics.Traceyi
         /// <summary>
         /// 識別子を取得または設定します。
         /// </summary>
-        public Guid Id { get; } = Guid.NewGuid();
+        public string Id { get; } = $"{DateTimeOffset.Now.Ticks}.{Thread.CurrentThread.ManagedThreadId}";
 
         /// <summary>
         /// TraceOperationScope クラスのイスタンスを初期化します。

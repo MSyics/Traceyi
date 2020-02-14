@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Threading;
 
 namespace MSyics.Traceyi
 {
@@ -122,11 +123,11 @@ namespace MSyics.Traceyi
         #endregion
 
         #region Start
-        internal void Start(object operationId, object message, Guid scopeId)
+        internal void Start(object operationId, object message, string scopeId)
         {
             var operation = new TraceOperation()
             {
-                OperationId = operationId ?? $"{TraceUtility.GetOperationId()}__{scopeId}",
+                OperationId = operationId ?? $"{TraceUtility.GetOperationId()}",
                 //OperationId = operationId ?? $"{new String('+', Context.OperationStack.Count)}", //TraceUtility.GetOperationId(),
                 ScopeId = scopeId,
                 StartedDate = DateTime.Now,
@@ -142,18 +143,18 @@ namespace MSyics.Traceyi
         /// <summary>
         /// 操作の開始メッセージを残します。
         /// </summary>
-        public void Start(object message) => Start(null, message, Guid.Empty);
+        public void Start(object message) => Start(null, message, null);
 
         /// <summary>
         /// 操作の開始メッセージを残します。
         /// </summary>
-        public void Start() => Start(null, null, Guid.Empty);
+        public void Start() => Start(null, null, null);
         #endregion
 
         #region Stop
-        internal void Stop(object message, Guid scopeId)
+        internal void Stop(object message, string scopeId)
         {
-            var byScope = !scopeId.Equals(Guid.Empty);
+            var byScope = scopeId != null;
             for (; ; )
             {
                 if (Context.OperationStack.Count == 0) { break; }
@@ -175,19 +176,19 @@ namespace MSyics.Traceyi
                 }
 
                 var popOperation = Context.OperationStack.Pop();
-                if (scopeId.Equals(popOperation.ScopeId)) { break; }
+                if (scopeId == popOperation.ScopeId) { break; }
             }
         }
 
         /// <summary>
         /// 操作の終了メッセージを残します。
         /// </summary>
-        public void Stop(object message) => Stop(message, Guid.Empty);
+        public void Stop(object message) => Stop(message, null);
 
         /// <summary>
         /// 操作の終了メッセージを残します。
         /// </summary>
-        public void Stop() => Stop(null, Guid.Empty);
+        public void Stop() => Stop(null, null);
         #endregion
     }
 }

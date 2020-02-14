@@ -22,6 +22,7 @@ namespace MSyics.Traceyi
             Tracer.Context.ActivityId = 100;
             using (Tracer.Scope(1))
             {
+                Tracer.Start();
                 Hoge();
             }
             return Task.CompletedTask;
