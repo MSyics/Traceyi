@@ -12,7 +12,20 @@
         {
           "Name": "console",
           "UseLock": true,
-          "UseAsync": false
+          "UseAsync": true
+        }
+      ],
+      "File": [
+        {
+          "Name": "file",
+          "UseLock": true,
+          "UseAsync": true,
+          "MaxLength": 5242880,
+          "LeaveFiles": false,
+          "Layout": {
+            "Format": "{message}"
+          },
+          "Path": "app.log"
         }
       ]
     }

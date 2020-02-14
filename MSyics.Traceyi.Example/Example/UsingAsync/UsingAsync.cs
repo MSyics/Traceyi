@@ -20,14 +20,21 @@ namespace MSyics.Traceyi
 
         public override async Task ShowAsync()
         {
-            var result = Parallel.For(0, 3, i =>
-            {
-                Parallel.For(0, 3, j =>
-                {
-                    Hoge($"{i} {j}");
-                });
-            });
-            await Task.CompletedTask;
+            await Task.
+                WhenAll(Enumerable.
+                Range(1, 1000).
+                Select(x => Task.
+                Run(() => Hoge(x))).
+                ToArray());
+
+            //var result = Parallel.For(0, 100, i =>
+            //{
+            //    Parallel.For(0, 10, j =>
+            //    {
+            //        Hoge($"{i} {j}");
+            //    });
+            //});
+            //await Task.CompletedTask;
         }
 
         public void Hoge(object obj)

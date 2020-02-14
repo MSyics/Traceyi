@@ -2,7 +2,7 @@
   "Traceyi": {
     "Tracer": [
       {
-        "Listeners": [ "console", "file" ],
+        "Listeners": [ "console" ],
         "Filters": "all",
         "UseMemberInfo": true
       }
@@ -12,7 +12,7 @@
         {
           "Name": "console",
           "UseLock": true,
-          "UseAsync": true
+          "UseAsync": false
         }
       ],
       "File": [
@@ -22,9 +22,6 @@
           "UseAsync": true,
           "MaxLength": 5242880,
           "LeaveFiles": false,
-          "Layout": {
-            "Format": "{message}"
-          },
           "Path": "app.log"
         }
       ]

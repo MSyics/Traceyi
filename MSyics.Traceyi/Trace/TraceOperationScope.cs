@@ -13,7 +13,7 @@ namespace MSyics.Traceyi
         /// <summary>
         /// 識別子を取得または設定します。
         /// </summary>
-        public string Id { get; } = $"{DateTimeOffset.Now.Ticks}.{Thread.CurrentThread.ManagedThreadId}";
+        public string Id { get; } = TraceUtility.GetOperationId(); //$"{DateTimeOffset.Now.Ticks}.{Thread.CurrentThread.ManagedThreadId}";
 
         /// <summary>
         /// TraceOperationScope クラスのイスタンスを初期化します。

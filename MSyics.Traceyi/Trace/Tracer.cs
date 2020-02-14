@@ -127,8 +127,9 @@ namespace MSyics.Traceyi
         {
             var operation = new TraceOperation()
             {
-                OperationId = operationId ?? $"{TraceUtility.GetOperationId()}",
-                //OperationId = operationId ?? $"{new String('+', Context.OperationStack.Count)}", //TraceUtility.GetOperationId(),
+                //OperationId = operationId,
+                //OperationId = operationId ?? $"{TraceUtility.GetOperationId()}",
+                OperationId = operationId ?? $"{new String('+', Context.OperationStack.Count)}", //TraceUtility.GetOperationId(),
                 ScopeId = scopeId,
                 StartedDate = DateTime.Now,
             };

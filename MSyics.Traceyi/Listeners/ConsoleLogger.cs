@@ -11,6 +11,8 @@ namespace MSyics.Traceyi.Listeners
     /// </summary>
     public class ConsoleLogger : TextLogger
     {
+        readonly ConsoleColor defaultColor = Console.ForegroundColor;
+
         /// <summary>
         /// クラスのインスタンスを初期化します。
         /// </summary>
@@ -40,14 +42,19 @@ namespace MSyics.Traceyi.Listeners
 
         protected internal override void WriteCore(TraceEventArg e)
         {
-            SetConsoleColor(e.Action, out var color);
+            SetConsoleColor(e.Action);
             base.WriteCore(e);
-            Console.ForegroundColor = color;
+            Console.ForegroundColor = defaultColor;
         }
 
-        private void SetConsoleColor(TraceAction traceAction, out ConsoleColor undoColor)
+        protected override void DisposeUnmanagedResources()
         {
-            undoColor = Console.ForegroundColor;
+            base.DisposeUnmanagedResources();
+            Console.ForegroundColor = defaultColor;
+        }
+
+        private void SetConsoleColor(TraceAction traceAction)
+        {
             switch (traceAction)
             {
                 case TraceAction.Trace:
@@ -68,6 +75,7 @@ namespace MSyics.Traceyi.Listeners
                     break;
                 case TraceAction.Info:
                 default:
+                    Console.ForegroundColor = defaultColor;
                     break;
             }
         }
