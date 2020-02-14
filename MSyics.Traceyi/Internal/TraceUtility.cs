@@ -44,8 +44,6 @@ namespace MSyics.Traceyi
                 TakeWhile(x => !LibraryTypes.Any(y => y.Equals(x.ReflectedType))).
                 Last();
             return $"{method.ReflectedType.FullName}.{method.Name}";
-
-            //return $"{DateTimeOffset.Now.Ticks}-{Thread.CurrentThread.ManagedThreadId}";
         }
     }
 }

@@ -22,7 +22,7 @@ namespace MSyics.Traceyi
         {
             await Task.
                 WhenAll(Enumerable.
-                Range(1, 1000).
+                Range(1, 10).
                 Select(x => Task.
                 Run(() => Hoge(x))).
                 ToArray());
@@ -42,6 +42,14 @@ namespace MSyics.Traceyi
             using (Tracer.Scope())
             {
                 Tracer.Information(obj);
+
+                _ = Task.Run(() =>
+                {
+                    using (Tracer.Scope())
+                    {
+                        Tracer.Information(obj);
+                    }
+                });
             }
         }
 

@@ -3,7 +3,7 @@
     "Tracer": [
       {
         "Listeners": [ "console" ],
-        "Filters": "all",
+        "Filters": "Elapsed",
         "UseMemberInfo": true
       }
     ],
@@ -12,7 +12,7 @@
         {
           "Name": "console",
           "UseLock": true,
-          "UseAsync": false
+          "UseAsync": true
         }
       ],
       "File": [
