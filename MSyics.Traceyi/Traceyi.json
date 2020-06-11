@@ -8,15 +8,16 @@
       // Listeners :
       // Filters : {TraceFilters}
       //         None       : 無し
+      //         Trace      : トレース
       //         Debug      : デバッグ
       //         Info       : 通知
-      //         Start      : 開始
-      //         Stop       : 停止
       //         Warning    : 注意
       //         Error      : エラー
-      //         Calling    : 実行中の操作
+      //         Critical   : 重大
+      //         Start      : 開始
+      //         Stop       : 停止
       //         Elapsed    : 経過時間
-      //         Actions    : Debug, Info, Start, Stop, Warning, Error
+      //         Actions    : Info, Warning, Error, Critical, Start, Stop
       //         All        : すべて
       {
         "Name": "",
@@ -34,8 +35,8 @@
         // コンソールに出力する
         // ................................................................
         // Name           : 要素の名前
-        // UseLock        : ロックをかけるかどうか（省略：false）
-        // UseAsync       : 非同期 I/O または同期 I/O のどちらを使用するか（省略：false）
+        // UseLock        : ロックをかけるかどうか（省略：true）
+        // UseAsync       : 非同期 I/O または同期 I/O のどちらを使用するか（省略：true）
         // NewLine        : 改行文字（省略：\r\n）
         // Encoding       : エンコーディング（省略：UTF-8）
         // UseErrorStream : エラーストリームを使用するかどうか（省略：false）

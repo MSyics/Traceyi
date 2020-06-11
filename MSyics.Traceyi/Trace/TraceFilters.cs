@@ -14,7 +14,7 @@ namespace MSyics.Traceyi
         None = 0x000,
 
         /// <summary>
-        /// 無し
+        /// トレース動作
         /// </summary>
         Trace = 0x001,
 
