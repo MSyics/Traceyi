@@ -14,7 +14,6 @@ namespace MSyics.Traceyi
             Traceable.Add(
                 name: Name,
                 filters: TraceFilters.All,
-                useMemberInfo: true,
                 listeners: x => Console.WriteLine(x));
 
             Tracer = Traceable.Get(Name);

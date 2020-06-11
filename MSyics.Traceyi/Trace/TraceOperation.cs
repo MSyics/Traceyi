@@ -10,19 +10,26 @@ namespace MSyics.Traceyi
         /// <summary>
         /// 操作が無い状態を表します。
         /// </summary>
-        public readonly static TraceOperation NullOperation = new TraceOperation();
+        internal readonly static TraceOperation NullOperation = new TraceOperation();
+
+        /// <summary>
+        /// スコープ ID を取得または設定します。
+        /// </summary>
+        public string ScopeId { get; internal set; }
+
+        /// <summary>
+        /// スコープを使用しているかどうかを示す値を取得します。
+        /// </summary>
+        public bool UseScope => ScopeId != null;
 
         /// <summary>
         /// 操作の識別子を取得します。
         /// </summary>
-        public object OperationId { get; internal set; } = "";
+        public object Id { get; internal set; } = "";
 
         /// <summary>
         /// 操作の開始日時を取得します。
         /// </summary>
-        public DateTime StartedDate { get; internal set; } = DateTime.MinValue;
-
-        internal string ScopeId { get; set; }
-        internal bool UseScope => ScopeId != null;
+        public DateTime Started { get; internal set; } = DateTime.MinValue;
     }
 }

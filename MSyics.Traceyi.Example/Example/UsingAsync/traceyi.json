@@ -3,8 +3,7 @@
     "Tracer": [
       {
         "Listeners": [ "console" ],
-        "Filters": "Elapsed",
-        "UseMemberInfo": true
+        "Filters": "all"
       }
     ],
     "Listener": {

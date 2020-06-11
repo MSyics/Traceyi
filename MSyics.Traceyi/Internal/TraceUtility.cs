@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace MSyics.Traceyi
 {
@@ -21,6 +22,7 @@ namespace MSyics.Traceyi
         {
             var stack = new StackTrace(false);
             if (stack.FrameCount == 0) { return null; }
+
             return stack.
                 GetFrames().
                 Reverse().
@@ -36,7 +38,8 @@ namespace MSyics.Traceyi
         internal static string GetOperationId()
         {
             var stack = new StackTrace(false);
-            if (stack.FrameCount == 0) { return string.Empty; }
+            if (stack.FrameCount == 0) { return null; }
+
             var method = stack.
                 GetFrames().
                 Reverse().

@@ -1,24 +1,22 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace MSyics.Traceyi
 {
     /// <summary>
-    /// ロギングのための一連の拡張メソッドを提供します。
+    /// トレースのための一連の拡張メソッドを提供します。
     /// </summary>
     public static class TracerExtensions
     {
         /// <summary>
         /// コードブロックをトレースに参加させます。
         /// </summary>
-        /// <param name="target">トレースオブジェクト</param>
-        /// <param name="operationId">操作ID</param>
-        public static TraceOperationScope Scope(this Tracer target, object operationId) => new TraceOperationScope(target, operationId);
-
-        /// <summary>
-        /// コードブロックをトレースに参加させます。
-        /// </summary>
-        /// <param name="target">トレースオブジェクト</param>
-        public static TraceOperationScope Scope(this Tracer target) => new TraceOperationScope(target);
+        /// <param name="tracer">トレースオブジェクト</param>
+        /// <param name="operationId">操作 ID</param>
+        /// <param name="startMessage">開始メッセージ</param>
+        /// <param name="stopMessage">終了メッセージ</param>
+        public static TraceScope Scope(this Tracer tracer, object operationId = null, object startMessage = null, object stopMessage = null) => 
+            new TraceScope(tracer, operationId, startMessage, stopMessage);
 
         /// <summary>
         /// 指定したフィルターに動作が含まれているかどうかを判定します。

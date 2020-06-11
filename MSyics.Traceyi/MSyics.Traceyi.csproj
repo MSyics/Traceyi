@@ -1,10 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <SignAssembly>false</SignAssembly>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>3.0.1</Version>
+    <Version>3.1.0</Version>
     <PackageId>Traceyi</PackageId>
     <Authors>MSyics</Authors>
     <Company>MSyics</Company>
@@ -13,17 +13,22 @@
     <RepositoryUrl>https://github.com/MSyics/Traceyi</RepositoryUrl>
     <PackageLicenseUrl></PackageLicenseUrl>
     <Copyright>Copyright (c) 2020 MSyics</Copyright>
-    <Description>Traceyi is an asynchronous logging library for .NET Standard.</Description>
+    <Description>Traceyi is an asynchronous logging library</Description>
     <Platforms>AnyCPU;x64</Platforms>
-    <PackageTags>logging trace log async</PackageTags>
-    <AssemblyVersion>3.0.1.0</AssemblyVersion>
-    <FileVersion>3.0.1.0</FileVersion>
+    <PackageTags>logging trace async</PackageTags>
+    <AssemblyVersion>3.1.0.0</AssemblyVersion>
+    <FileVersion>3.1.0.0</FileVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>bin\Release\netstandard2.0\MSyics.Traceyi.xml</DocumentationFile>
+    <DocumentationFile>bin\Release\netcoreapp3.1\MSyics.Traceyi.xml</DocumentationFile>
     <NoWarn>1701;1702;1705,1591</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
 
   <ItemGroup>
@@ -54,9 +59,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="microsoft.Extensions.Configuration" Version="3.1.1" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.1" />
-    <PackageReference Include="microsoft.Extensions.Configuration.Json" Version="3.1.1" />
+    <PackageReference Include="microsoft.Extensions.Configuration" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="3.1.5" />
+    <PackageReference Include="microsoft.Extensions.Configuration.Json" Version="3.1.5" />
   </ItemGroup>
 
   <ItemGroup>

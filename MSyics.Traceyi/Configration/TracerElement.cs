@@ -18,11 +18,6 @@ namespace MSyics.Traceyi.Configration
         public TraceFilters Filters { get; set; } = TraceFilters.All;
 
         /// <summary>
-        /// クラスメンバー情報を取得するかどうを示す値を取得または設定します。
-        /// </summary>
-        public bool UseMemberInfo { get; set; } = true;
-
-        /// <summary>
         /// Tracer に紐づける Listener の名前一覧を取得または設定します。
         /// </summary>
         public List<string> Listeners { get; set; } = new List<string>();

@@ -28,7 +28,11 @@ namespace MSyics.Traceyi.Layout
                     var startIndex = layoutIndex + 1;
                     var length = layout.IndexOf('}', startIndex + 1) - startIndex;
 
-                    if (length <= 0) { throw new FormatException("入力文字列の形式が正しくありません。"); }
+                    if (length <= 0)
+                    {
+                        return "";
+                        //throw new FormatException("The input string is not in the correct format.");
+                    }
 
                     var convertString = layout.Substring(startIndex, length);
                     for (int itemIndex = 0; itemIndex < Parts.Length; itemIndex++)

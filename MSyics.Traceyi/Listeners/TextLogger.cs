@@ -24,16 +24,14 @@ namespace MSyics.Traceyi.Listeners
         /// <summary>
         /// TextWriter クラスのインスタンスを初期化します。
         /// </summary>
-        public TextLogger(TextWriter writer)
-            : this(writer, new LogLayout())
+        public TextLogger(TextWriter writer) : this(writer, new LogLayout())
         {
         }
 
         /// <summary>
         /// TextWriter クラスのインスタンスを初期化します。
         /// </summary>
-        protected TextLogger()
-            : this(TextWriter.Null)
+        protected TextLogger() : this(TextWriter.Null)
         {
         }
 
@@ -56,11 +54,11 @@ namespace MSyics.Traceyi.Listeners
             }
             catch (FormatException)
             {
-                TextWriter.WriteLine($"レイアウトの書式が間違っているため書き込めません。");
+                TextWriter.WriteLine($"Can't write in because the layout is in the wrong format.");
             }
             catch (Exception ex)
             {
-                TextWriter.WriteLine($"システム異常のため書き込めません。{NewLine}{ex}");
+                TextWriter.WriteLine($"Can't write in.{NewLine}{ex}");
             }
         }
 
@@ -79,9 +77,9 @@ namespace MSyics.Traceyi.Listeners
             {
                 TextWriter.NewLine = value;
 
-                if (Layout is LogLayout)
+                if (Layout is LogLayout layout)
                 {
-                    ((LogLayout)Layout).NewLine = value;
+                    layout.NewLine = value;
                 }
             }
         }

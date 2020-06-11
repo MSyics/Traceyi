@@ -10,7 +10,7 @@ namespace MSyics.Traceyi.Layout
         /// <summary>
         /// 初期レイアウトを示す固定値です。
         /// </summary>
-        public readonly static string DefaultLayout = "{dateTime:yyyy/MM/dd}{tab}{dateTime:HH:mm:ss.ffff}{tab}{action}{tab}{operationId}{tab}{activityId}{tab}{class}{tab}{member}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}";
+        public readonly static string DefaultLayout = "{dateTime:yyyy/MM/dd}{tab}{dateTime:HH:mm:ss.ffff}{tab}{action}{tab}{operationId}{tab}{activityId}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}";
 
         /// <summary>
         /// TextLayout クラスのインスタンスを初期化します。
@@ -20,8 +20,7 @@ namespace MSyics.Traceyi.Layout
         /// <summary>
         /// TextLayout クラスのインスタンスを初期化します。
         /// </summary>
-        public LogLayout()
-            : this(DefaultLayout)
+        public LogLayout() : this(DefaultLayout)
         {
         }
 
@@ -43,8 +42,6 @@ namespace MSyics.Traceyi.Layout
                 e.Message,
                 e.ActivityId,
                 e.OperationId,
-                e.ClassName,
-                e.MemberName,
                 e.ThreadId,
                 e.ProcessId,
                 e.ProcessName,
@@ -63,8 +60,6 @@ namespace MSyics.Traceyi.Layout
                 new LogLayoutPart { Name = "message", CanFormat = true },
                 new LogLayoutPart { Name = "activityId", CanFormat = true },
                 new LogLayoutPart { Name = "operationId", CanFormat = true },
-                new LogLayoutPart { Name = "class", CanFormat = true },
-                new LogLayoutPart { Name = "member", CanFormat = true },
                 new LogLayoutPart { Name = "threadId", CanFormat = true },
                 new LogLayoutPart { Name = "processId", CanFormat = true },
                 new LogLayoutPart { Name = "processName", CanFormat = true },

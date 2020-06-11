@@ -20,36 +20,33 @@ namespace MSyics.Traceyi
 
         public override async Task ShowAsync()
         {
-            await Task.
-                WhenAll(Enumerable.
-                Range(1, 10).
-                Select(x => Task.
-                Run(() => Hoge(x))).
-                ToArray());
+            using (Tracer.Scope(1))
+            {
+                await Task.
+                    WhenAll(Enumerable.
+                    Range(1, 10000).
+                    Select(x => Hoge(x)).
+                    ToArray());
 
-            //var result = Parallel.For(0, 100, i =>
-            //{
-            //    Parallel.For(0, 10, j =>
-            //    {
-            //        Hoge($"{i} {j}");
-            //    });
-            //});
-            //await Task.CompletedTask;
+                Tracer.Information(1);
+                Tracer.Start(1.1);
+            }
         }
 
-        public void Hoge(object obj)
+        public async Task Hoge(object obj)
         {
-            using (Tracer.Scope())
+            using (Tracer.Scope(2))
             {
-                Tracer.Information(obj);
-
-                _ = Task.Run(() =>
+                await Task.Run(() =>
                 {
-                    using (Tracer.Scope())
+                    using (Tracer.Scope(3))
                     {
-                        Tracer.Information(obj);
+                        Tracer.Information($"{3} {obj}");
                     }
                 });
+
+                Tracer.Information($"{2} {obj}");
+                Tracer.Start(2.2);
             }
         }
 

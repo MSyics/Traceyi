@@ -5,7 +5,6 @@
       // ................................................................
       // Name   : filter 要素の名前
       // Filter :
-      // UseMemberInfo :
       // Listeners :
       // Filters : {TraceFilters}
       //         None       : 無し
@@ -22,13 +21,11 @@
       {
         "Name": "",
         "Filters": "All",
-        "UseMemberInfo": true,
         "Listeners": [ "console", "file" ]
       },
       {
         "Name": "specific",
         "Filters": "All",
-        "UseMemberInfo": true,
         "Listeners": [ "console", "file" ]
       }
     ],
@@ -60,8 +57,6 @@
           // {message}     : Object 型
           // {activityId}  : Object 型
           // {operationId} : Object 型
-          // {class}       : Type 型
-          // {member}      : MemberInfo 型
           // {threadId}    : Int32 型
           // {processId}   : Int32 型
           // {processName} : String 型
@@ -85,7 +80,7 @@
           // {message|_, 20:R}
           // {threadId, 4:D4|_, 8:L}
           "Layout": {
-            "Format": "{dateTime:yyyy/MM/dd}{tab}{dateTime:HH:mm:ss.ffff}{tab}{action}{tab}{operationId}{tab}{activityId}{tab}{class}{tab}{member}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}"
+            "Format": "{dateTime:yyyy/MM/dd}{tab}{dateTime:HH:mm:ss.ffff}{tab}{action}{tab}{operationId}{tab}{activityId}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}"
           }
         }
       ],

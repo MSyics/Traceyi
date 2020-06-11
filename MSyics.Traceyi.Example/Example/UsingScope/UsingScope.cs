@@ -22,7 +22,6 @@ namespace MSyics.Traceyi
             Tracer.Context.ActivityId = 100;
             using (Tracer.Scope(1))
             {
-                Tracer.Start();
                 Hoge();
             }
             return Task.CompletedTask;
@@ -32,7 +31,9 @@ namespace MSyics.Traceyi
         {
             using (Tracer.Scope(2))
             {
+                Tracer.Start("2-1", "scope");
                 Piyo();
+                Tracer.Start("2-2", "scope");
             }
         }
 
@@ -41,6 +42,7 @@ namespace MSyics.Traceyi
             using (Tracer.Scope(3))
             {
                 Fuga();
+                Tracer.Stop("stop");
             }
         }
 
