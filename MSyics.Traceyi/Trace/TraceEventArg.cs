@@ -15,9 +15,11 @@ namespace MSyics.Traceyi
 
         static TraceEventArg()
         {
-            using var process = Process.GetCurrentProcess();
-            processId = process.Id;
-            processName = process.ProcessName;
+            using (var process = Process.GetCurrentProcess())
+            {
+                processId = process.Id;
+                processName = process.ProcessName;
+            }
         }
 
         public TraceEventArg(DateTime traced, TraceAction action, object message)
