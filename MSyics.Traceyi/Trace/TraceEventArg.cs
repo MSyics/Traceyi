@@ -28,8 +28,7 @@ namespace MSyics.Traceyi
             Traced = traced;
             Action = action;
             Message = message;
-
-            Elapsed = traced - Traceable.Context.CurrentOperation.Started;
+            Elapsed = Traceable.Context.OperationStack.Count == 0 ? TimeSpan.Zero : traced - Traceable.Context.CurrentOperation.Started;
         }
 
         /// <summary>
@@ -84,7 +83,7 @@ namespace MSyics.Traceyi
 
         public override string ToString()
         {
-            return $"{Traced}\t{Action}\t{OperationId}\t{ActivityId}\t{ThreadId}\t{ProcessId}\t{ProcessName}\t{MachineName}\t{Message}";
+            return $"{Traced}\t{Action}\t{Elapsed}\t{OperationId}\t{ActivityId}\t{ThreadId}\t{ProcessId}\t{ProcessName}\t{MachineName}\t{Message}";
         }
     }
 }

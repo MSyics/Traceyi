@@ -82,7 +82,7 @@
           // {message|_, 20:R}
           // {threadId, 4:D4|_, 8:L}
           "Layout": {
-            "Format": "{dateTime:yyyy/MM/dd}{tab}{dateTime:HH:mm:ss.fffffff}{tab}{action}{tab}{elapsed:d\\.hh\\:mm\\:ss\\.fffffff|_, 20:R}{tab}{operationId}{tab}{activityId}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}"
+            "Format": "{dateTime:yyyy/MM/dd}{tab}{dateTime:HH:mm:ss.fffffff}{tab}{action}{tab}{elapsed:d\\.hh\\:mm\\:ss\\.fffffff}{tab}{operationId}{tab}{activityId}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}"
           }
         }
       ],

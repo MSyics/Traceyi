@@ -2,7 +2,7 @@
   "Traceyi": {
     "Tracer": [
       {
-        "Listeners": [ "console" ],
+        "Listeners": [ "file" ],
         "Filters": "all"
       }
     ],

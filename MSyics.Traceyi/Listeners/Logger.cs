@@ -106,6 +106,8 @@ namespace MSyics.Traceyi.Listeners
         /// </summary>
         public void Write(TraceEventArg e)
         {
+
+
             if (UseLock)
             {
                 lock (GlobalLock) { WriteCore(e); }

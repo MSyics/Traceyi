@@ -20,11 +20,13 @@ namespace MSyics.Traceyi
 
         public override async Task ShowAsync()
         {
+            Tracer.Information(100);
+
             using (Tracer.Scope(1))
             {
                 await Task.
                     WhenAll(Enumerable.
-                    Range(1, 10).
+                    Range(1, 100000).
                     Select(x => Hoge(x)).
                     ToArray());
 
