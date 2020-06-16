@@ -53,9 +53,6 @@ namespace MSyics.Traceyi
                 case TraceAction.Stop:
                     filter = TraceFilters.Stop;
                     break;
-                case TraceAction.Elapsed:
-                    filter = TraceFilters.Elapsed;
-                    break;
                 default:
                     filter = TraceFilters.None;
                     break;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading;
+using System.Linq;
 
 namespace MSyics.Traceyi
 {
@@ -27,6 +28,8 @@ namespace MSyics.Traceyi
             Traced = traced;
             Action = action;
             Message = message;
+
+            Elapsed = traced - Traceable.Context.CurrentOperation.Started;
         }
 
         /// <summary>
@@ -38,6 +41,11 @@ namespace MSyics.Traceyi
         /// トレースの動作を取得または設定します。
         /// </summary>
         public TraceAction Action { get; private set; }
+
+        /// <summary>
+        /// 経過時間を取得または設定します。
+        /// </summary>
+        public TimeSpan Elapsed { get; private set; }
 
         /// <summary>
         /// メッセージを取得または設定します。

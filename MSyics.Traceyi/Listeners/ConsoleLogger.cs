@@ -70,7 +70,6 @@ namespace MSyics.Traceyi.Listeners
                     break;
                 case TraceAction.Start:
                 case TraceAction.Stop:
-                case TraceAction.Elapsed:
                     Console.ForegroundColor = ConsoleColor.DarkCyan;
                     break;
                 case TraceAction.Info:

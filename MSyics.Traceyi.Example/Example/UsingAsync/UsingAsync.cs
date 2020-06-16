@@ -24,7 +24,7 @@ namespace MSyics.Traceyi
             {
                 await Task.
                     WhenAll(Enumerable.
-                    Range(1, 100).
+                    Range(1, 10).
                     Select(x => Hoge(x)).
                     ToArray());
 

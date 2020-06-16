@@ -116,7 +116,6 @@ namespace MSyics.Traceyi
                 var currentOperation = Context.CurrentOperation;
                 if (!byScope && currentOperation.UseScope) { break; }
 
-                RaiseTracing(stoped, TraceAction.Elapsed, stoped - currentOperation.Started);
                 RaiseTracing(stoped, TraceAction.Stop, message);
 
                 var popOperation = Context.OperationStack.Pop();

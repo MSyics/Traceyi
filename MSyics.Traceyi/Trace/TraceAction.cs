@@ -45,10 +45,5 @@ namespace MSyics.Traceyi
         /// 操作停止
         /// </summary>
         Stop,
-
-        /// <summary>
-        /// 経過時間
-        /// </summary>
-        Elapsed,
     }
 }

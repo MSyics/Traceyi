@@ -17,10 +17,10 @@
       "File": [
         {
           "Name": "file",
-          "UseLock": true,
+          "UseLock": false,
           "UseAsync": true,
-          "MaxLength": 5242880,
-          "LeaveFiles": false,
+          "MaxLength": 524288000,
+          "LeaveFiles": true,
           "Path": "app.log"
         }
       ]

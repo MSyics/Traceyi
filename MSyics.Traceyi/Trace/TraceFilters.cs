@@ -54,11 +54,6 @@ namespace MSyics.Traceyi
         Stop = 0x200,
 
         /// <summary>
-        /// 経過時間
-        /// </summary>
-        Elapsed = 0x400,
-
-        /// <summary>
         /// Info | Start | Stop | Warning | Error
         /// </summary>
         Actions = Info | Warning | Error | Critical | Start | Stop,
@@ -66,6 +61,6 @@ namespace MSyics.Traceyi
         /// <summary>
         /// すべて
         /// </summary>
-        All = Trace | Debug | Actions | Elapsed,
+        All = Trace | Debug | Actions,
     }
 }
