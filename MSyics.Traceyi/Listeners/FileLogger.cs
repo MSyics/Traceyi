@@ -18,8 +18,8 @@ namespace MSyics.Traceyi.Listeners
         /// </summary>
         public FileLogger(string pathLayout, ILogLayout layout)
         {
-            Path = string.IsNullOrEmpty(pathLayout) 
-                ? System.IO.Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName) + ".log" 
+            Path = string.IsNullOrEmpty(pathLayout)
+                ? System.IO.Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName) + ".log"
                 : pathLayout;
             Layout = layout;
             SetFormattedPathLayout();
@@ -95,7 +95,7 @@ namespace MSyics.Traceyi.Listeners
             try
             {
                 Rotate(path);
-                var log = new BasicFileLogger(StreamManager.GetOrAdd(path), Encoding, Layout)
+                var log = new BasicFileLogger(StreamManager.GetOrAdd(e.ThreadId, path), Encoding, Layout)
                 {
                     Name = Name,
                     NewLine = NewLine,

@@ -10,14 +10,14 @@
       "Console": [
         {
           "Name": "console",
-          "UseLock": true,
+          "UseLock": false,
           "UseAsync": true
         }
       ],
       "File": [
         {
           "Name": "file",
-          "UseLock": false,
+          "UseLock": true,
           "UseAsync": true,
           "MaxLength": 524288000,
           "LeaveFiles": true,

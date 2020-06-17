@@ -3,35 +3,38 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 
 namespace MSyics.Traceyi
 {
     internal class ReuseFileStreamManager
     {
-        [ThreadStatic]
-        private static string CurrentPath;
-        private static readonly Dictionary<string, ReuseFileStream> Streams = new Dictionary<string, ReuseFileStream>();
+        private static readonly Dictionary<int, string> paths = new Dictionary<int, string>();
+        private static readonly Dictionary<string, ReuseFileStream> streams = new Dictionary<string, ReuseFileStream>();
 
-        public bool Exists(string path) => Streams.ContainsKey(path);
+        public bool Exists(string path) => streams.ContainsKey(path);
 
-        public bool TryGet(string path, out ReuseFileStream stream) => Streams.TryGetValue(path, out stream);
+        public bool TryGet(string path, out ReuseFileStream stream) => streams.TryGetValue(path, out stream);
 
-        public FileStream GetOrAdd(string path)
+        public FileStream GetOrAdd(int threadId, string path)
         {
-            if ((!string.IsNullOrEmpty(CurrentPath)) && CurrentPath != path)
+            if (paths.TryGetValue(threadId, out string currentPath))
             {
-                Remove(CurrentPath);
+                if (!string.IsNullOrEmpty(currentPath) && currentPath != path)
+                {
+                    Remove(currentPath);
+                }
             }
-            CurrentPath = path;
+            paths[threadId] = path;
 
-            if (Streams.TryGetValue(path, out var stream))
+            if (streams.TryGetValue(path, out var stream))
             {
                 stream.Position = stream.Length;
             }
             else
             {
                 stream = new ReuseFileStream(path);
-                Streams[path] = stream;
+                streams[path] = stream;
             }
 
             return stream;
@@ -40,26 +43,26 @@ namespace MSyics.Traceyi
         public void Remove(string path)
         {
             if (string.IsNullOrEmpty(path)) { return; }
-            if (Streams.TryGetValue(path, out var stream))
+            if (streams.TryGetValue(path, out var stream))
             {
                 stream.Clean();
-                Streams.Remove(path);
+                streams.Remove(path);
             }
         }
 
         public void Clear()
         {
-            if (Streams.Count == 0) { return; }
-            lock (((ICollection)Streams).SyncRoot)
+            if (streams.Count == 0) { return; }
+            lock (((ICollection)streams).SyncRoot)
             {
-                foreach (var item in Streams.ToArray())
+                foreach (var item in streams.ToArray())
                 {
                     item.Value.Clean();
-                    Streams.Remove(item.Key);
+                    streams.Remove(item.Key);
                 }
             }
         }
 
-        public ReuseFileStream this[string path] { get => Streams[path]; set => Streams[path] = value; }
+        public ReuseFileStream this[string path] { get => streams[path]; set => streams[path] = value; }
     }
 }

@@ -2,6 +2,7 @@
 using MSyics.Traceyi.Listeners;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,21 +19,25 @@ namespace MSyics.Traceyi
             Tracer = Traceable.Get();
         }
 
+        private Stopwatch sw = new Stopwatch();
+
         public override async Task ShowAsync()
         {
+            sw.Start();
             Tracer.Information(100);
 
             using (Tracer.Scope(1))
             {
                 await Task.
                     WhenAll(Enumerable.
-                    Range(1, 100000).
+                    Range(1, 10000).
                     Select(x => Hoge(x)).
                     ToArray());
 
                 Tracer.Information(1);
                 Tracer.Start(1.1);
             }
+            Console.WriteLine(sw.ElapsedMilliseconds);
         }
 
         public async Task Hoge(object obj)
@@ -55,6 +60,8 @@ namespace MSyics.Traceyi
         public override void Teardown()
         {
             Traceable.Shutdown();
+            sw.Stop();
+            Console.WriteLine(sw.ElapsedMilliseconds);
         }
     }
 }

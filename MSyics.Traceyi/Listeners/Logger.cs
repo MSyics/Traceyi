@@ -24,10 +24,10 @@ namespace MSyics.Traceyi.Listeners
 #if NETCOREAPP3_1
         private readonly Task consumer;
         private readonly Channel<TraceEventArg> channel;
-      
+
         public Logger()
         {
-            channel = Channel.CreateUnbounded<TraceEventArg>();
+            channel = Channel.CreateUnbounded<TraceEventArg>(new UnboundedChannelOptions { SingleReader = true });
             consumer = Worker();
         }
 
@@ -135,6 +135,7 @@ namespace MSyics.Traceyi.Listeners
                 consumer.Wait(CloseTimeout);
                 consumer.Dispose();
             }
+
             Cancellation.Cancel(false);
             Cancellation.Dispose();
             Dispose(true);
