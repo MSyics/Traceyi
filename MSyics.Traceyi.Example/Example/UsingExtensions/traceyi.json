@@ -1,0 +1,22 @@
+﻿{
+  "Traceyi": {
+    "Tracer": [
+      {
+        "Listeners": [ "console" ],
+        "Filters": "all"
+      }
+    ],
+    "Listener": {
+      "Console": [
+        {
+          "Name": "console",
+          "UseLock": false,
+          "UseAsync": false,
+          "Layout": {
+            "Format": "{dateTime:yyyy/MM/dd}{tab}{dateTime:HH:mm:ss.ffff}{tab}{action}{tab}{elapsed:d\\.hh\\:mm\\:ss\\.fffffff}{tab}{operationId}{tab}{eventId}{tab}{eventName}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}"
+          }
+        }
+      ]
+    }
+  }
+}

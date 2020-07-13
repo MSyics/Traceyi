@@ -8,35 +8,37 @@ namespace MSyics.Traceyi
     /// </summary>
     public sealed class TraceScope : IDisposable
     {
-        private Action action;
+        private bool stopped = false;
+        private Action<object> stop;
 
         /// <summary>
         /// 識別子を取得または設定します。
         /// </summary>
         public string Id { get; } = $"{DateTimeOffset.Now.Ticks}/{Thread.CurrentThread.ManagedThreadId}";
 
-        /// <summary>
-        /// TraceScope クラスのイスタンスを初期化します。
-        /// </summary>
-        public TraceScope(Tracer tracer, object operationId = null, object startMessage = null, object stopMessage = null)
+        internal void Start(Tracer tracer, object operationId = null, object startMessage = null, object stopMessage = null)
         {
             tracer.Start(operationId, startMessage, Id);
-            action = () => tracer.Stop(stopMessage, Id);
+            stop = x => tracer.Stop(x ?? stopMessage, Id);
         }
-
-        #region IDisposable Members
-        private bool disposed = false;
 
         /// <summary>
         /// トレースのコードブロックから脱退します。
         /// </summary>
-        public void Dispose()
+        /// <param name="stopMessage">メッセージ</param>
+        public void Stop(object stopMessage = null)
         {
-            if (disposed) { return; }
-            disposed = true;
-            action?.Invoke();
-            action = null;
+            if (stopped) { return; }
+            stopped = true;
+            stop?.Invoke(stopMessage);
+            stop = null;
         }
+
+        #region IDisposable Members
+        /// <summary>
+        /// トレースのコードブロックから脱退します。
+        /// </summary>
+        void IDisposable.Dispose() => Stop();
         #endregion
     }
 }

@@ -24,7 +24,18 @@ namespace MSyics.Traceyi
         /// 構成ファイルで設定した Tracer オブジェクトを取得します。
         /// </summary>
         /// <param name="name">取得する Tracer オブジェクトの名前</param>
-        public static Tracer Get(string name = "") => Tracers.TryGetValue(name.ToUpper(), out var x) ? x.tracer : new Tracer();
+        public static Tracer Get(string name = "")
+        {
+            if (Tracers.TryGetValue(name.ToUpper(), out var named))
+            {
+                return named.tracer;
+            }
+            if (Tracers.TryGetValue("", out var @default))
+            {
+                return @default.tracer;
+            }
+            return new Tracer();
+        }
 
         /// <summary>
         /// 終了処理を行います。
@@ -33,7 +44,7 @@ namespace MSyics.Traceyi
         {
             var tasks = Tracers.
                 SelectMany(x => x.Value.listeners).
-                Select(x => Task.Run(() => x.Dispose())).
+                Select(x => Task.Run(x.Dispose)).
                 ToArray();
             Task.WaitAll(tasks);
             Tracers.Clear();

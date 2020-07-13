@@ -3,6 +3,9 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
+using Microsoft.Extensions.Logging;
 
 #if NETCOREAPP3_1
 using System.Threading.Channels;
@@ -28,10 +31,10 @@ namespace MSyics.Traceyi.Listeners
         public Logger()
         {
             channel = Channel.CreateUnbounded<TraceEventArg>(new UnboundedChannelOptions { SingleReader = true });
-            consumer = Worker();
+            consumer = ReadAsync();
         }
 
-        private async Task Worker()
+        private async Task ReadAsync()
         {
             await Task.Yield();
             try
@@ -86,8 +89,9 @@ namespace MSyics.Traceyi.Listeners
                 {
                     _ = WriteAsync(e);
                 }
-                catch (TaskCanceledException)
+                catch (TaskCanceledException tce)
                 {
+                    Debug.Print($"{tce}");
                 }
             }
             else
@@ -106,8 +110,6 @@ namespace MSyics.Traceyi.Listeners
         /// </summary>
         public void Write(TraceEventArg e)
         {
-
-
             if (UseLock)
             {
                 lock (GlobalLock) { WriteCore(e); }
@@ -180,7 +182,6 @@ namespace MSyics.Traceyi.Listeners
         /// リソースを破棄したかどうかを示す値を取得します。
         /// </summary>
         public bool Disposed { get; private set; } = false;
-
 
         private void Dispose(bool disposing)
         {

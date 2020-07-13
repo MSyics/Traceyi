@@ -2,7 +2,7 @@
   "Traceyi": {
     "Tracer": [
       {
-        "Listeners": [ "file" ],
+        "Listeners": [ "console" ],
         "Filters": "all"
       }
     ],
@@ -17,7 +17,7 @@
       "File": [
         {
           "Name": "file",
-          "UseLock": true,
+          "UseLock": false,
           "UseAsync": true,
           "MaxLength": 524288000,
           "LeaveFiles": true,

@@ -9,49 +9,44 @@ namespace MSyics.Traceyi
     public enum TraceFilters
     {
         /// <summary>
-        /// 無し
-        /// </summary>
-        None = 0x000,
-
-        /// <summary>
         /// トレース動作
         /// </summary>
-        Trace = 0x001,
+        Trace = 0x0001,
 
         /// <summary>
         /// デバッグ動作
         /// </summary>
-        Debug = 0x002,
+        Debug = 0x0002,
 
         /// <summary>
         /// 通知動作
         /// </summary>
-        Info = 0x004,
+        Info = 0x0004,
 
         /// <summary>
         /// 注意動作
         /// </summary>
-        Warning = 0x008,
+        Warning = 0x0008,
 
         /// <summary>
         /// エラー動作
         /// </summary>
-        Error = 0x010,
+        Error = 0x0010,
 
         /// <summary>
         /// 重大動作
         /// </summary>
-        Critical = 0x020,
+        Critical = 0x0020,
 
         /// <summary>
         /// 開始動作
         /// </summary>
-        Start = 0x100,
+        Start = 0x0100,
 
         /// <summary>
         /// 停止動作
         /// </summary>
-        Stop = 0x200,
+        Stop = 0x0200,
 
         /// <summary>
         /// Info | Start | Stop | Warning | Error
@@ -62,5 +57,10 @@ namespace MSyics.Traceyi
         /// すべて
         /// </summary>
         All = Trace | Debug | Actions,
+
+        /// <summary>
+        /// 無し
+        /// </summary>
+        None = 0x1000,
     }
 }

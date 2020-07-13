@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Threading;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 
 namespace MSyics.Traceyi
 {
@@ -25,10 +26,10 @@ namespace MSyics.Traceyi
 
         public TraceEventArg(DateTime traced, TraceAction action, object message)
         {
+            Elapsed = Traceable.Context.OperationStack.Count == 0 ? TimeSpan.Zero : traced - Traceable.Context.CurrentOperation.Started;
             Traced = traced;
             Action = action;
             Message = message;
-            Elapsed = Traceable.Context.OperationStack.Count == 0 ? TimeSpan.Zero : traced - Traceable.Context.CurrentOperation.Started;
         }
 
         /// <summary>
@@ -45,11 +46,6 @@ namespace MSyics.Traceyi
         /// 経過時間を取得または設定します。
         /// </summary>
         public TimeSpan Elapsed { get; private set; }
-
-        /// <summary>
-        /// メッセージを取得または設定します。
-        /// </summary>
-        public object Message { get; private set; }
 
         /// <summary>
         /// スレッドに関連付けられた一意な識別子を取得します。
@@ -80,6 +76,36 @@ namespace MSyics.Traceyi
         /// マシン名を取得します。
         /// </summary>
         public string MachineName { get; } = machineName;
+
+        /// <summary>
+        /// メッセージを取得します。
+        /// </summary>
+        public object Message { get; private set; }
+
+        /// <summary>
+        /// メッセージが TraceyiLoggerMessage かどうかを示す値を取得します。
+        /// </summary>
+        public bool HasTraceyiLoggerMessage => Message is TraceyiLoggerMessage;
+
+        /// <summary>
+        /// ILogger で指定された EventId を取得します。
+        /// </summary>
+        public EventId EventId => TryGetTraceyiLoggerMessage(out var message) ? message.EventId : default;
+
+        /// <summary>
+        /// ILogger で指定されたメッセージを取得します。
+        /// </summary>
+        /// <param name="message"></param>
+        /// <returns></returns>
+        public bool TryGetTraceyiLoggerMessage(out TraceyiLoggerMessage message)
+        {
+            message = null;
+            if (Message is TraceyiLoggerMessage value)
+            {
+                message = value;
+            }
+            return message != null;
+        }
 
         public override string ToString()
         {

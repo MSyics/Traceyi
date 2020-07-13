@@ -24,13 +24,14 @@ namespace MSyics.Traceyi
         public override async Task ShowAsync()
         {
             sw.Start();
+
             Tracer.Information(100);
 
             using (Tracer.Scope(1))
             {
                 await Task.
                     WhenAll(Enumerable.
-                    Range(1, 10000).
+                    Range(1, 1000).
                     Select(x => Hoge(x)).
                     ToArray());
 

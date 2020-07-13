@@ -69,7 +69,7 @@ namespace MSyics.Traceyi.Layout
                     var customFormats = customFormat.Split(',', ':');
                     if (customFormats.Length != 3)
                     {
-                        throw new FormatException("入力文字列の形式が正しくありません。");
+                        throw new FormatException($"The input string [{format}] is not in the correct format.");
                     }
 
                     // 文字数不足のときに埋める文字の取得
@@ -87,7 +87,7 @@ namespace MSyics.Traceyi.Layout
                     // 文字数の取得
                     if (!int.TryParse(customFormats[1], out var count))
                     {
-                        throw new FormatException("入力文字列の形式が正しくありません。");
+                        throw new FormatException($"The input string [{format}] is not in the correct format.");
                     }
                     else
                     {
@@ -101,7 +101,7 @@ namespace MSyics.Traceyi.Layout
                     var position = customFormats[2].ToUpper();
                     if (position.Length != 1)
                     {
-                        throw new FormatException("入力文字列の形式が正しくありません。");
+                        throw new FormatException($"The input string [{format}] is not in the correct format.");
                     }
 
                     // 文字埋め
@@ -131,7 +131,7 @@ namespace MSyics.Traceyi.Layout
                     }
                     else
                     {
-                        throw new FormatException("入力文字列の形式が正しくありません。");
+                        throw new FormatException($"The input string [{format}] is not in the correct format.");
                     }
                 }
             }

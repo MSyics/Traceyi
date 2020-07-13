@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.CompilerServices;
+using System.Text.RegularExpressions;
 
 namespace MSyics.Traceyi
 {
@@ -15,8 +16,12 @@ namespace MSyics.Traceyi
         /// <param name="operationId">操作 ID</param>
         /// <param name="startMessage">開始メッセージ</param>
         /// <param name="stopMessage">終了メッセージ</param>
-        public static TraceScope Scope(this Tracer tracer, object operationId = null, object startMessage = null, object stopMessage = null) => 
-            new TraceScope(tracer, operationId, startMessage, stopMessage);
+        public static TraceScope Scope(this Tracer tracer, object operationId = null, object startMessage = null, object stopMessage = null)
+        {
+            var scope = new TraceScope();
+            scope.Start(tracer, operationId, startMessage, stopMessage);
+            return scope;
+        }
 
         /// <summary>
         /// 指定したフィルターに動作が含まれているかどうかを判定します。
@@ -26,6 +31,11 @@ namespace MSyics.Traceyi
         /// <returns>含まれている場合は true、それ以外の場合は false。</returns>
         internal static bool Contains(this TraceFilters filters, TraceAction action)
         {
+            if (filters.HasFlag(TraceFilters.None))
+            {
+                return false;
+            }
+
             TraceFilters filter;
             switch (action)
             {
@@ -54,8 +64,7 @@ namespace MSyics.Traceyi
                     filter = TraceFilters.Stop;
                     break;
                 default:
-                    filter = TraceFilters.None;
-                    break;
+                    return false;
             }
             return (filter & filters) == filter;
         }

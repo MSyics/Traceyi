@@ -1,5 +1,6 @@
 ﻿using MSyics.Traceyi.Layout;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -106,8 +107,9 @@ namespace MSyics.Traceyi.Listeners
                     log.WriteCore(e);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                Debug.Print($"{ex}");
                 return;
             }
         }

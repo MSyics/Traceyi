@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Text;
 
 namespace MSyics.Traceyi.Layout
@@ -30,8 +31,8 @@ namespace MSyics.Traceyi.Layout
 
                     if (length <= 0)
                     {
+                        Debug.Print("The log layout is not in the correct format.");
                         return "";
-                        //throw new FormatException("The input string is not in the correct format.");
                     }
 
                     var convertString = layout.Substring(startIndex, length);
