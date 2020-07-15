@@ -11,15 +11,10 @@ namespace MSyics.Traceyi
         private bool stopped = false;
         private Action<object> stop;
 
-        /// <summary>
-        /// 識別子を取得または設定します。
-        /// </summary>
-        public string Id { get; } = $"{DateTimeOffset.Now.Ticks}/{Thread.CurrentThread.ManagedThreadId}";
-
         internal void Start(Tracer tracer, object operationId = null, object startMessage = null, object stopMessage = null)
         {
-            tracer.Start(operationId, startMessage, Id);
-            stop = x => tracer.Stop(x ?? stopMessage, Id);
+            var scopeId = tracer.StartCore(operationId, startMessage);
+            stop = x => tracer.StopCore(x ?? stopMessage, scopeId);
         }
 
         /// <summary>

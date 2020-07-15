@@ -20,6 +20,8 @@ namespace MSyics.Traceyi
         public override Task ShowAsync()
         {
             Tracer.Context.ActivityId = 100;
+
+            Tracer.Information("out of scope");
             using (Tracer.Scope(1))
             {
                 Hoge();
@@ -29,11 +31,11 @@ namespace MSyics.Traceyi
 
         private void Hoge()
         {
-            using (Tracer.Scope(2))
+            using (Tracer.Scope(2, "2 start", "2 stop"))
             {
-                Tracer.Start("2-1", "scope");
+                Tracer.Start("2-1", "2-1 start");
                 Piyo();
-                Tracer.Start("2-2", "scope");
+                Tracer.Start("2-2", "2-2 start");
             }
         }
 

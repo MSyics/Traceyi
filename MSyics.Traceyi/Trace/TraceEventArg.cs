@@ -24,13 +24,19 @@ namespace MSyics.Traceyi
             }
         }
 
-        public TraceEventArg(DateTime traced, TraceAction action, object message)
+        public TraceEventArg(DateTime traced, TraceAction action, object message, TraceOperation operation)
         {
-            Elapsed = Traceable.Context.OperationStack.Count == 0 ? TimeSpan.Zero : traced - Traceable.Context.CurrentOperation.Started;
+            Elapsed = operation.ScopeNumber == 0 ? TimeSpan.Zero : traced - operation.Started;
             Traced = traced;
             Action = action;
             Message = message;
+            Operation = operation;
         }
+
+        /// <summary>
+        /// トレース操作を取得します。
+        /// </summary>
+        public TraceOperation Operation { get; private set; }
 
         /// <summary>
         /// トレースした日時を取得または設定します。
@@ -51,11 +57,6 @@ namespace MSyics.Traceyi
         /// スレッドに関連付けられた一意な識別子を取得します。
         /// </summary>
         public object ActivityId { get; } = Traceable.Context.ActivityId;
-
-        /// <summary>
-        /// 操作識別子を取得します。
-        /// </summary>
-        public object OperationId { get; } = Traceable.Context.CurrentOperation.Id;
 
         /// <summary>
         /// マネージスレッドの一意な識別子を取得します。
@@ -109,7 +110,7 @@ namespace MSyics.Traceyi
 
         public override string ToString()
         {
-            return $"{Traced}\t{Action}\t{Elapsed}\t{OperationId}\t{ActivityId}\t{ThreadId}\t{ProcessId}\t{ProcessName}\t{MachineName}\t{Message}";
+            return $"{Traced}\t{Action}\t{Elapsed}\t{Operation.Id}\t{ActivityId}\t{ThreadId}\t{ProcessId}\t{ProcessName}\t{MachineName}\t{Message}";
         }
     }
 }

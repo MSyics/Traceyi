@@ -10,8 +10,8 @@
       "Console": [
         {
           "Name": "console",
-          "UseLock": true,
-          "UseAsync": false
+          "UseLock": false,
+          "UseAsync": true
         }
       ],
       "File": [

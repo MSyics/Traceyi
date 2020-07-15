@@ -13,7 +13,7 @@ namespace MSyics.Traceyi
         internal readonly static TraceOperation NullOperation = new TraceOperation();
 
         /// <summary>
-        /// スコープ ID を取得または設定します。
+        /// スコープ ID を取得します。
         /// </summary>
         public string ScopeId { get; internal set; }
 
@@ -21,6 +21,16 @@ namespace MSyics.Traceyi
         /// スコープを使用しているかどうかを示す値を取得します。
         /// </summary>
         public bool UseScope => ScopeId != null;
+
+        /// <summary>
+        /// 親スコープ ID を取得します。
+        /// </summary>
+        public string ParentId { get; internal set; }
+
+        /// <summary>
+        /// スコープ番号を取得します。
+        /// </summary>
+        public int ScopeNumber { get; internal set; }
 
         /// <summary>
         /// 操作の識別子を取得します。
@@ -31,5 +41,7 @@ namespace MSyics.Traceyi
         /// 操作の開始日時を取得します。
         /// </summary>
         public DateTime Started { get; internal set; } = DateTime.MinValue;
+
+        public DateTime Created { get; } = DateTime.Now;
     }
 }
