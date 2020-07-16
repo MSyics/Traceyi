@@ -10,7 +10,7 @@ namespace MSyics.Traceyi.Layout
         /// <summary>
         /// 初期レイアウトを示す固定値です。
         /// </summary>
-        public readonly static string DefaultLayout = "{dateTime:yyyy/MM/dd} {dateTime:HH:mm:ss.fffffff}{tab}{action}{tab}{scopeNumber}|{scopeId|0,16:R}|{parentId|0,16:R}{tab}{threadId}|{activityId}{tab}{processId}|{processName}{tab}{machineName}{tab}{elapsed:d\\.hh\\:mm\\:ss\\.fffffff}{tab}{operationId}{tab}{message}";
+        public readonly static string DefaultLayout = "{dateTime:yyyy/MM/dd} {dateTime:HH:mm:ss.fffffff}{tab}{scopeNumber}{tab}{scopeId ,16:R}{tab}{parentId| ,16:R}{tab}{threadId}{tab}{activityId}{tab}{machineName}{tab}{processId}{tab}{processName}{tab}{action}{tab}{elapsed:d\\.hh\\:mm\\:ss\\.fffffff}{tab}{operationId}{tab}{message}";
 
         /// <summary>
         /// TextLayout クラスのインスタンスを初期化します。

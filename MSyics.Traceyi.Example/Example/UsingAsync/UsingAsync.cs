@@ -25,13 +25,14 @@ namespace MSyics.Traceyi
         {
             sw.Start();
 
+            Tracer.Context.ActivityId = "A1";
             Tracer.Information(100);
 
             using (Tracer.Scope(1))
             {
                 await Task.
                     WhenAll(Enumerable.
-                    Range(1, 1000).
+                    Range(1, 100).
                     Select(x => Hoge(x)).
                     ToArray());
 
@@ -43,10 +44,12 @@ namespace MSyics.Traceyi
 
         public async Task Hoge(object obj)
         {
+            Tracer.Context.ActivityId = "A2";
             using (Tracer.Scope(2))
             {
                 await Task.Run(() =>
                  {
+                     Tracer.Context.ActivityId = "A3";
                      using (Tracer.Scope(3))
                      {
                          Tracer.Information($"{3} {obj}");

@@ -17,8 +17,8 @@ namespace MSyics.Traceyi
         private readonly static Dictionary<string, (Tracer tracer, ITraceListener[] listeners)> Tracers = new Dictionary<string, (Tracer tracer, ITraceListener[] listeners)>();
         private readonly static TraceListenerElementConfiguration TraceListenerElementConfiguration = new TraceListenerElementConfiguration();
 
-        internal static TraceContext Context => threadContext.Value;
-        private static readonly Lazy<TraceContext> threadContext = new Lazy<TraceContext>(() => new TraceContext(), true);
+        internal static TraceContext Context => context.Value;
+        private static readonly Lazy<TraceContext> context = new Lazy<TraceContext>(() => new TraceContext(), true);
 
         /// <summary>
         /// 構成ファイルで設定した Tracer オブジェクトを取得します。
