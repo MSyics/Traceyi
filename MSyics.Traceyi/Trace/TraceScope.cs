@@ -14,7 +14,7 @@ namespace MSyics.Traceyi
         internal void Start(Tracer tracer, object operationId = null, object startMessage = null, object stopMessage = null)
         {
             var scopeId = tracer.StartCore(operationId, startMessage);
-            stop = x => tracer.StopCore(x ?? stopMessage, scopeId);
+            stop = x => tracer.Stop(x ?? stopMessage, scopeId);
         }
 
         /// <summary>

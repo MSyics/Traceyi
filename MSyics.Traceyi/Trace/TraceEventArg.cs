@@ -26,32 +26,37 @@ namespace MSyics.Traceyi
 
         public TraceEventArg(DateTime traced, TraceAction action, object message, TraceOperation operation)
         {
-            Elapsed = operation.ScopeNumber == 0 ? TimeSpan.Zero : traced - operation.Started;
             Traced = traced;
             Action = action;
             Message = message;
             Operation = operation;
+            Elapsed = operation.ScopeNumber == 0 || action == TraceAction.Start ? TimeSpan.Zero : traced - operation.Started;
         }
 
         /// <summary>
         /// トレース操作を取得します。
         /// </summary>
-        public TraceOperation Operation { get; private set; }
+        public TraceOperation Operation { get; }
 
         /// <summary>
         /// トレースした日時を取得または設定します。
         /// </summary>
-        public DateTime Traced { get; private set; }
+        public DateTime Traced { get; }
 
         /// <summary>
         /// トレースの動作を取得または設定します。
         /// </summary>
-        public TraceAction Action { get; private set; }
+        public TraceAction Action { get; }
+
+        /// <summary>
+        /// メッセージを取得します。
+        /// </summary>
+        public object Message { get; }
 
         /// <summary>
         /// 経過時間を取得または設定します。
         /// </summary>
-        public TimeSpan Elapsed { get; private set; }
+        public TimeSpan Elapsed { get; }
 
         /// <summary>
         /// スレッドに関連付けられた一意な識別子を取得します。
@@ -77,11 +82,6 @@ namespace MSyics.Traceyi
         /// マシン名を取得します。
         /// </summary>
         public string MachineName { get; } = machineName;
-
-        /// <summary>
-        /// メッセージを取得します。
-        /// </summary>
-        public object Message { get; private set; }
 
         /// <summary>
         /// メッセージが TraceyiLoggerMessage かどうかを示す値を取得します。

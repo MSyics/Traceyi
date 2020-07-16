@@ -12,7 +12,7 @@ namespace MSyics.Traceyi
         public override string Name => nameof(UsingScope);
 
         public override void Setup()
-        {
+        { 
             Traceable.Add(@"example\UsingScope\traceyi.json");
             Tracer = Traceable.Get();
         }

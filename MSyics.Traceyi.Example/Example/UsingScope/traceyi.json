@@ -21,10 +21,7 @@
           "UseAsync": true,
           "MaxLength": 5242880,
           "LeaveFiles": false,
-          "Layout": {
-            "Format": "{message}"
-          },
-          "Path": "app.log"
+          "Path": "app2.log"
         }
       ]
     }

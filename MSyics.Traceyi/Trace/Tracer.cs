@@ -1,12 +1,5 @@
-﻿using MSyics.Traceyi.Listeners;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Text;
-using System.Linq;
+﻿using System;
 using System.Threading.Tasks;
-using System.Threading;
-using System.Runtime.CompilerServices;
 
 namespace MSyics.Traceyi
 {
@@ -39,53 +32,58 @@ namespace MSyics.Traceyi
 
         private void RaiseTracing(DateTime traced, TraceAction action, object message, TraceOperation operation)
         {
-            if (!Filters.Contains(action)) return;
+            if (!Filters.Contains(action)) { return; }
+
             Tracing?.Invoke(this, new TraceEventArg(traced, action, message, operation));
         }
 
-        private void RaiseTracing(DateTime traced, TraceAction action, object message) =>
-            RaiseTracing(traced, action, message, Context.CurrentOperation);
+        private void RaiseTracing(TraceAction action, object message)
+        {
+            if (!Filters.Contains(action)) return;
+
+            Tracing?.Invoke(this, new TraceEventArg(DateTime.Now, action, message, Context.CurrentOperation));
+        }
 
         #region Trace
         /// <summary>
         /// トレースに必要なメッセージを残します。
         /// </summary>
-        public void Trace(object message) => RaiseTracing(DateTime.Now, TraceAction.Trace, message);
+        public void Trace(object message) => RaiseTracing(TraceAction.Trace, message);
         #endregion
 
         #region Debug
         /// <summary>
         /// デバッグに必要なメッセージを残します。
         /// </summary>
-        public void Debug(object message) => RaiseTracing(DateTime.Now, TraceAction.Debug, message);
+        public void Debug(object message) => RaiseTracing(TraceAction.Debug, message);
         #endregion
 
         #region Information
         /// <summary>
         /// 通知メッセージを残します。
         /// </summary>
-        public void Information(object message) => RaiseTracing(DateTime.Now, TraceAction.Info, message);
+        public void Information(object message) => RaiseTracing(TraceAction.Info, message);
         #endregion
 
         #region Warning
         /// <summary>
         /// 注意メッセージを残します。
         /// </summary>
-        public void Warning(object message) => RaiseTracing(DateTime.Now, TraceAction.Warning, message);
+        public void Warning(object message) => RaiseTracing(TraceAction.Warning, message);
         #endregion
 
         #region Error
         /// <summary>
         /// エラーメッセージを残します。
         /// </summary>
-        public void Error(object message) => RaiseTracing(DateTime.Now, TraceAction.Error, message);
+        public void Error(object message) => RaiseTracing(TraceAction.Error, message);
         #endregion
 
         #region Critical
         /// <summary>
         /// 重大メッセージを残します。
         /// </summary>
-        public void Critical(object message) => RaiseTracing(DateTime.Now, TraceAction.Critical, message);
+        public void Critical(object message) => RaiseTracing(TraceAction.Critical, message);
         #endregion
 
         #region Start
@@ -97,10 +95,10 @@ namespace MSyics.Traceyi
                 ScopeId = $"{ DateTime.Now.Ticks:x16}",
                 ParentId = Context.CurrentOperation.ScopeId,
                 ScopeNumber = Context.OperationStack.Count + 1,
+                Started = DateTime.Now,
             };
 
             Context.OperationStack.Push(operation);
-            operation.Started = DateTime.Now;
             RaiseTracing(operation.Started, TraceAction.Start, message, operation);
 
             return operation.ScopeId;
@@ -113,28 +111,26 @@ namespace MSyics.Traceyi
         #endregion
 
         #region Stop
-        internal void StopCore(object message, string scopeId)
+        internal void Stop(object message, string scopeId, DateTime stopped)
         {
-            var stoped = DateTime.Now;
-            var byScope = scopeId != null;
             for (; ; )
             {
-                if (Context.OperationStack.Count == 0) { break; }
+                var operation = Context.CurrentOperation;
+                if (operation.UseScope && scopeId == null) { break; }
 
-                var currentOperation = Context.CurrentOperation;
-                if (!byScope && currentOperation.UseScope) { break; }
+                RaiseTracing(stopped, TraceAction.Stop, scopeId == operation.ScopeId ? message : default, operation);
+                Context.OperationStack.Pop();
 
-                RaiseTracing(stoped, TraceAction.Stop, scopeId == currentOperation.ScopeId ? message : default, currentOperation);
-
-                var popOperation = Context.OperationStack.Pop();
-                if (scopeId == popOperation.ScopeId) { break; }
+                if (scopeId == operation.ScopeId) { break; }
             }
         }
+
+        internal void Stop(object message, string scopeId) => Stop(message, scopeId, DateTime.Now);
 
         /// <summary>
         /// 操作の終了メッセージを残します。
         /// </summary>
-        public void Stop(object message = null) => StopCore(message, null);
+        public void Stop(object message = null) => Stop(message, null, DateTime.Now);
         #endregion
     }
 }
