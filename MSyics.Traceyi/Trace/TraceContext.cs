@@ -12,8 +12,8 @@ namespace MSyics.Traceyi
     /// </summary>
     public sealed class TraceContext
     {
-        private readonly AsyncLocal<AsyncLocalStackNode<TraceOperation>> operationStackNode = new AsyncLocal<AsyncLocalStackNode<TraceOperation>>();
-        private readonly AsyncLocal<object> activityId = new AsyncLocal<object>();
+        readonly AsyncLocal<AsyncLocalStackNode<TraceOperation>> operationStackNode = new AsyncLocal<AsyncLocalStackNode<TraceOperation>>();
+        readonly AsyncLocal<object> activityId = new AsyncLocal<object>();
 
         internal TraceContext()
         {

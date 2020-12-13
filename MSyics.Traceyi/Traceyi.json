@@ -34,7 +34,7 @@
         // コンソールに出力する
         // ................................................................
         // Name           : 要素の名前
-        // UseLock        : ロックをかけるかどうか（省略：true）
+        // UseLock        : ロックをかけるかどうか（省略：false）
         // UseAsync       : 非同期 I/O または同期 I/O のどちらを使用するか（省略：true）
         // NewLine        : 改行文字（省略：\r\n）
         // Encoding       : エンコーディング（省略：UTF-8）
@@ -97,21 +97,27 @@
         //   {processName} : String 型
         //   {machineName} : String 型
         //
-        // MaxLength   : ファイルの最大バイトサイズ。
-        //               このサイズを超えるときに新しいファイルが作成される。
-        //               作成済みのファイルには連番がふられる。
-        //               （省略：0）
-        // LeaveFiles  : ファイルの最大バイト数を超えたファイルを残すかどうか
+        // MaxLength       : ファイルの最大バイトサイズ（省略：0）
+        //                   0 以下の場合は最大長を無視
+        //                   このサイズを超えるときに新しいファイルを作成する
+        // MaxArchiveCount : 最大アーカイブ数（省略：10）
+        //                   0 以下の場合はアーカイブしない
+        //                   アーカイブファイルには連番が振られる
+        // UseMutex        : 複数プロセス（またはリスナー）から同じファイルへ書き込み場合に排他制御するかどうか（省略：false）
+        // KeepFilesOpen   : ファイルを開いたままにするかどうか
+        //                   複数プロセス（またはリスナー）から同一ファイルへ書き込む場合に開いたままだと MaxLength 処理ができないため
+        //                   MaxLength > 0 かつ UseMutex = true の場合は false に強制設定
         {
           "Name": "file",
-          "UseLock": true,
+          "UseLock": false,
           "UseAsync": true,
+          "UseMutex": false,
+          "KeepFilesOpen": true,
           "NewLine": "\r\n",
-          "Encoding": "shift-jis",
+          "Encoding": "utf-8",
           "Path": "Test.log",
           "MaxLength": 0,
-          "TempLength": 1048576,
-          "LeaveFiles": true,
+          "MaxArchiveCount": 10,
           "Layout": {
             "Format": "{dateTime}{tab}{message}"
           }

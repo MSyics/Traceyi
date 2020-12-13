@@ -18,15 +18,25 @@ namespace MSyics.Traceyi.Configration
         public long MaxLength { get; set; } = 0;
 
         /// <summary>
-        /// 書き込み上限バイト数を超えたファイルを残しておくのかどうかを示す値を取得または設定します。
+        /// 書き込み上限バイト数を超えたファイルの最大アーカイブ数を取得または設定します。
         /// </summary>
-        public bool LeaveFiles { get; set; } = false;
+        public int MaxArchiveCount { get; set; } = 0;
+
+        /// <summary>
+        /// プロセス間同期を使用するかどうか示す値を取得または設定します。
+        /// </summary>
+        public bool UseMutex { get; set; } = false;
+
+        /// <summary>
+        /// ファイルを開いたままにしておくかどうかを示す値を取得または設定します。
+        /// </summary>
+        public bool KeepFilesOpen { get; set; } = true;
 
         /// <summary>
         /// 実行オブジェクトを取得します。
         /// </summary>
         public override ITraceListener GetRuntimeObject() =>
-            new FileLogger(Path)
+            new FileLogger(Path, UseMutex, KeepFilesOpen)
             {
                 Encoding = GetEncoding(),
                 Layout = Layout.GetRuntimeObject(),
@@ -36,7 +46,7 @@ namespace MSyics.Traceyi.Configration
                 UseAsync = UseAsync,
                 CloseTimeout = CloseTimeout,
                 MaxLength = MaxLength,
-                LeaveFiles = LeaveFiles,
+                MaxArchiveCount = MaxArchiveCount,
             };
     }
 }

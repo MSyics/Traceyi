@@ -11,15 +11,13 @@ using System.Linq;
 namespace MSyics.Traceyi
 {
     /// <summary>
-    /// 
+    /// ILoggerFactory の Traceyi 拡張メソッドを提供します。
     /// </summary>
     public static class TraceyiLoggerFactoryExtensions
     {
         /// <summary>
-        /// 
+        /// 登録します。
         /// </summary>
-        /// <param name="factory"></param>
-        /// <returns></returns>
         private static ILoggerFactory AddTraceyi(this ILoggerFactory factory)
         {
             factory.AddProvider(new TraceyiLoggerProvider());
@@ -27,12 +25,8 @@ namespace MSyics.Traceyi
         }
 
         /// <summary>
-        /// 
+        /// 登録します。
         /// </summary>
-        /// <param name="factory"></param>
-        /// <param name="configuration"></param>
-        /// <param name="usable"></param>
-        /// <returns></returns>
         public static ILoggerFactory AddTraceyi(this ILoggerFactory factory, IConfiguration configuration, Action<ITraceListenerElementConfiguration> usable = null)
         {
             Traceable.Add(configuration, usable);
@@ -40,12 +34,8 @@ namespace MSyics.Traceyi
         }
 
         /// <summary>
-        /// 
+        /// 登録します。
         /// </summary>
-        /// <param name="factory"></param>
-        /// <param name="jsonFile"></param>
-        /// <param name="usable"></param>
-        /// <returns></returns>
         public static ILoggerFactory AddTraceyi(this ILoggerFactory factory, string jsonFile, Action<ITraceListenerElementConfiguration> usable = null)
         {
             Traceable.Add(jsonFile, usable);
@@ -53,27 +43,17 @@ namespace MSyics.Traceyi
         }
 
         /// <summary>
-        /// 
+        /// 登録します。
         /// </summary>
-        /// <param name="factory"></param>
-        /// <param name="name"></param>
-        /// <param name="filters"></param>
-        /// <param name="listeners"></param>
-        /// <returns></returns>
-        public static ILoggerFactory AddTraceyi(this ILoggerFactory factory, string name = "", TraceFilters filters = TraceFilters.All, params Action<TraceEventArg>[] listeners)
+        public static ILoggerFactory AddTraceyi(this ILoggerFactory factory, string name = "", TraceFilters filters = TraceFilters.All, params Action<TraceEventArgs>[] listeners)
         {
             Traceable.Add(name, filters, listeners);
             return factory.AddTraceyi();
         }
 
         /// <summary>
-        /// 
+        /// 登録します。
         /// </summary>
-        /// <param name="factory"></param>
-        /// <param name="name"></param>
-        /// <param name="filters"></param>
-        /// <param name="listeners"></param>
-        /// <returns></returns>
         public static ILoggerFactory AddTraceyi(this ILoggerFactory factory, string name = "", TraceFilters filters = TraceFilters.All, params ITraceListener[] listeners)
         {
             Traceable.Add(name, filters, listeners);

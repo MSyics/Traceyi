@@ -19,15 +19,15 @@ namespace MSyics.Traceyi.Layout
         /// </summary>
         /// <param name="format">書式指定を格納している書式指定文字列。</param>
         /// <param name="arg">書式指定するオブジェクト。</param>
-        private string Format(string format, object arg)
+        private static string Format(string format, object arg)
         {
             if (arg == null)
             {
                 return string.Empty;
             }
-            if (arg is IFormattable)
+            if (arg is IFormattable formattable)
             {
-                return ((IFormattable)arg).ToString(format, CultureInfo.CurrentCulture);
+                return formattable.ToString(format, CultureInfo.CurrentCulture);
             }
             return arg.ToString();
         }
@@ -98,7 +98,7 @@ namespace MSyics.Traceyi.Layout
                     }
 
                     // 文字位置の取得
-                    var position = customFormats[2].ToUpper();
+                    var position = customFormats[2].ToUpperInvariant();
                     if (position.Length != 1)
                     {
                         throw new FormatException($"The input string [{format}] is not in the correct format.");

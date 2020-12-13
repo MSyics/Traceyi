@@ -28,7 +28,7 @@ namespace MSyics.Traceyi.Layout
         /// ログにフォーマットした情報を書き込みます。
         /// </summary>
         /// <param name="e">トレースイベントデータ</param>
-        public string Format(TraceEventArg e)
+        public string Format(TraceEventArgs e)
         {
             SetFormattedLayout();
 

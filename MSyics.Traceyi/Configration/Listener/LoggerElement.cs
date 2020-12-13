@@ -11,7 +11,7 @@ namespace MSyics.Traceyi.Configration
         /// <summary>
         /// ロックを使用するかどうかを示す値を取得または設定します。
         /// </summary>
-        public bool UseLock { get; set; } = true;
+        public bool UseLock { get; set; } = false;
 
         /// <summary>
         /// 非同期 I/O または同期 I/O のどちらを使用するかを示す値を取得または設定します。

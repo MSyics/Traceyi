@@ -24,35 +24,36 @@ namespace MSyics.Traceyi
             Tracer.Information("out of scope");
             using (Tracer.Scope(1))
             {
-                Hoge();
+                Show2();
             }
             return Task.CompletedTask;
         }
 
-        private void Hoge()
+        private void Show2()
         {
             using (Tracer.Scope(2, "2 start", "2 stop"))
             {
                 Tracer.Start("2-1", "2-1 start");
-                Piyo();
+                Show3();
                 Tracer.Start("2-2", "2-2 start");
             }
         }
 
-        private void Piyo()
+        private void Show3()
         {
-            using (Tracer.Scope(3))
+            using (Tracer.Scope(3, "3 start", "3 stop"))
             {
-                Fuga();
-                Tracer.Stop("stop");
+                Tracer.Information("3");
+                Show4();
+                Tracer.Stop("Since it has not started, this stop will be ignored.");
             }
         }
 
-        private void Fuga()
+        private void Show4()
         {
-            using (Tracer.Scope())
+            using (Tracer.Scope(4, "4 start", "4 stop"))
             {
-                Tracer.Information("fugafuga");
+                Tracer.Information("4");
             }
         }
 

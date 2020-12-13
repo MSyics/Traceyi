@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace MSyics.Traceyi
 {
+    /// <summary>
+    /// トレースデータに関するユーティリティークラスです。
+    /// </summary>
     internal static class TraceUtility
     {
         /// <summary>

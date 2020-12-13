@@ -3,7 +3,7 @@
     "Tracer": [
       {
         "Listeners": [ "console" ],
-        "Filters": "all",
+        "Filters": "all"
       }
     ],
     "Listener": {

@@ -12,6 +12,6 @@ namespace MSyics.Traceyi.Listeners
         /// <summary>
         /// トレースイベントを処理します。
         /// </summary>
-        void OnTracing(object sender, TraceEventArg e);
+        void OnTracing(object sender, TraceEventArgs e);
     }
 }

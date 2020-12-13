@@ -1,5 +1,6 @@
 ﻿using MSyics.Traceyi.Layout;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -44,7 +45,7 @@ namespace MSyics.Traceyi.Listeners
         /// <summary>
         /// トレースデータを書き込みます。
         /// </summary>
-        protected internal override void WriteCore(TraceEventArg e)
+        protected internal override void WriteCore(TraceEventArgs e)
         {
             try
             {

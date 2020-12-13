@@ -27,7 +27,7 @@ namespace MSyics.Traceyi.Configration
         /// <param name="name">セクション名</param>
         public void In<T>(string name) where T : TraceListenerElement
         {
-            Add(name.ToUpper(), config => config.Get<List<T>>());
+            Add(name.ToUpperInvariant(), config => config.Get<List<T>>());
         }
     }
 }

@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.Logging;
 
-#if NETCOREAPP3_1
+#if NETCOREAPP
 using System.Threading.Channels;
 #endif
 
@@ -22,15 +22,15 @@ namespace MSyics.Traceyi.Listeners
         protected static readonly object GlobalLock = new object();
         #endregion
 
-        private readonly CancellationTokenSource Cancellation = new CancellationTokenSource();
+        private readonly CancellationTokenSource cts = new CancellationTokenSource();
 
-#if NETCOREAPP3_1
+#if NETCOREAPP
         private readonly Task consumer;
-        private readonly Channel<TraceEventArg> channel;
+        private readonly Channel<TraceEventArgs> channel;
 
         public Logger()
         {
-            channel = Channel.CreateUnbounded<TraceEventArg>(new UnboundedChannelOptions { SingleReader = true });
+            channel = Channel.CreateUnbounded<TraceEventArgs>(new UnboundedChannelOptions { SingleReader = true });
             consumer = ReadAsync();
         }
 
@@ -52,15 +52,12 @@ namespace MSyics.Traceyi.Listeners
                 channel.Writer.TryComplete(e);
             }
         }
-#elif NETSTANDARD2_0
-        private readonly ConcurrentQueue<TraceEventArg> TraceEventQueue = new ConcurrentQueue<TraceEventArg>();
-        private long Dequeuing = 0;
 #endif
 
         /// <summary>
         /// ロックを使用するかどうかを示す値を取得または設定します。
         /// </summary>
-        public bool UseLock { get; set; } = true;
+        public bool UseLock { get; set; } = false;
 
         /// <summary>
         /// 非同期 I/O または同期 I/O のどちらを使用するかを示す値を取得または設定します。
@@ -80,14 +77,14 @@ namespace MSyics.Traceyi.Listeners
         /// <summary>
         /// トレースイベントを処理します。
         /// </summary>
-        public void OnTracing(object sender, TraceEventArg e)
+        public async void OnTracing(object sender, TraceEventArgs e)
         {
-            if (Cancellation.IsCancellationRequested) { return; }
+            if (cts.IsCancellationRequested) { return; }
             if (UseAsync)
             {
                 try
                 {
-                    _ = WriteAsync(e);
+                    await WriteAsync(e);
                 }
                 catch (TaskCanceledException tce)
                 {
@@ -103,12 +100,12 @@ namespace MSyics.Traceyi.Listeners
         /// <summary>
         /// トレースデータを書き込みます。
         /// </summary>
-        protected internal abstract void WriteCore(TraceEventArg e);
+        protected internal abstract void WriteCore(TraceEventArgs e);
 
         /// <summary>
         /// トレースイベント情報を書き込みます。
         /// </summary>
-        public void Write(TraceEventArg e)
+        private void Write(TraceEventArgs e)
         {
             if (UseLock)
             {
@@ -120,11 +117,11 @@ namespace MSyics.Traceyi.Listeners
             }
         }
 
-#if NETCOREAPP3_1
+#if NETCOREAPP
         /// <summary>
         /// トレースイベント情報を書き込みます。
         /// </summary>
-        public ValueTask WriteAsync(TraceEventArg e) => channel.Writer.WriteAsync(e);
+        private ValueTask WriteAsync(TraceEventArgs e) => channel.Writer.WriteAsync(e);
 
         /// <summary>
         /// 使用しているリソースを破棄します。
@@ -138,29 +135,32 @@ namespace MSyics.Traceyi.Listeners
                 consumer.Dispose();
             }
 
-            Cancellation.Cancel(false);
-            Cancellation.Dispose();
+            cts.Cancel(false);
+            cts.Dispose();
             Dispose(true);
             GC.SuppressFinalize(this);
         }
-#elif NETSTANDARD2_0
+#else
+        private readonly ConcurrentQueue<TraceEventArgs> traceEvents = new ConcurrentQueue<TraceEventArgs>();
+        private int dequeuing = 0;
+
         /// <summary>
         /// トレースイベント情報を書き込みます。
         /// </summary>
-        public async Task WriteAsync(TraceEventArg e)
+        private async Task WriteAsync(TraceEventArgs e)
         {
-            if (Cancellation.IsCancellationRequested) { return; }
+            if (cts.IsCancellationRequested) { return; }
             await Task.Yield();
-            TraceEventQueue.Enqueue(e);
-            if (Interlocked.CompareExchange(ref Dequeuing, 1, 0) == 0)
+            traceEvents.Enqueue(e);
+            if (Interlocked.CompareExchange(ref dequeuing, 1, 0) == 0)
             {
-                _ = Task.Run(() =>
+                await Task.Run(() =>
                     {
-                        while (TraceEventQueue.TryDequeue(out var traceEvent) && !Cancellation.IsCancellationRequested)
+                        while (traceEvents.TryDequeue(out var item) && !cts.IsCancellationRequested)
                         {
-                            Write(traceEvent);
+                            Write(item);
                         }
-                        Interlocked.Exchange(ref Dequeuing, 0);
+                        Interlocked.Exchange(ref dequeuing, 0);
                     });
             }
         }
@@ -170,9 +170,9 @@ namespace MSyics.Traceyi.Listeners
         /// </summary>
         public void Dispose()
         {
-            Task.Run(() => { while (TraceEventQueue.Count != 0) ; }).Wait(CloseTimeout);
-            Cancellation.Cancel(false);
-            Cancellation.Dispose();
+            Task.Run(() => { while (traceEvents.Count != 0) ; }).Wait(CloseTimeout);
+            cts.Cancel(false);
+            cts.Dispose();
             Dispose(true);
             GC.SuppressFinalize(this);
         }

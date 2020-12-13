@@ -12,6 +12,6 @@ namespace MSyics.Traceyi.Layout
         /// </summary>
         /// <param name="e">トレースイベントデータ</param>
         /// <returns>ログデータ</returns>
-        string Format(TraceEventArg e);
+        string Format(TraceEventArgs e);
     }
 }

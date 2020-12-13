@@ -1,0 +1,46 @@
+﻿{
+  "Traceyi": {
+    "Tracer": [
+      {
+        "Listeners": [ "file", "console" ],
+        "Filters": "all"
+      },
+      {
+        "Name":  "second",
+        "Listeners": [ "file2", "console" ],
+        "Filters": "all"
+      }
+    ],
+    "Listener": {
+      "Console": [
+        {
+          "Name": "console",
+          "UseLock": false,
+          "UseAsync": true
+        }
+      ],
+      "File": [
+        {
+          "Name": "file",
+          "UseLock": false,
+          "UseAsync": true,
+          "UseMutex": true,
+          "KeepFilesOpen": true,
+          "MaxLength": 10240,
+          "MaxArchiveCount": 10000,
+          "Path": "C:\\TraceyiTest\\app.log"
+        },
+        {
+          "Name": "file2",
+          "UseLock": false,
+          "UseAsync": true,
+          "UseMutex": true,
+          "KeepFilesOpen": true,
+          "MaxLength": 10240,
+          "MaxArchiveCount": 10000,
+          "Path": "C:\\TraceyiTest\\app.log"
+        }
+      ]
+    }
+  }
+}

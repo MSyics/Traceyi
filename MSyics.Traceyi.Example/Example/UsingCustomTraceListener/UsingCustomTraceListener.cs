@@ -46,12 +46,12 @@ namespace MSyics.Traceyi
         {
         }
 
-        public void OnTracing(object sender, TraceEventArg e)
+        public void OnTracing(object sender, TraceEventArgs e)
         {
             Console.WriteLine(e.Message);
         }
 
-        public void OnTracing(TraceEventArg e)
+        public void OnTracing(TraceEventArgs e)
         {
             Console.WriteLine(e.Message);
         }

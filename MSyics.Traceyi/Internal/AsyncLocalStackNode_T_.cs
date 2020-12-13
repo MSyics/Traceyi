@@ -7,17 +7,17 @@ namespace MSyics.Traceyi
     /// </summary>
     internal sealed class AsyncLocalStackNode<T>
     {
-        internal AsyncLocalStackNode(T element, AsyncLocalStackNode<T> prev = null)
+        public AsyncLocalStackNode(T element, AsyncLocalStackNode<T> prev = null)
         {
             Element = element;
             Prev = prev;
             Count = prev == null ? 1 : prev.Count + 1;
         }
 
-        internal int Count { get; }
+        public int Count { get; }
 
-        internal T Element { get; }
+        public T Element { get; }
 
-        internal AsyncLocalStackNode<T> Prev { get; }
+        public AsyncLocalStackNode<T> Prev { get; }
     }
 }

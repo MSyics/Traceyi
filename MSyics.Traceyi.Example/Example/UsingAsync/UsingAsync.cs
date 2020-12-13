@@ -19,7 +19,7 @@ namespace MSyics.Traceyi
             Tracer = Traceable.Get();
         }
 
-        private Stopwatch sw = new Stopwatch();
+        private readonly Stopwatch sw = new Stopwatch();
 
         public override async Task ShowAsync()
         {
@@ -32,7 +32,7 @@ namespace MSyics.Traceyi
             {
                 await Task.
                     WhenAll(Enumerable.
-                    Range(1, 100).
+                    Range(1, 10000).
                     Select(x => Hoge(x)).
                     ToArray());
 
@@ -48,13 +48,13 @@ namespace MSyics.Traceyi
             using (Tracer.Scope(2))
             {
                 await Task.Run(() =>
-                 {
-                     Tracer.Context.ActivityId = "A3";
-                     using (Tracer.Scope(3))
-                     {
-                         Tracer.Information($"{3} {obj}");
-                     }
-                 });
+                {
+                    Tracer.Context.ActivityId = "A3";
+                    using (Tracer.Scope(3))
+                    {
+                        Tracer.Information($"{3} {obj}");
+                    }
+                });
 
                 Tracer.Information($"{2} {obj}");
                 Tracer.Start(2.2);

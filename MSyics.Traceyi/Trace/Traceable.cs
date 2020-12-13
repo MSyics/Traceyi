@@ -14,11 +14,12 @@ namespace MSyics.Traceyi
     /// </summary>
     public static class Traceable
     {
-        private readonly static Dictionary<string, (Tracer tracer, ITraceListener[] listeners)> Tracers = new Dictionary<string, (Tracer tracer, ITraceListener[] listeners)>();
-        private readonly static TraceListenerElementConfiguration TraceListenerElementConfiguration = new TraceListenerElementConfiguration();
+        private readonly static HashSet<ITraceListener> Listeners = new HashSet<ITraceListener>();
+        private readonly static Dictionary<string, Tracer> Tracers = new Dictionary<string, Tracer>();
+        private readonly static TraceListenerElementConfiguration ListenerConfig = new TraceListenerElementConfiguration();
 
-        internal static TraceContext Context => context.Value;
-        private static readonly Lazy<TraceContext> context = new Lazy<TraceContext>(() => new TraceContext(), true);
+        internal static TraceContext Context => _context.Value;
+        private static readonly Lazy<TraceContext> _context = new Lazy<TraceContext>(() => new TraceContext(), true);
 
         /// <summary>
         /// 構成ファイルで設定した Tracer オブジェクトを取得します。
@@ -26,14 +27,8 @@ namespace MSyics.Traceyi
         /// <param name="name">取得する Tracer オブジェクトの名前</param>
         public static Tracer Get(string name = "")
         {
-            if (Tracers.TryGetValue(name.ToUpper(), out var named))
-            {
-                return named.tracer;
-            }
-            if (Tracers.TryGetValue("", out var @default))
-            {
-                return @default.tracer;
-            }
+            if (Tracers.TryGetValue(name.ToUpperInvariant(), out var value)) { return value; }
+            if (Tracers.TryGetValue("", out var @default)) { return @default; }
             return new Tracer();
         }
 
@@ -42,8 +37,7 @@ namespace MSyics.Traceyi
         /// </summary>
         public static void Shutdown()
         {
-            var tasks = Tracers.
-                SelectMany(x => x.Value.listeners).
+            var tasks = Listeners.
                 Select(x => Task.Run(x.Dispose)).
                 ToArray();
             Task.WaitAll(tasks);
@@ -64,11 +58,18 @@ namespace MSyics.Traceyi
                 Name = name,
                 Filters = filters,
             };
+
             foreach (var item in listeners)
             {
+                if (!Listeners.Contains(item))
+                {
+                    Listeners.Add(item);
+                }
+
                 tracer.Tracing += item.OnTracing;
             }
-            Tracers[name.ToUpper()] = (tracer, listeners);
+
+            Tracers.Add(name.ToUpperInvariant(), tracer);
         }
 
         /// <summary>
@@ -77,7 +78,7 @@ namespace MSyics.Traceyi
         /// <param name="name">名前</param>
         /// <param name="filters">選別するトレース動作</param>
         /// <param name="listeners">トレース情報のリスナー</param>
-        public static void Add(string name = "", TraceFilters filters = TraceFilters.All, params Action<TraceEventArg>[] listeners) =>
+        public static void Add(string name = "", TraceFilters filters = TraceFilters.All, params Action<TraceEventArgs>[] listeners) =>
             Add(name, filters, listeners.Select(x => new ActionTraceListener(x)).ToArray());
 
         /// <summary>
@@ -95,18 +96,20 @@ namespace MSyics.Traceyi
             var listenerSection = configuration.GetSection("Traceyi:Listener");
             if (!listenerSection.Exists()) { return; }
 
-            usable?.Invoke(TraceListenerElementConfiguration);
+            usable?.Invoke(ListenerConfig);
+
+            var listenerSource = listenerSection.GetChildren().
+                SelectMany(section => ListenerConfig[section.Key.ToUpperInvariant()](section)).
+                ToDictionary(listener => listener.Name.ToUpperInvariant(), listener => listener.GetRuntimeObject());
 
             foreach (var element in tracerSection.Get<List<TracerElement>>())
             {
-                var listeners = listenerSection.
-                    GetChildren().
-                    Select(x => new { Name = x.Key.ToUpper(), Value = x }).
-                    Where(x => TraceListenerElementConfiguration.ContainsKey(x.Name)).
-                    SelectMany(x => TraceListenerElementConfiguration[x.Name](x.Value)).
-                    Where(x => element.Listeners.Exists(y => x.Name?.ToUpper() == y.ToUpper())).
-                    Select(x => x.GetRuntimeObject()).
+                var listeners = element.Listeners.
+                    Select(name => name.ToUpperInvariant()).
+                    Where(name => listenerSource.ContainsKey(name)).
+                    Select(name => listenerSource[name]).
                     ToArray();
+
                 Add(element.Name, element.Filters, listeners);
             }
         }
@@ -116,10 +119,8 @@ namespace MSyics.Traceyi
         /// </summary>
         /// <param name="jsonFile">JSON ファイルのパス</param>
         /// <param name="usable">カスタムリスナーを登録することで構成情報からリスナーオブジェクトを取得できるようにします。</param>
-        public static void Add(string jsonFile, Action<ITraceListenerElementConfiguration> usable = null)
-        {
+        public static void Add(string jsonFile, Action<ITraceListenerElementConfiguration> usable = null) =>
             Add(new ConfigurationBuilder().AddJsonFile(jsonFile, false, true).Build(), usable);
-        }
         #endregion
     }
 }

@@ -5,11 +5,11 @@ namespace MSyics.Traceyi
 {
     internal class ActionTraceListener : ITraceListener
     {
-        public Action<TraceEventArg> Listener { get; set; } = _ => { };
+        public Action<TraceEventArgs> Listener { get; set; } = _ => { };
 
-        public ActionTraceListener(Action<TraceEventArg> listener) => Listener = listener;
+        public ActionTraceListener(Action<TraceEventArgs> listener) => Listener = listener;
 
-        public void OnTracing(object sender, TraceEventArg e) => Listener?.Invoke(e);
+        public void OnTracing(object sender, TraceEventArgs e) => Listener?.Invoke(e);
 
         public void Dispose() => Listener = null;
     }

@@ -5,6 +5,9 @@ using System.Threading;
 
 namespace MSyics.Traceyi
 {
+    /// <summary>
+    /// 非同期制御中のローカルなスタックを表します。
+    /// </summary>
     internal sealed class AsyncLocalStack<T> : IEnumerable<T>, IReadOnlyCollection<T>, ICollection
     {
         private readonly AsyncLocal<AsyncLocalStackNode<T>> local;
@@ -14,6 +17,9 @@ namespace MSyics.Traceyi
             this.local = local;
         }
 
+        /// <summary>
+        /// スタックの先頭にあるオブジェクトを削除して返します。
+        /// </summary>
         public T Pop()
         {
             var node = local.Value;
@@ -25,12 +31,25 @@ namespace MSyics.Traceyi
             return node.Element;
         }
 
+        /// <summary>
+        /// スタックの先頭にオブジェクトを挿入します。
+        /// </summary>
         public void Push(T element) => local.Value = new AsyncLocalStackNode<T>(element, local.Value);
 
+        /// <summary>
+        /// スタックの先頭にあるオブジェクトを削除しないで返します。
+        /// </summary>
+        /// <returns></returns>
         public T Peek() => local.Value == null ? default : local.Value.Element;
 
+        /// <summary>
+        /// スタックからすべてのオブジェクトを削除します。
+        /// </summary>
         public void Clear() => local.Value = null;
 
+        /// <summary>
+        /// スタックが持つオブジェクト数を取得します。
+        /// </summary>
         public int Count => local.Value == null ? 0 : local.Value.Count;
 
         int ICollection.Count => Count;

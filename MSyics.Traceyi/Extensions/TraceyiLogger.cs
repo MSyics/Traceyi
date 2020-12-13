@@ -4,9 +4,12 @@ using System.Linq;
 
 namespace MSyics.Traceyi
 {
+    /// <summary>
+    /// ILogger の Traceyi 実装クラスです。
+    /// </summary>
     class TraceyiLogger : ILogger
     {
-        private static readonly string PlaceholderKeyOperationId = "operationId".ToUpper();
+        private static readonly string PlaceholderKeyOperationId = "operationId".ToUpperInvariant();
         internal Tracer Tracer { get; private set; }
 
         public TraceyiLogger(Tracer tracer)
@@ -19,7 +22,7 @@ namespace MSyics.Traceyi
             var message = TraceyiLoggerMessage.Create(state);
             if (message.HasPlaceholders)
             {
-                var operaionId = message.Placeholders.FirstOrDefault(x => x.Key.ToUpper() == PlaceholderKeyOperationId);
+                var operaionId = message.Placeholders.FirstOrDefault(x => x.Key.ToUpperInvariant() == PlaceholderKeyOperationId);
                 return Tracer.Scope(operationId: operaionId.Value, startMessage: message.ToString());
             }
             else

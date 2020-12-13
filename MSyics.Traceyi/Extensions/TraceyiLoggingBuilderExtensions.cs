@@ -8,15 +8,13 @@ using System;
 namespace MSyics.Traceyi
 {
     /// <summary>
-    /// 
+    /// ILoggingBuilder の Traceyi 拡張メソッド群を提供します。
     /// </summary>
     public static class TraceyiLoggingBuilderExtensions
     {
         /// <summary>
-        /// 
+        /// 登録します。
         /// </summary>
-        /// <param name="builder"></param>
-        /// <returns></returns>
         private static ILoggingBuilder AddTraceyi(this ILoggingBuilder builder)
         {
             builder.Services.Add(ServiceDescriptor.Singleton<ILoggerProvider, TraceyiLoggerProvider>(x => new TraceyiLoggerProvider()));
@@ -24,12 +22,8 @@ namespace MSyics.Traceyi
         }
 
         /// <summary>
-        /// 
+        /// 登録します。
         /// </summary>
-        /// <param name="builder"></param>
-        /// <param name="configuration"></param>
-        /// <param name="usable"></param>
-        /// <returns></returns>
         public static ILoggingBuilder AddTraceyi(this ILoggingBuilder builder, IConfiguration configuration, Action<ITraceListenerElementConfiguration> usable = null)
         {
             Traceable.Add(configuration, usable);
@@ -37,12 +31,8 @@ namespace MSyics.Traceyi
         }
 
         /// <summary>
-        /// 
+        /// 登録します。
         /// </summary>
-        /// <param name="builder"></param>
-        /// <param name="jsonFile"></param>
-        /// <param name="usable"></param>
-        /// <returns></returns>
         public static ILoggingBuilder AddTraceyi(this ILoggingBuilder builder, string jsonFile, Action<ITraceListenerElementConfiguration> usable = null)
         {
             Traceable.Add(jsonFile, usable);
@@ -50,27 +40,17 @@ namespace MSyics.Traceyi
         }
 
         /// <summary>
-        /// 
+        /// 登録します。
         /// </summary>
-        /// <param name="builder"></param>
-        /// <param name="name"></param>
-        /// <param name="filters"></param>
-        /// <param name="listeners"></param>
-        /// <returns></returns>
-        public static ILoggingBuilder AddTraceyi(this ILoggingBuilder builder, string name = "", TraceFilters filters = TraceFilters.All, params Action<TraceEventArg>[] listeners)
+        public static ILoggingBuilder AddTraceyi(this ILoggingBuilder builder, string name = "", TraceFilters filters = TraceFilters.All, params Action<TraceEventArgs>[] listeners)
         {
             Traceable.Add(name, filters, listeners);
             return builder.AddTraceyi();
         }
 
         /// <summary>
-        /// 
+        /// 登録します。
         /// </summary>
-        /// <param name="builder"></param>
-        /// <param name="name"></param>
-        /// <param name="filters"></param>
-        /// <param name="listeners"></param>
-        /// <returns></returns>
         public static ILoggingBuilder AddTraceyi(this ILoggingBuilder builder, string name = "", TraceFilters filters = TraceFilters.All, params ITraceListener[] listeners)
         {
             Traceable.Add(name, filters, listeners);

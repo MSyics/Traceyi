@@ -23,6 +23,9 @@
     <None Update="Example\SetupByJsonFile\traceyi.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Example\UsingArchive\traceyi.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Example\UsingExtensions\traceyi.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

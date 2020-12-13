@@ -15,6 +15,71 @@ namespace MSyics.Traceyi.Layout
         /// <param name="parts">ログの記録項目</param>
         public LogLayoutConverter(params LogLayoutPart[] parts) => Parts = parts;
 
+#if NETCOREAPP
+        /// <summary>
+        /// 指定されたレイアウトを認識できるフォーマットに変換します。
+        /// </summary>
+        public string Convert(string layout)
+        {
+            var span = layout.AsSpan();
+            var sb = new StringBuilder();
+            for (int layoutIndex = 0; layoutIndex < span.Length; layoutIndex++)
+            {
+                if (span[layoutIndex] == '{')
+                {
+                    var isContinue = false;
+                    var startIndex = layoutIndex + 1;
+                    var length = span[(startIndex + 1)..].IndexOf('}') + 1;
+
+                    if (length > 0)
+                    {
+                        var convertString = span.Slice(startIndex, length);
+                        for (int itemIndex = 0; itemIndex < Parts.Length; itemIndex++)
+                        {
+                            var part = Parts[itemIndex];
+                            if (convertString.StartsWith(part.Name, StringComparison.OrdinalIgnoreCase))
+                            {
+                                if (part.CanFormat)
+                                {
+                                    var formatString = convertString[part.Name.Length..];
+                                    var separator = GetSeparatorCharacter(formatString);
+                                    sb.Append($"{{{itemIndex}{separator}{formatString.ToString()}}}");
+                                }
+                                else
+                                {
+                                    sb.Append($"{{{itemIndex}}}");
+                                }
+                                layoutIndex = startIndex + length;
+                                isContinue = true;
+                                break;
+                            }
+                        }
+                        if (isContinue) { continue; }
+                    }
+                    sb.Append('{');
+                }
+                else if (span[layoutIndex] == '}')
+                {
+                    sb.Append('}');
+                }
+
+                sb.Append(span[layoutIndex]);
+            }
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// カスタム書式内の区切り文字を取得します。
+        /// </summary>
+        private static string GetSeparatorCharacter(ReadOnlySpan<char> format)
+        {
+            if (format.StartsWith(":")) { return string.Empty; }
+            if (format.StartsWith(",")) { return string.Empty; }
+            if (format.IsEmpty) { return string.Empty; }
+            return ":";
+        }
+
+#else
         /// <summary>
         /// 指定されたレイアウトを認識できるフォーマットに変換します。
         /// </summary>
@@ -73,6 +138,7 @@ namespace MSyics.Traceyi.Layout
             if (string.IsNullOrEmpty(format)) { return string.Empty; }
             return ":";
         }
+#endif
 
         private LogLayoutPart[] Parts { get; set; }
     }

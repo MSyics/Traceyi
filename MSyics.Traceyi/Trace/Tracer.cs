@@ -28,20 +28,20 @@ namespace MSyics.Traceyi
         /// <summary>
         /// トレースイベントを設定します。
         /// </summary>
-        public event EventHandler<TraceEventArg> Tracing;
+        public event EventHandler<TraceEventArgs> Tracing;
 
         private void RaiseTracing(DateTime traced, TraceAction action, object message, TraceOperation operation)
         {
             if (!Filters.Contains(action)) { return; }
 
-            Tracing?.Invoke(this, new TraceEventArg(traced, action, message, operation));
+            Tracing?.Invoke(this, new TraceEventArgs(traced, action, message, operation));
         }
 
         private void RaiseTracing(TraceAction action, object message)
         {
             if (!Filters.Contains(action)) return;
 
-            Tracing?.Invoke(this, new TraceEventArg(DateTime.Now, action, message, Context.CurrentOperation));
+            Tracing?.Invoke(this, new TraceEventArgs(DateTime.Now, action, message, Context.CurrentOperation));
         }
 
         #region Trace
@@ -92,7 +92,7 @@ namespace MSyics.Traceyi
             var operation = new TraceOperation()
             {
                 Id = operationId,
-                ScopeId = $"{ DateTime.Now.Ticks:x16}",
+                ScopeId = $"{DateTime.Now.Ticks:x16}",
                 ParentId = Context.CurrentOperation.ScopeId,
                 ScopeNumber = Context.OperationStack.Count + 1,
                 Started = DateTime.Now,

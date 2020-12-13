@@ -10,7 +10,7 @@ namespace MSyics.Traceyi
 {
     class UsingExtensions : Example
     {
-        public override string Name => nameof(UsingTraceMethod);
+        public override string Name => nameof(UsingExtensions);
 
         private ILogger logger;
 

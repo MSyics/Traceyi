@@ -2,7 +2,7 @@
   "Traceyi": {
     "Tracer": [
       {
-        "Listeners": [ "console" ],
+        "Listeners": [ "file" ],
         "Filters": "all"
       }
     ],
@@ -19,10 +19,13 @@
           "Name": "file",
           "UseLock": false,
           "UseAsync": true,
-          "MaxLength": 524288000,
-          "LeaveFiles": true,
+          "UseMutex": false,
+          "KeepFilesOpen": true,
+          "MaxLength": 25000000,
+          "MaxArchiveCount": 10,
           "Path": "app.log"
-        }
+        },
+        
       ]
     }
   }
