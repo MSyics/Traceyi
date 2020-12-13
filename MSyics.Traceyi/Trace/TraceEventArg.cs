@@ -9,22 +9,20 @@ namespace MSyics.Traceyi
     /// <summary>
     /// トレースイベントデータを格納します。
     /// </summary>
-    public sealed class TraceEventArg : EventArgs
+    public sealed class TraceEventArgs : EventArgs
     {
         private static readonly int processId;
         private static readonly string processName;
         private static readonly string machineName = Environment.MachineName;
 
-        static TraceEventArg()
+        static TraceEventArgs()
         {
-            using (var process = Process.GetCurrentProcess())
-            {
-                processId = process.Id;
-                processName = process.ProcessName;
-            }
+            using var process = Process.GetCurrentProcess();
+            processId = process.Id;
+            processName = process.ProcessName;
         }
 
-        public TraceEventArg(DateTime traced, TraceAction action, object message, TraceOperation operation)
+        public TraceEventArgs(DateTime traced, TraceAction action, object message, TraceOperation operation)
         {
             Traced = traced;
             Action = action;
