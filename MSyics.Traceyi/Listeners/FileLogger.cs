@@ -276,11 +276,6 @@ namespace MSyics.Traceyi.Listeners
         public long MaxLength { get; set; }
 
         /// <summary>
-        /// 書き込み上限バイト数を超えたファイルを残しておくのかどうかを示す値を取得または設定します。
-        /// </summary>
-        public bool LeaveFiles { get; set; }
-
-        /// <summary>
         /// トレースデータの記録形式を取得または設定します。
         /// </summary>
         public ILogLayout Layout { get; set; }
