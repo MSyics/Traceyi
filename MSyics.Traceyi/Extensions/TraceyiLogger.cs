@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using MSyics.Traceyi.Layout;
 using System;
 using System.Linq;
 
@@ -23,7 +24,7 @@ namespace MSyics.Traceyi
             if (message.HasPlaceholders)
             {
                 var operaionId = message.Placeholders.FirstOrDefault(x => x.Key.ToUpperInvariant() == PlaceholderKeyOperationId);
-                return Tracer.Scope(operationId: operaionId.Value, startMessage: message.ToString());
+                return Tracer.Scope(operationId: operaionId.Value, startMessage: message);
             }
             else
             {
