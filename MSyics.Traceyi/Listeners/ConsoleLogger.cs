@@ -42,9 +42,15 @@ namespace MSyics.Traceyi.Listeners
 
         protected internal override void WriteCore(TraceEventArgs e)
         {
-            SetConsoleColor(e.Action);
-            base.WriteCore(e);
-            Console.ForegroundColor = defaultColor;
+            try
+            {
+                SetConsoleColor(e.Action);
+                base.WriteCore(e);
+            }
+            finally
+            {
+                Console.ForegroundColor = defaultColor;
+            }
         }
 
         protected override void DisposeUnmanagedResources()

@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace MSyics.Traceyi.Layout
 {
@@ -10,7 +14,12 @@ namespace MSyics.Traceyi.Layout
         /// <summary>
         /// 初期レイアウトを示す固定値です。
         /// </summary>
-        public readonly static string DefaultLayout = "{dateTime:yyyy/MM/dd} {dateTime:HH:mm:ss.fffffff}{tab}{scopeNumber}{tab}{scopeId ,16:R}{tab}{parentId| ,16:R}{tab}{threadId}{tab}{activityId}{tab}{machineName}{tab}{processId}{tab}{processName}{tab}{action}{tab}{elapsed:d\\.hh\\:mm\\:ss\\.fffffff}{tab}{operationId}{tab}{message}";
+        public readonly static string DefaultLayout = "{dateTime:O}{tab}{scopeNumber}{tab}{scopeId|_,16:R}{tab}{parentId|_,16:R}{tab}{threadId}{tab}{activityId}{tab}{machineName}{tab}{processId}{tab}{processName}{tab}{action}{tab}{elapsed:d\\.hh\\:mm\\:ss\\.fffffff}{tab}{operationId}{tab}{message}{tab}{extensions}";
+
+        private readonly IFormatProvider formatProvider = new LogLayoutFormatProvider();
+        private string format;
+        private bool makedFormat;
+        private bool useExtensions;
 
         /// <summary>
         /// TextLayout クラスのインスタンスを初期化します。
@@ -25,6 +34,26 @@ namespace MSyics.Traceyi.Layout
         }
 
         /// <summary>
+        /// レイアウトを取得または設定します。
+        /// </summary>
+        public string Layout
+        {
+            get => _layout;
+            set
+            {
+                if (_layout == value) { return; }
+                _layout = value;
+                makedFormat = false;
+            }
+        }
+        private string _layout;
+
+        /// <summary>
+        /// 改行文字を取得または設定します。
+        /// </summary>
+        public string NewLine { get; set; }
+
+        /// <summary>
         /// ログにフォーマットした情報を書き込みます。
         /// </summary>
         /// <param name="e">トレースイベントデータ</param>
@@ -33,8 +62,8 @@ namespace MSyics.Traceyi.Layout
             SetFormattedLayout();
 
             return string.Format(
-                FormatProvider,
-                FormattedLayout,
+                formatProvider,
+                format,
                 "\t",
                 NewLine,
                 e.Traced,
@@ -46,17 +75,16 @@ namespace MSyics.Traceyi.Layout
                 e.Operation.ScopeId,
                 e.Operation.ParentId,
                 e.Operation.ScopeNumber,
-                e.EventId.Id,
-                e.EventId.Name,
                 e.ThreadId,
                 e.ProcessId,
                 e.ProcessName,
-                e.MachineName);
+                e.MachineName,
+                GetExtensionsJson(e));
         }
 
         private void SetFormattedLayout()
         {
-            if (IsMakeFormattedLayout) { return; }
+            if (makedFormat) { return; }
 
             var converter = new LogLayoutConverter(
                 new LogLayoutPart { Name = "tab", CanFormat = false },
@@ -70,39 +98,38 @@ namespace MSyics.Traceyi.Layout
                 new LogLayoutPart { Name = "scopeId", CanFormat = true },
                 new LogLayoutPart { Name = "parentId", CanFormat = true },
                 new LogLayoutPart { Name = "scopeNumber", CanFormat = true },
-                new LogLayoutPart { Name = "eventId", CanFormat = true },
-                new LogLayoutPart { Name = "eventName", CanFormat = true },
                 new LogLayoutPart { Name = "threadId", CanFormat = true },
                 new LogLayoutPart { Name = "processId", CanFormat = true },
                 new LogLayoutPart { Name = "processName", CanFormat = true },
-                new LogLayoutPart { Name = "machineName", CanFormat = true });
+                new LogLayoutPart { Name = "machineName", CanFormat = true },
+                new LogLayoutPart { Name = "extensions", CanFormat = false });
 
-            FormattedLayout = converter.Convert(Layout.Trim());
-            IsMakeFormattedLayout = true;
+            format = converter.Convert(Layout.Trim());
+            useExtensions = converter.IsPartPlaced("extensions");
+            makedFormat = true;
         }
 
-        /// <summary>
-        /// レイアウトを取得または設定します。
-        /// </summary>
-        public string Layout
+
+        JsonSerializerOptions options = new(JsonSerializerDefaults.Web)
         {
-            get => _layout;
-            set
+            WriteIndented = false,
+            Converters = { new JsonTimeSpanConverter(), new JsonStringEnumConverter() }
+        };
+
+        private string GetExtensionsJson(TraceEventArgs e)
+        {
+            if (!useExtensions) { return null; }
+            if (e.Extensions.Count == 0) { return null; }
+
+            try
             {
-                if (_layout == value) { return; }
-                _layout = value;
-                IsMakeFormattedLayout = false;
+                return JsonSerializer.Serialize(e.Extensions, options);
+            }
+            catch (Exception)
+            {
+                Debug.Print("Failed to Json conversion of extensions.");
+                return e.Extensions.ToString();
             }
         }
-        private string _layout;
-
-        /// <summary>
-        /// 改行文字を取得または設定します。
-        /// </summary>
-        public string NewLine { get; set; }
-
-        private IFormatProvider FormatProvider { get; set; } = new LogLayoutFormatProvider();
-        private string FormattedLayout { get; set; }
-        private bool IsMakeFormattedLayout { get; set; }
     }
 }

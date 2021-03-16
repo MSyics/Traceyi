@@ -2,6 +2,7 @@
 
 namespace MSyics.Traceyi
 {
+    // TODO: 名前は TraceScope の方が良いか？ -> TraceScopeEntry
     /// <summary>
     /// トレース操作を表します。
     /// </summary>
@@ -10,17 +11,17 @@ namespace MSyics.Traceyi
         /// <summary>
         /// 操作が無い状態を表します。
         /// </summary>
-        internal readonly static TraceOperation NullOperation = new TraceOperation();
+        internal readonly static TraceOperation NullOperation = new();
+
+        /// <summary>
+        /// スコープを使用しているかどうかを示す値を取得します。
+        /// </summary>
+        public bool WithScopeObject { get; internal set; }
 
         /// <summary>
         /// スコープ ID を取得します。
         /// </summary>
         public string ScopeId { get; internal set; }
-
-        /// <summary>
-        /// スコープを使用しているかどうかを示す値を取得します。
-        /// </summary>
-        public bool UseScope => ScopeId != null;
 
         /// <summary>
         /// 親スコープ ID を取得します。
@@ -35,13 +36,11 @@ namespace MSyics.Traceyi
         /// <summary>
         /// 操作の識別子を取得します。
         /// </summary>
-        public object Id { get; internal set; } = "";
+        public object Id { get; internal set; }
 
         /// <summary>
         /// 操作の開始日時を取得します。
         /// </summary>
-        public DateTime Started { get; internal set; } = DateTime.MinValue;
-
-        public DateTime Created { get; } = DateTime.Now;
+        public DateTimeOffset Started { get; internal set; }
     }
 }

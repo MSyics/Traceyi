@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Logging;
-
-namespace MSyics.Traceyi
+﻿namespace Microsoft.Extensions.Logging
 {
+    using MSyics.Traceyi;
+
     /// <summary>
     /// TraceyiLogger を提供します。
     /// </summary>
@@ -9,15 +9,9 @@ namespace MSyics.Traceyi
     public class TraceyiLoggerProvider : ILoggerProvider
     {
         /// <inheritdoc/>
-        public ILogger CreateLogger(string categoryName)
-        {
-            return new TraceyiLogger(Traceable.Get(categoryName));
-        }
+        public ILogger CreateLogger(string categoryName) => new TraceyiLogger(Traceable.Get(categoryName));
 
         /// <inheritdoc/>
-        public void Dispose()
-        {
-            Traceable.Shutdown();
-        }
+        public void Dispose() => Traceable.Shutdown();
     }
 }

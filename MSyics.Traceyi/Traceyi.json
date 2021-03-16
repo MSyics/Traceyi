@@ -52,7 +52,7 @@
           //
           // {tab}         : タブ
           // {newLine}     : 改行
-          // {dateTime}    : DateTime 型
+          // {dateTime}    : DateTimeOffset 型
           // {action}      : TraceAction 型
           // {elapsed}     : TimeSpan 型
           // {message}     : Object 型
@@ -82,7 +82,7 @@
           // {message|_, 20:R}
           // {threadId, 4:D4|_, 8:L}
           "Layout": {
-            "Format": "{dateTime:yyyy/MM/dd}{tab}{dateTime:HH:mm:ss.fffffff}{tab}{action}{tab}{elapsed:d\\.hh\\:mm\\:ss\\.fffffff}{tab}{operationId}{tab}{activityId}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}"
+            "Format": "{dateTime:O}{tab}{action}{tab}{elapsed:d\\.hh\\:mm\\:ss\\.fffffff}{tab}{operationId}{tab}{activityId}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}"
           }
         }
       ],
@@ -91,7 +91,7 @@
         // ................................................................
         // Path : パスを指定する。レイアウト指定可能（省略：[ApplicationName].log）
         //
-        //   {dateTime}    : DateTime 型
+        //   {dateTime}    : DateTimeOffset 型
         //   {threadId}    : Int32 型
         //   {processId}   : Int32 型
         //   {processName} : String 型

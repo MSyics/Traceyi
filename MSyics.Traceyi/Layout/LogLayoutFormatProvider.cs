@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 
@@ -7,12 +8,14 @@ namespace MSyics.Traceyi.Layout
     /// <summary>
     /// LogFormatter クラスで使用するカスタム書式を実装します。
     /// </summary>
-    internal sealed class LogLayoutFormatProvider : IFormatProvider, ICustomFormatter
+    public sealed class LogLayoutFormatProvider : IFormatProvider, ICustomFormatter
     {
         /// <summary>
         /// 書式内の区切り文字を示す固定値です。
         /// </summary>
-        public readonly string FormatSpecifier = "|";
+        public static readonly string FormatSpecifier = "|";
+        public static readonly string SerializeFormatSpecifier = "=>";
+        public static readonly string JsonFormatSpecifier = "JSON";
 
         /// <summary>
         /// 指定した書式およびカルチャ固有の書式情報を使用して、指定したオブジェクトの値をそれと等価な文字列形式に変換します。
@@ -25,15 +28,16 @@ namespace MSyics.Traceyi.Layout
             {
                 return string.Empty;
             }
+
             if (arg is IFormattable formattable)
             {
                 return formattable.ToString(format, CultureInfo.CurrentCulture);
             }
+
             return arg.ToString();
         }
 
         #region IFormatProvider Members
-
         /// <summary>
         /// 指定した型の書式指定サービスを提供するオブジェクトを返します。
         /// </summary>
@@ -42,11 +46,9 @@ namespace MSyics.Traceyi.Layout
         {
             return formatType == typeof(ICustomFormatter) ? this : null;
         }
-
         #endregion
 
         #region ICustomFormatter Members
-
         /// <summary>
         /// 指定した書式およびカルチャ固有の書式情報を使用して、指定したオブジェクトの値をそれと等価な文字列形式に変換します。
         /// </summary>
@@ -57,9 +59,30 @@ namespace MSyics.Traceyi.Layout
         {
             if (!string.IsNullOrEmpty(format))
             {
+                if (format.Contains(SerializeFormatSpecifier))
+                {
+                    var formats = format.Split(new[] { SerializeFormatSpecifier }, StringSplitOptions.None);
+
+                    // JSON
+                    if (formats.Length == 2 && formats[1].ToUpperInvariant().Trim() == JsonFormatSpecifier)
+                    {
+                        try
+                        {
+                            return System.Text.Json.JsonSerializer.Serialize(arg);
+                        }
+                        catch (Exception)
+                        {
+                        }
+                    }
+
+                    Debug.Print($"The input string [{format}] is not in the correct format.");
+                    return arg.ToString();
+                }
+
                 if (format.Contains(FormatSpecifier))
                 {
                     var formats = format.Split(new[] { FormatSpecifier }, StringSplitOptions.None);
+
 
                     // 標準書式の取得
                     var standardFormat = formats[0];
@@ -67,9 +90,11 @@ namespace MSyics.Traceyi.Layout
                     // カスタム書式の取得
                     var customFormat = formats[1];
                     var customFormats = customFormat.Split(',', ':');
+
                     if (customFormats.Length != 3)
                     {
-                        throw new FormatException($"The input string [{format}] is not in the correct format.");
+                        Debug.Print($"The input string [{format}] is not in the correct format.");
+                        return arg.ToString();
                     }
 
                     // 文字数不足のときに埋める文字の取得
@@ -87,21 +112,21 @@ namespace MSyics.Traceyi.Layout
                     // 文字数の取得
                     if (!int.TryParse(customFormats[1], out var count))
                     {
-                        throw new FormatException($"The input string [{format}] is not in the correct format.");
+                        Debug.Print($"The input string [{format}] is not in the correct format.");
+                        return arg.ToString();
                     }
-                    else
+
+                    if (count < 0)
                     {
-                        if (count < 0)
-                        {
-                            count = Math.Abs(count);
-                        }
+                        count = Math.Abs(count);
                     }
 
                     // 文字位置の取得
                     var position = customFormats[2].ToUpperInvariant();
                     if (position.Length != 1)
                     {
-                        throw new FormatException($"The input string [{format}] is not in the correct format.");
+                        Debug.Print($"The input string [{format}] is not in the correct format.");
+                        return arg.ToString();
                     }
 
                     // 文字埋め
@@ -129,15 +154,13 @@ namespace MSyics.Traceyi.Layout
                             return new string(character, count - length) + formatString;
                         }
                     }
-                    else
-                    {
-                        throw new FormatException($"The input string [{format}] is not in the correct format.");
-                    }
+
+                    Debug.Print($"The input string [{format}] is not in the correct format.");
+                    return arg.ToString();
                 }
             }
             return Format(format, arg);
         }
-
         #endregion
     }
 }

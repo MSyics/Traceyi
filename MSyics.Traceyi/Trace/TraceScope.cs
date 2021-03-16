@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 
 namespace MSyics.Traceyi
 {
@@ -9,25 +8,32 @@ namespace MSyics.Traceyi
     public sealed class TraceScope : IDisposable
     {
         private bool stopped = false;
-        private Action<object> stop;
+        private Action<object, Action<dynamic>> stop;
 
-        internal void Start(Tracer tracer, object operationId = null, object startMessage = null, object stopMessage = null)
+        internal void Start(Tracer tracer, object message, Action<dynamic> extensions, object operationId)
         {
-            var scopeId = tracer.StartCore(operationId, startMessage);
-            stop = x => tracer.Stop(x ?? stopMessage, scopeId);
+            var scopeId = tracer.Start(message, extensions, operationId, true);
+            stop = (m, e) => tracer.Stop(scopeId, DateTimeOffset.Now, m, e);
         }
 
         /// <summary>
         /// トレースのコードブロックから脱退します。
         /// </summary>
-        /// <param name="stopMessage">メッセージ</param>
-        public void Stop(object stopMessage = null)
+        /// <param name="message">メッセージ</param>
+        /// <param name="extensions"></param>
+        public void Stop(object message, Action<dynamic> extensions = null)
         {
             if (stopped) { return; }
             stopped = true;
-            stop?.Invoke(stopMessage);
+            stop?.Invoke(message, extensions);
             stop = null;
         }
+
+        /// <summary>
+        /// トレースのコードブロックから脱退します。
+        /// </summary>
+        /// <param name="extensions"></param>
+        public void Stop(Action<dynamic> extensions = null) => Stop(null, extensions);
 
         #region IDisposable Members
         /// <summary>

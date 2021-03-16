@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.Text;
 
 namespace MSyics.Traceyi.Layout
@@ -7,13 +7,18 @@ namespace MSyics.Traceyi.Layout
     /// <summary>
     /// LogFormatter クラスで指定されたレイアウトを認識できるフォーマットに変換する機能を提供します。
     /// </summary>
-    internal sealed class LogLayoutConverter
+    public sealed class LogLayoutConverter
     {
+        private readonly HashSet<string> partPlacements = new();
+        private readonly LogLayoutPart[] parts;
+
         /// <summary>
         /// LogLayoutConverter クラスのインスタンスを初期化します。
         /// </summary>
         /// <param name="parts">ログの記録項目</param>
-        public LogLayoutConverter(params LogLayoutPart[] parts) => Parts = parts;
+        public LogLayoutConverter(params LogLayoutPart[] parts) => this.parts = parts;
+
+        public bool IsPartPlaced(string name) => partPlacements.Contains(name);
 
 #if NETCOREAPP
         /// <summary>
@@ -21,8 +26,9 @@ namespace MSyics.Traceyi.Layout
         /// </summary>
         public string Convert(string layout)
         {
+            partPlacements.Clear();
+            StringBuilder sb = new();
             var span = layout.AsSpan();
-            var sb = new StringBuilder();
             for (int layoutIndex = 0; layoutIndex < span.Length; layoutIndex++)
             {
                 if (span[layoutIndex] == '{')
@@ -33,15 +39,15 @@ namespace MSyics.Traceyi.Layout
 
                     if (length > 0)
                     {
-                        var convertString = span.Slice(startIndex, length);
-                        for (int itemIndex = 0; itemIndex < Parts.Length; itemIndex++)
+                        var template = span.Slice(startIndex, length);
+                        for (int itemIndex = 0; itemIndex < parts.Length; itemIndex++)
                         {
-                            var part = Parts[itemIndex];
-                            if (convertString.StartsWith(part.Name, StringComparison.OrdinalIgnoreCase))
+                            var part = parts[itemIndex];
+                            if (CanReplacePart(template, part))
                             {
                                 if (part.CanFormat)
                                 {
-                                    var formatString = convertString[part.Name.Length..];
+                                    var formatString = template[part.Name.Length..].Trim();
                                     var separator = GetSeparatorCharacter(formatString);
                                     sb.Append($"{{{itemIndex}{separator}{formatString.ToString()}}}");
                                 }
@@ -51,6 +57,7 @@ namespace MSyics.Traceyi.Layout
                                 }
                                 layoutIndex = startIndex + length;
                                 isContinue = true;
+                                partPlacements.Add(part.Name);
                                 break;
                             }
                         }
@@ -66,6 +73,22 @@ namespace MSyics.Traceyi.Layout
                 sb.Append(span[layoutIndex]);
             }
             return sb.ToString();
+        }
+
+        private static bool CanReplacePart(ReadOnlySpan<char> value, LogLayoutPart part)
+        {
+            if (!value.StartsWith(part.Name, StringComparison.OrdinalIgnoreCase)) { return false; }
+
+            value = value[part.Name.Length..].Trim();
+            if (value.Length == 0) { return true; }
+
+            var c = value[0];
+            if (c == ':' || c == ',' || c == '|') { return true; }
+
+            // =>
+            if (value[0] == '=' && value[1] == '>') { return true; }
+
+            return false;
         }
 
         /// <summary>
@@ -85,47 +108,68 @@ namespace MSyics.Traceyi.Layout
         /// </summary>
         public string Convert(string layout)
         {
-            var sb = new StringBuilder();
+            partPlacements.Clear();
+            StringBuilder sb = new();
             for (int layoutIndex = 0; layoutIndex < layout.Length; layoutIndex++)
             {
                 if (layout[layoutIndex] == '{')
                 {
                     var isContinue = false;
                     var startIndex = layoutIndex + 1;
-                    var length = layout.IndexOf('}', startIndex + 1) - startIndex;
+                    var length = layout.Substring(startIndex + 1).IndexOf('}') + 1;
 
-                    if (length <= 0)
+                    if (length > 0)
                     {
-                        Debug.Print("The log layout is not in the correct format.");
-                        return "";
-                    }
-
-                    var convertString = layout.Substring(startIndex, length);
-                    for (int itemIndex = 0; itemIndex < Parts.Length; itemIndex++)
-                    {
-                        var part = Parts[itemIndex];
-                        if (convertString.StartsWith(part.Name, StringComparison.OrdinalIgnoreCase))
+                        var template = layout.Substring(startIndex, length);
+                        for (int itemIndex = 0; itemIndex < parts.Length; itemIndex++)
                         {
-                            if (part.CanFormat)
+                            var part = parts[itemIndex];
+                            if (CanReplacePart(template, part))
                             {
-                                var formatString = convertString.Substring(part.Name.Length);
-                                var separator = GetSeparatorCharacter(formatString);
-                                sb.Append($"{{{itemIndex}{separator}{formatString}}}");
+                                if (part.CanFormat)
+                                {
+                                    var formatString = template.Substring(part.Name.Length).Trim();
+                                    var separator = GetSeparatorCharacter(formatString);
+                                    sb.Append($"{{{itemIndex}{separator}{formatString}}}");
+                                }
+                                else
+                                {
+                                    sb.Append($"{{{itemIndex}}}");
+                                }
+                                layoutIndex = startIndex + length;
+                                isContinue = true;
+                                partPlacements.Add(part.Name);
+                                break;
                             }
-                            else
-                            {
-                                sb.Append($"{{{itemIndex}}}");
-                            }
-                            layoutIndex = startIndex + length;
-                            isContinue = true;
-                            break;
                         }
+                        if (isContinue) { continue; }
                     }
-                    if (isContinue) { continue; }
+                    sb.Append('{');
                 }
+                else if (layout[layoutIndex] == '}')
+                {
+                    sb.Append('}');
+                }
+
                 sb.Append(layout[layoutIndex]);
             }
             return sb.ToString();
+        }
+
+        private static bool CanReplacePart(string value, LogLayoutPart part)
+        {
+            if (!value.StartsWith(part.Name, StringComparison.OrdinalIgnoreCase)) { return false; }
+            
+            value = value.Substring(part.Name.Length).Trim();
+            if (value.Length == 0) { return true; }
+
+            var c = value[0];
+            if (c == ':' || c == ',' || c == '|') { return true; }
+
+            // =>
+            if (value[0] == '=' && value[1] == '>') { return true; }
+
+            return false;
         }
 
         /// <summary>
@@ -139,7 +183,5 @@ namespace MSyics.Traceyi.Layout
             return ":";
         }
 #endif
-
-        private LogLayoutPart[] Parts { get; set; }
     }
 }

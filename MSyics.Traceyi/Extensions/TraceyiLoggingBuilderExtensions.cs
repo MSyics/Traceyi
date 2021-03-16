@@ -1,16 +1,16 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using MSyics.Traceyi.Configration;
-using MSyics.Traceyi.Listeners;
-using System;
-
-namespace MSyics.Traceyi
+﻿namespace Microsoft.Extensions.Logging
 {
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using MSyics.Traceyi;
+    using MSyics.Traceyi.Configration;
+    using MSyics.Traceyi.Listeners;
+    using System;
+
     /// <summary>
     /// ILoggingBuilder の Traceyi 拡張メソッド群を提供します。
     /// </summary>
-    public static class TraceyiLoggingBuilderExtensions
+    public static partial class TraceyiLoggingBuilderExtensions
     {
         /// <summary>
         /// 登録します。

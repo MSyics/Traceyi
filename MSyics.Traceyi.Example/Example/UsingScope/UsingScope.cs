@@ -12,49 +12,48 @@ namespace MSyics.Traceyi
         public override string Name => nameof(UsingScope);
 
         public override void Setup()
-        { 
+        {
             Traceable.Add(@"example\UsingScope\traceyi.json");
             Tracer = Traceable.Get();
         }
 
         public override Task ShowAsync()
         {
-            Tracer.Context.ActivityId = 100;
-
             Tracer.Information("out of scope");
-            using (Tracer.Scope(1))
-            {
-                Show2();
+            using (Tracer.Scope("start", operationId: nameof(ShowAsync)))
+            { 
+
+                Method001();
             }
+            Tracer.Stop("-");
+
             return Task.CompletedTask;
         }
 
-        private void Show2()
+        private void Method001()
         {
-            using (Tracer.Scope(2, "2 start", "2 stop"))
-            {
-                Tracer.Start("2-1", "2-1 start");
-                Show3();
-                Tracer.Start("2-2", "2-2 start");
-            }
+            using var ts = Tracer.Scope("start", operationId: nameof(Method001));
+
+            Method002();
+
+            Tracer.Stop("001");
+            Tracer.Start("001", operationId: $"{nameof(Method001)}`");
+
         }
 
-        private void Show3()
+        private void Method002()
         {
-            using (Tracer.Scope(3, "3 start", "3 stop"))
-            {
-                Tracer.Information("3");
-                Show4();
-                Tracer.Stop("Since it has not started, this stop will be ignored.");
-            }
+            using var ts = Tracer.Scope("start", operationId: nameof(Method002));
+
+            Tracer.Information("002");
+            Method003();
         }
 
-        private void Show4()
+        private void Method003()
         {
-            using (Tracer.Scope(4, "4 start", "4 stop"))
-            {
-                Tracer.Information("4");
-            }
+            using var ts = Tracer.Scope("start", operationId: nameof(Method003));
+
+            Tracer.Information("003");
         }
 
         public override void Teardown()

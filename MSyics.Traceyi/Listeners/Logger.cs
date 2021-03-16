@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using Microsoft.Extensions.Logging;
-
-#if NETCOREAPP
+//#if NETCOREAPP
 using System.Threading.Channels;
-#endif
+//#else
+using System.Collections.Concurrent;
+//#endif
 
 namespace MSyics.Traceyi.Listeners
 {
@@ -19,12 +16,12 @@ namespace MSyics.Traceyi.Listeners
     public abstract class Logger : IDisposable, ITraceListener
     {
         #region Static Members
-        protected static readonly object GlobalLock = new object();
+        protected static readonly object GlobalLock = new();
         #endregion
 
-        private readonly CancellationTokenSource cts = new CancellationTokenSource();
+        private readonly CancellationTokenSource cts = new();
 
-#if NETCOREAPP
+//#if NETCOREAPP
         private readonly Task consumer;
         private readonly Channel<TraceEventArgs> channel;
 
@@ -52,7 +49,7 @@ namespace MSyics.Traceyi.Listeners
                 channel.Writer.TryComplete(e);
             }
         }
-#endif
+//#endif
 
         /// <summary>
         /// ロックを使用するかどうかを示す値を取得または設定します。
@@ -77,18 +74,22 @@ namespace MSyics.Traceyi.Listeners
         /// <summary>
         /// トレースイベントを処理します。
         /// </summary>
-        public async void OnTracing(object sender, TraceEventArgs e)
+        public void OnTracing(object sender, TraceEventArgs e)
         {
             if (cts.IsCancellationRequested) { return; }
             if (UseAsync)
             {
                 try
                 {
-                    await WriteAsync(e);
+                    _ = WriteAsync(e);
                 }
-                catch (TaskCanceledException tce)
+                catch (TaskCanceledException ex)
                 {
-                    Debug.Print($"{tce}");
+                    Debug.Print($"{ex}");
+                }
+                catch (Exception ex)
+                {
+                    Debug.Print($"{ex}");
                 }
             }
             else
@@ -109,84 +110,94 @@ namespace MSyics.Traceyi.Listeners
         {
             if (UseLock)
             {
-                lock (GlobalLock) { WriteCore(e); }
+                lock (GlobalLock)
+                {
+                    try
+                    {
+                        WriteCore(e);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.Print($"{ex}");
+                    }
+                }
             }
             else
             {
-                WriteCore(e);
+                try
+                {
+                    WriteCore(e);
+                }
+                catch (Exception ex)
+                {
+                    Debug.Print($"{ex}");
+                }
             }
         }
 
-#if NETCOREAPP
+//#if NETCOREAPP
         /// <summary>
         /// トレースイベント情報を書き込みます。
         /// </summary>
         private ValueTask WriteAsync(TraceEventArgs e) => channel.Writer.WriteAsync(e);
+//#else
+//        private readonly ConcurrentQueue<TraceEventArgs> traceEvents = new();
+//        private int dequeuing = 0;
 
-        /// <summary>
-        /// 使用しているリソースを破棄します。
-        /// </summary>
-        public void Dispose()
-        {
-            channel.Writer.TryComplete();
-            if (consumer != null)
-            {
-                consumer.Wait(CloseTimeout);
-                consumer.Dispose();
-            }
-
-            cts.Cancel(false);
-            cts.Dispose();
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-#else
-        private readonly ConcurrentQueue<TraceEventArgs> traceEvents = new ConcurrentQueue<TraceEventArgs>();
-        private int dequeuing = 0;
-
-        /// <summary>
-        /// トレースイベント情報を書き込みます。
-        /// </summary>
-        private async Task WriteAsync(TraceEventArgs e)
-        {
-            if (cts.IsCancellationRequested) { return; }
-            await Task.Yield();
-            traceEvents.Enqueue(e);
-            if (Interlocked.CompareExchange(ref dequeuing, 1, 0) == 0)
-            {
-                await Task.Run(() =>
-                    {
-                        while (traceEvents.TryDequeue(out var item) && !cts.IsCancellationRequested)
-                        {
-                            Write(item);
-                        }
-                        Interlocked.Exchange(ref dequeuing, 0);
-                    });
-            }
-        }
-
-        /// <summary>
-        /// 使用しているリソースを破棄します。
-        /// </summary>
-        public void Dispose()
-        {
-            Task.Run(() => { while (traceEvents.Count != 0) ; }).Wait(CloseTimeout);
-            cts.Cancel(false);
-            cts.Dispose();
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-#endif
+//        /// <summary>
+//        /// トレースイベント情報を書き込みます。
+//        /// </summary>
+//        private async Task WriteAsync(TraceEventArgs e)
+//        {
+//            if (cts.IsCancellationRequested) { return; }
+//            await Task.Yield();
+//            traceEvents.Enqueue(e);
+//            if (Interlocked.CompareExchange(ref dequeuing, 1, 0) == 0)
+//            {
+//                await Task.Run(() =>
+//                    {
+//                        while (traceEvents.TryDequeue(out var item) && !cts.IsCancellationRequested)
+//                        {
+//                            Write(item);
+//                        }
+//                        Interlocked.Exchange(ref dequeuing, 0);
+//                    });
+//            }
+//        }
+//#endif
 
         /// <summary>
         /// リソースを破棄したかどうかを示す値を取得します。
         /// </summary>
         public bool Disposed { get; private set; } = false;
 
+        /// <summary>
+        /// 使用しているリソースを破棄します。
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
         private void Dispose(bool disposing)
         {
             if (Disposed) { return; }
             Disposed = true;
+
+//#if NETCOREAPP
+            channel.Writer.TryComplete();
+            if (consumer != null)
+            {
+                consumer.Wait(CloseTimeout);
+                consumer.Dispose();
+            }
+//#else
+//            Task.Run(() => { while (traceEvents.Count != 0) ; }).Wait(CloseTimeout);
+//#endif
+            cts.Cancel(false);
+            cts.Dispose();
+
             if (disposing) { DisposeManagedResources(); }
             DisposeUnmanagedResources();
         }

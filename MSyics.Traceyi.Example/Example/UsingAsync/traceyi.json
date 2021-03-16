@@ -22,7 +22,7 @@
           "UseMutex": false,
           "KeepFilesOpen": true,
           "MaxLength": 25000000,
-          "MaxArchiveCount": 10,
+          "MaxArchiveCount": 1,
           "Path": "app.log"
         }
         

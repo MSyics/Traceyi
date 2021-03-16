@@ -1,8 +1,11 @@
-﻿using System;
+﻿using MSyics.Traceyi.Layout;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading;
+using System.Dynamic;
 using System.Linq;
-using Microsoft.Extensions.Logging;
+using System.Text.Json.Serialization;
+using System.Threading;
 
 namespace MSyics.Traceyi
 {
@@ -11,6 +14,7 @@ namespace MSyics.Traceyi
     /// </summary>
     public sealed class TraceEventArgs : EventArgs
     {
+        #region Static members
         private static readonly int processId;
         private static readonly string processName;
         private static readonly string machineName = Environment.MachineName;
@@ -21,25 +25,78 @@ namespace MSyics.Traceyi
             processId = process.Id;
             processName = process.ProcessName;
         }
+        #endregion
 
-        public TraceEventArgs(DateTime traced, TraceAction action, object message, TraceOperation operation)
+        private readonly Action<dynamic> extensions;
+        private readonly object messageLayout;
+
+        public TraceEventArgs(TraceOperation operation, DateTimeOffset traced, TraceAction action, object message, Action<dynamic> extensions = default)
         {
             Traced = traced;
             Action = action;
-            Message = message;
             Operation = operation;
             Elapsed = operation.ScopeNumber == 0 || action == TraceAction.Start ? TimeSpan.Zero : traced - operation.Started;
+
+            this.extensions = extensions;
+            if (extensions is null)
+            {
+                Message = message;
+            }
+            else
+            {
+                messageLayout = message;
+            }
         }
+
+        sealed class ExtensionsObject : DynamicObject
+        {
+            public readonly Dictionary<string, object> Items = new();
+
+            public override bool TryGetMember(GetMemberBinder binder, out object result)
+            {
+                return Items.TryGetValue(binder.Name, out result);
+            }
+
+            public override bool TrySetMember(SetMemberBinder binder, object value)
+            {
+                Items[binder.Name] = value;
+                return true;
+            }
+        }
+
+        [JsonExtensionData]
+        public IDictionary<string, object> Extensions
+        {
+            get
+            {
+                if (_extensions == null)
+                {
+                    var obj = new ExtensionsObject();
+                    _extensions = obj.Items;
+                    try
+                    {
+                        extensions?.Invoke(obj);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.Print($"{ex}");
+                    }
+                }
+                return _extensions;
+            }
+        }
+        private IDictionary<string, object> _extensions;
 
         /// <summary>
         /// トレース操作を取得します。
         /// </summary>
+        //[JsonIgnore]
         public TraceOperation Operation { get; }
 
         /// <summary>
         /// トレースした日時を取得または設定します。
         /// </summary>
-        public DateTime Traced { get; }
+        public DateTimeOffset Traced { get; }
 
         /// <summary>
         /// トレースの動作を取得または設定します。
@@ -49,7 +106,39 @@ namespace MSyics.Traceyi
         /// <summary>
         /// メッセージを取得します。
         /// </summary>
-        public object Message { get; }
+        public object Message
+        {
+            get
+            {
+                if (_message == null && messageLayout != null)
+                {
+                    var parts = Extensions.
+                        Select(x => new LogLayoutPart
+                        {
+                            Name = x.Key,
+                            CanFormat = true
+                        }).
+                        ToArray();
+
+                    try
+                    {
+                        var format = new LogLayoutConverter(parts).Convert(messageLayout.ToString());
+                        _message = string.Format(
+                            new LogLayoutFormatProvider(),
+                            format,
+                            Extensions.Values.ToArray());
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.Print($"{ex}");
+                        _message = messageLayout;
+                    }
+                }
+                return _message;
+            }
+            set => _message = value;
+        }
+        private object _message;
 
         /// <summary>
         /// 経過時間を取得または設定します。
@@ -80,35 +169,5 @@ namespace MSyics.Traceyi
         /// マシン名を取得します。
         /// </summary>
         public string MachineName { get; } = machineName;
-
-        /// <summary>
-        /// メッセージが TraceyiLoggerMessage かどうかを示す値を取得します。
-        /// </summary>
-        public bool HasTraceyiLoggerMessage => Message is TraceyiLoggerMessage;
-
-        /// <summary>
-        /// ILogger で指定された EventId を取得します。
-        /// </summary>
-        public EventId EventId => TryGetTraceyiLoggerMessage(out var message) ? message.EventId : default;
-
-        /// <summary>
-        /// ILogger で指定されたメッセージを取得します。
-        /// </summary>
-        /// <param name="message"></param>
-        /// <returns></returns>
-        public bool TryGetTraceyiLoggerMessage(out TraceyiLoggerMessage message)
-        {
-            message = null;
-            if (Message is TraceyiLoggerMessage value)
-            {
-                message = value;
-            }
-            return message != null;
-        }
-
-        public override string ToString()
-        {
-            return $"{Traced}\t{Action}\t{Elapsed}\t{Operation.Id}\t{ActivityId}\t{ThreadId}\t{ProcessId}\t{ProcessName}\t{MachineName}\t{Message}";
-        }
     }
 }

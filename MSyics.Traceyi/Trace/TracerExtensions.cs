@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
 
 namespace MSyics.Traceyi
 {
@@ -13,15 +11,18 @@ namespace MSyics.Traceyi
         /// コードブロックをトレースに参加させます。
         /// </summary>
         /// <param name="tracer">トレースオブジェクト</param>
+        /// <param name="message">開始メッセージ</param>
+        /// <param name="extensions"></param>
         /// <param name="operationId">操作 ID</param>
-        /// <param name="startMessage">開始メッセージ</param>
-        /// <param name="stopMessage">終了メッセージ</param>
-        public static TraceScope Scope(this Tracer tracer, object operationId = null, object startMessage = null, object stopMessage = null)
+        public static TraceScope Scope(this Tracer tracer, object message, Action<dynamic> extensions = null, object operationId = null)
         {
             var scope = new TraceScope();
-            scope.Start(tracer, operationId, startMessage, stopMessage);
+            scope.Start(tracer, message, extensions, operationId);
             return scope;
         }
+
+        public static TraceScope Scope(this Tracer tracer, Action<dynamic> extensions = null, object operationId = null) =>
+            Scope(tracer, null, extensions, operationId);
 
         /// <summary>
         /// 指定したフィルターに動作が含まれているかどうかを判定します。

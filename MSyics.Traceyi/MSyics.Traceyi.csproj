@@ -5,7 +5,7 @@
     <LangVersion>latest</LangVersion>
     <SignAssembly>false</SignAssembly>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>5.0.1</Version>
+    <Version>6.0.0</Version>
     <PackageId>Traceyi</PackageId>
     <Authors>MSyics</Authors>
     <Company>MSyics</Company>
@@ -17,9 +17,9 @@
     <Description>Traceyi is an asynchronous logging library</Description>
     <Platforms>AnyCPU;x64</Platforms>
     <PackageTags>logging trace async</PackageTags>
-    <AssemblyVersion>5.0.1.0</AssemblyVersion>
-    <FileVersion>5.0.1.0</FileVersion>
-    <PackageVersion>5.0.1</PackageVersion>
+    <AssemblyVersion>6.0.0.0</AssemblyVersion>
+    <FileVersion>6.0.0.0</FileVersion>
+    <PackageVersion>6.0.0-alpha1</PackageVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
@@ -34,8 +34,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="5.0.0" />
+    <PackageReference Include="System.Threading.Channels" Version="5.0.0" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
   </ItemGroup>
 
   <ItemGroup>

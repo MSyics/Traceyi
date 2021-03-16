@@ -1,19 +1,15 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using MSyics.Traceyi;
-using MSyics.Traceyi.Configration;
-using MSyics.Traceyi.Listeners;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-namespace MSyics.Traceyi
+﻿namespace Microsoft.Extensions.Logging
 {
+    using Microsoft.Extensions.Configuration;
+    using MSyics.Traceyi;
+    using MSyics.Traceyi.Configration;
+    using MSyics.Traceyi.Listeners;
+    using System;
+
     /// <summary>
     /// ILoggerFactory の Traceyi 拡張メソッドを提供します。
     /// </summary>
-    public static class TraceyiLoggerFactoryExtensions
+    public static partial class TraceyiLoggerFactoryExtensions
     {
         /// <summary>
         /// 登録します。

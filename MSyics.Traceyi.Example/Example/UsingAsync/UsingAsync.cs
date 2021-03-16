@@ -26,9 +26,9 @@ namespace MSyics.Traceyi
             sw.Start();
 
             Tracer.Context.ActivityId = "A1";
-            Tracer.Information(100);
+            Tracer.Information("{i}", x => x.i = 100);
 
-            using (Tracer.Scope(1))
+            using (Tracer.Scope("{i}", x => x.i = 1))
             {
                 await Task.
                     WhenAll(Enumerable.
@@ -36,8 +36,8 @@ namespace MSyics.Traceyi
                     Select(x => Hoge(x)).
                     ToArray());
 
-                Tracer.Information(1);
-                Tracer.Start(1.1);
+                Tracer.Information("{i}", x => x.i = 1);
+                Tracer.Start("{i}", x => x.i = 1.1);
             }
             Console.WriteLine(sw.ElapsedMilliseconds);
         }
@@ -45,19 +45,19 @@ namespace MSyics.Traceyi
         public async Task Hoge(object obj)
         {
             Tracer.Context.ActivityId = "A2";
-            using (Tracer.Scope(2))
+            using (Tracer.Scope("{i}", x => x.i = 2))
             {
                 await Task.Run(() =>
                 {
                     Tracer.Context.ActivityId = "A3";
-                    using (Tracer.Scope(3))
+                    using (Tracer.Scope("{i}", x => x.i = 3))
                     {
-                        Tracer.Information($"{3} {obj}");
+                        Tracer.Information("3 {i}", x => x.i = obj);
                     }
                 });
 
-                Tracer.Information($"{2} {obj}");
-                Tracer.Start(2.2);
+                Tracer.Information("2 {i}", x => x.i = obj);
+                Tracer.Start("{i}", x => x.i = 2.2);
             }
         }
 
