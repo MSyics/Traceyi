@@ -47,7 +47,7 @@ namespace MSyics.Traceyi
             {
                 x.hoge = "3";
                 x.piyo = 2;
-            }))
+            }, "operation"))
             {
                 //logger.LogInformation("{hoge=>json} {piyo|_,4:R}", "1", 2);
                 //logger.LogInformation(ex, "");

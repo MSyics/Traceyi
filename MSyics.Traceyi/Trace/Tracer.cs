@@ -108,7 +108,7 @@ namespace MSyics.Traceyi
             var operation = new TraceOperation()
             {
                 WithScopeObject = withScopeObject,
-                Id = operationId ?? Context.CurrentOperation.Id,
+                OperationId = operationId ?? Context.CurrentOperation.OperationId,
                 ScopeId = $"{DateTimeOffset.Now.Ticks:x16}",
                 ParentId = Context.CurrentOperation.ScopeId,
                 ScopeNumber = Context.OperationStack.Count + 1,

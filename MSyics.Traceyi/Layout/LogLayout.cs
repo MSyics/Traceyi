@@ -71,7 +71,7 @@ namespace MSyics.Traceyi.Layout
                 e.Elapsed,
                 e.Message,
                 e.ActivityId,
-                e.Operation.Id,
+                e.Operation.OperationId,
                 e.Operation.ScopeId,
                 e.Operation.ParentId,
                 e.Operation.ScopeNumber,

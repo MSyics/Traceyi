@@ -36,7 +36,7 @@ namespace MSyics.Traceyi
         /// <summary>
         /// 操作の識別子を取得します。
         /// </summary>
-        public object Id { get; internal set; }
+        public object OperationId { get; internal set; }
 
         /// <summary>
         /// 操作の開始日時を取得します。
