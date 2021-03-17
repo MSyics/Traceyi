@@ -5,7 +5,7 @@ namespace MSyics.Traceyi
     /// <summary>
     /// コードブロックをトレースに参加します。
     /// </summary>
-    public sealed class TraceScope : IDisposable
+    public sealed class TraceScopeEntry : IDisposable
     {
         private bool stopped = false;
         private Action<object, Action<dynamic>> stop;

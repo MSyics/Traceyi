@@ -38,14 +38,14 @@ namespace MSyics.Traceyi
         {
             if (!Filters.Contains(action)) { return; }
 
-            Tracing?.Invoke(this, new TraceEventArgs(Context.CurrentOperation, DateTimeOffset.Now, action, message, extensions));
+            Tracing?.Invoke(this, new TraceEventArgs(Context.CurrentScope, DateTimeOffset.Now, action, message, extensions));
         }
 
-        internal void RaiseTracing(TraceOperation operation, DateTimeOffset traced, TraceAction action, object message, Action<dynamic> extensions)
+        internal void RaiseTracing(TraceScope scope, DateTimeOffset traced, TraceAction action, object message, Action<dynamic> extensions)
         {
             if (!Filters.Contains(action)) { return; }
 
-            Tracing?.Invoke(this, new TraceEventArgs(operation, traced, action, message, extensions));
+            Tracing?.Invoke(this, new TraceEventArgs(scope, traced, action, message, extensions));
         }
 
         #region Trace
@@ -105,19 +105,19 @@ namespace MSyics.Traceyi
 
         internal string Start(object message, Action<dynamic> extensions, object operationId, bool withScopeObject)
         {
-            var operation = new TraceOperation()
+            var scope = new TraceScope()
             {
                 WithScopeObject = withScopeObject,
-                OperationId = operationId ?? Context.CurrentOperation.OperationId,
-                ScopeId = $"{DateTimeOffset.Now.Ticks:x16}",
-                ParentId = Context.CurrentOperation.ScopeId,
-                ScopeNumber = Context.OperationStack.Count + 1,
+                OperationId = operationId ?? Context.CurrentScope.OperationId,
+                Id = $"{DateTimeOffset.Now.Ticks:x16}",
+                ParentId = Context.CurrentScope.Id,
+                Depth = Context.ScopeStack.Count + 1,
                 Started = DateTimeOffset.Now,
             };
 
-            Context.OperationStack.Push(operation);
-            RaiseTracing(operation, operation.Started, TraceAction.Start, message, extensions);
-            return operation.ScopeId;
+            Context.ScopeStack.Push(scope);
+            RaiseTracing(scope, scope.Started, TraceAction.Start, message, extensions);
+            return scope.Id;
         }
         #endregion
 
@@ -127,14 +127,14 @@ namespace MSyics.Traceyi
         /// </summary>
         public void Stop(object message, Action<dynamic> extensions = null)
         {
-            var operation = Context.CurrentOperation;
+            var scope = Context.CurrentScope;
 
-            RaiseTracing(operation, DateTimeOffset.Now, TraceAction.Stop, message, extensions);
+            RaiseTracing(scope, DateTimeOffset.Now, TraceAction.Stop, message, extensions);
 
-            if (operation.WithScopeObject) { return; }
-            if (Context.OperationStack.Count == 0) { return; }
+            if (scope.WithScopeObject) { return; }
+            if (Context.ScopeStack.Count == 0) { return; }
 
-            Context.OperationStack.Pop();
+            Context.ScopeStack.Pop();
         }
 
         public void Stop(Action<dynamic> extensions = null) => Stop(null, extensions);
@@ -143,22 +143,22 @@ namespace MSyics.Traceyi
         {
             for (; ; )
             {
-                var operation = Context.CurrentOperation;
+                var scope = Context.CurrentScope;
 
-                if (scopeId == operation.ScopeId)
+                if (scopeId == scope.Id)
                 {
-                    RaiseTracing(operation, stopped, TraceAction.Stop, message, extensions);
+                    RaiseTracing(scope, stopped, TraceAction.Stop, message, extensions);
                 }
                 else
                 {
-                    RaiseTracing(operation, stopped, TraceAction.Stop, null, null);
+                    RaiseTracing(scope, stopped, TraceAction.Stop, null, null);
                 }
 
-                if (Context.OperationStack.Count == 0) { break; }
+                if (Context.ScopeStack.Count == 0) { break; }
 
-                Context.OperationStack.Pop();
+                Context.ScopeStack.Pop();
 
-                if (scopeId == operation.ScopeId) { break; }
+                if (scopeId == scope.Id) { break; }
             }
         }
         #endregion

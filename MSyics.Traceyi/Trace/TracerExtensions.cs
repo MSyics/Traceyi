@@ -14,14 +14,14 @@ namespace MSyics.Traceyi
         /// <param name="message">開始メッセージ</param>
         /// <param name="extensions"></param>
         /// <param name="operationId">操作 ID</param>
-        public static TraceScope Scope(this Tracer tracer, object message, Action<dynamic> extensions = null, object operationId = null)
+        public static TraceScopeEntry Scope(this Tracer tracer, object message, Action<dynamic> extensions = null, object operationId = null)
         {
-            var scope = new TraceScope();
+            var scope = new TraceScopeEntry();
             scope.Start(tracer, message, extensions, operationId);
             return scope;
         }
 
-        public static TraceScope Scope(this Tracer tracer, Action<dynamic> extensions = null, object operationId = null) =>
+        public static TraceScopeEntry Scope(this Tracer tracer, Action<dynamic> extensions = null, object operationId = null) =>
             Scope(tracer, null, extensions, operationId);
 
         /// <summary>

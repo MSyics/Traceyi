@@ -12,15 +12,15 @@ namespace MSyics.Traceyi
     /// </summary>
     public sealed class TraceContext
     {
-        readonly AsyncLocal<AsyncLocalStackNode<TraceOperation>> operationStackNode = new();
+        readonly AsyncLocal<AsyncLocalStackNode<TraceScope>> scopeStackNode = new();
         readonly AsyncLocal<object> activityId = new();
 
         internal TraceContext()
         {
-            OperationStack = new AsyncLocalStack<TraceOperation>(operationStackNode);
+            ScopeStack = new AsyncLocalStack<TraceScope>(scopeStackNode);
         }
 
-        internal AsyncLocalStack<TraceOperation> OperationStack { get; private set; }
+        internal AsyncLocalStack<TraceScope> ScopeStack { get; private set; }
 
         /// <summary>
         /// 現在の活動識別子を取得または設定します。
@@ -30,12 +30,12 @@ namespace MSyics.Traceyi
         /// <summary>
         /// 現在のトレース操作情報を取得します。
         /// </summary>
-        public TraceOperation CurrentOperation => OperationStack.Count == 0 ? TraceOperation.NullOperation : OperationStack.Peek();
+        public TraceScope CurrentScope => ScopeStack.Count == 0 ? TraceScope.NullScope : ScopeStack.Peek();
 
         /// <summary>
         /// トレース操作情報の一覧を取得します。
         /// </summary>
-        public TraceOperation[] Operations => OperationStack.ToArray();
+        public TraceScope[] Scopes => ScopeStack.ToArray();
 
         /// <summary>
         /// トレース基本情報をリフレッシュします。
@@ -43,7 +43,7 @@ namespace MSyics.Traceyi
         public void Refresh()
         {
             ActivityId = null;
-            OperationStack.Clear();
+            ScopeStack.Clear();
         }
     }
 }

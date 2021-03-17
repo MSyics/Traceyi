@@ -30,12 +30,12 @@ namespace MSyics.Traceyi
         private readonly Action<dynamic> extensions;
         private readonly object messageLayout;
 
-        public TraceEventArgs(TraceOperation operation, DateTimeOffset traced, TraceAction action, object message, Action<dynamic> extensions = default)
+        public TraceEventArgs(TraceScope scope, DateTimeOffset traced, TraceAction action, object message, Action<dynamic> extensions = default)
         {
             Traced = traced;
             Action = action;
-            Operation = operation;
-            Elapsed = operation.ScopeNumber == 0 || action == TraceAction.Start ? TimeSpan.Zero : traced - operation.Started;
+            Scope = scope;
+            Elapsed = scope.Depth == 0 || action == TraceAction.Start ? TimeSpan.Zero : traced - scope.Started;
 
             this.extensions = extensions;
             if (extensions is null)
@@ -91,7 +91,7 @@ namespace MSyics.Traceyi
         /// トレース操作を取得します。
         /// </summary>
         //[JsonIgnore]
-        public TraceOperation Operation { get; }
+        public TraceScope Scope { get; }
 
         /// <summary>
         /// トレースした日時を取得または設定します。
