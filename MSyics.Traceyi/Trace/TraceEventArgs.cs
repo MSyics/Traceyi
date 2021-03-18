@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Dynamic;
 using System.Linq;
-using System.Reflection;
 using System.Text.Json.Serialization;
 using System.Threading;
 
@@ -50,7 +49,7 @@ namespace MSyics.Traceyi
         }
 
         [JsonExtensionData]
-        public IReadOnlyDictionary<string, object> Extensions
+        public IDictionary<string, object> Extensions
         {
             get
             {
@@ -70,7 +69,7 @@ namespace MSyics.Traceyi
                 return _extensions;
             }
         }
-        private IReadOnlyDictionary<string, object> _extensions;
+        private IDictionary<string, object> _extensions;
 
         /// <summary>
         /// トレース操作を取得します。

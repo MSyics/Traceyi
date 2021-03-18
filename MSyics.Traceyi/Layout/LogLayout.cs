@@ -61,6 +61,16 @@ namespace MSyics.Traceyi.Layout
         {
             SetFormattedLayout();
 
+            //try
+            //{
+            //    return JsonSerializer.Serialize(e, options);
+            //}
+            //catch (Exception ex)
+            //{
+            //    Debug.Print($"Failed to Json conversion of extensions. {ex}");
+            //    return e.Extensions.ToString();
+            //}
+
             return string.Format(
                 formatProvider,
                 format,
@@ -129,9 +139,9 @@ namespace MSyics.Traceyi.Layout
             {
                 return JsonSerializer.Serialize(e.Extensions, options);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Debug.Print("Failed to Json conversion of extensions.");
+                Debug.Print($"Failed to Json conversion of extensions. {ex}");
                 return e.Extensions.ToString();
             }
         }
