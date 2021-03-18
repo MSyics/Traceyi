@@ -23,8 +23,8 @@ namespace MSyics.Traceyi
     /// </summary>
     internal class HashRingDeriveBytes : DeriveBytes
     {
-        private HashAlgorithm m_hashAlgo;
-        private byte[] m_buffer;
+        private readonly HashAlgorithm m_hashAlgo;
+        private readonly byte[] m_buffer;
         private int m_startIndex;
 
         /// <summary>

@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace MSyics.Traceyi.Layout
 {
-    internal class JsonTimeSpanConverter : JsonConverter<TimeSpan>
+    internal class TimeSpanToStringJsonConverter : JsonConverter<TimeSpan>
     {
         public override void Write(Utf8JsonWriter writer, TimeSpan value, JsonSerializerOptions options)
         {

@@ -29,7 +29,7 @@ namespace MSyics.Traceyi
 
         public override async Task ShowAsync()
         {
-            var ex = new ApplicationException("hgoehgoe", new NullReferenceException("piyopiyo"));
+            var ex = new NullReferenceException("hogehoge", new NullReferenceException("piyopiyo"));
 
             using (logger.BeginScope())
             //using (logger.BeginScope("{hoge} {piyo|_,4:R}", "1", 2))
@@ -61,10 +61,13 @@ namespace MSyics.Traceyi
                 {
                     x.hoge = 1;
                     x.piyo = 2;
+                    x.p = TraceAction.Trace;
                     x.piyo2 = DateTime.Now;
                     x.fuga = TimeSpan.FromMinutes(1);
+                    x.ex = ex.ToString();
+                    x.ex2 = ex;
                 });
-                logger.LogInformation("hogehoge");
+                logger.LogInformation(ex, "hogehoge");
             }
 
             await Task.CompletedTask;

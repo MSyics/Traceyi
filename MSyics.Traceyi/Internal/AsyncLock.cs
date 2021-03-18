@@ -6,7 +6,7 @@ namespace MSyics.Traceyi
 {
     internal sealed class AsyncLock
     {
-        readonly SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
+        readonly SemaphoreSlim semaphore = new(1, 1);
         readonly Task<IDisposable> releaser;
 
         public AsyncLock()

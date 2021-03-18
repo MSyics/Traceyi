@@ -109,11 +109,15 @@ namespace MSyics.Traceyi.Layout
             makedFormat = true;
         }
 
-
-        JsonSerializerOptions options = new(JsonSerializerDefaults.Web)
+        readonly JsonSerializerOptions options = new(JsonSerializerDefaults.Web)
         {
             WriteIndented = false,
-            Converters = { new JsonTimeSpanConverter(), new JsonStringEnumConverter() }
+            Converters = 
+            { 
+                new JsonStringEnumConverter(),
+                new TimeSpanToStringJsonConverter(), 
+                new ExceptionToStringJsonConverter(),
+            }
         };
 
         private string GetExtensionsJson(TraceEventArgs e)
