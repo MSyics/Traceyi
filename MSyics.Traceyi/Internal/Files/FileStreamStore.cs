@@ -12,7 +12,7 @@ namespace MSyics.Traceyi
     internal class FileStreamStore
     {
         readonly IFileStreamFactory factory;
-        readonly Dictionary<string, FileStream> streams = new Dictionary<string, FileStream>();
+        readonly Dictionary<string, FileStream> streams = new();
 
         public FileStreamStore(IFileStreamFactory factory)
         {

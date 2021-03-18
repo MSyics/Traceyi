@@ -1,5 +1,4 @@
-﻿
-namespace MSyics.Traceyi
+﻿namespace MSyics.Traceyi
 {
     /// <summary>
     /// トレースの動作を示します。
@@ -37,12 +36,12 @@ namespace MSyics.Traceyi
         Critical,
 
         /// <summary>
-        /// 操作開始
+        /// 開始
         /// </summary>
         Start,
 
         /// <summary>
-        /// 操作停止
+        /// 終了
         /// </summary>
         Stop,
     }

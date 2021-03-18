@@ -9,35 +9,35 @@
     /// <summary>
     /// ILogger の Traceyi 実装クラスです。
     /// </summary>
-    class TraceyiLogger : ILogger
+    internal class TraceyiLogger : ILogger
     {
         private static readonly string OriginalFormatKeyName = "{OriginalFormat}";
         private static readonly string PlaceholderKeyOperationId = "operationId".ToUpperInvariant();
-        internal Tracer Tracer { get; private set; }
+        private readonly Tracer tracer;
 
         public TraceyiLogger(Tracer tracer)
         {
-            Tracer = tracer;
+            this.tracer = tracer;
         }
 
         public bool IsEnabled(LogLevel logLevel)
         {
             if (!TryGetTraceAction(logLevel, out var traceAction)) { return true; }
-            return Tracer.Filters.Contains(traceAction);
+            return tracer.Filters.Contains(traceAction);
         }
 
         public IDisposable BeginScope<TState>(TState state)
         {
             return state switch
             {
-                IEnumerable<KeyValuePair<string, object>> items => Tracer.Scope(
+                IEnumerable<KeyValuePair<string, object>> items => tracer.Scope(
                     items.FirstOrDefault(x => x.Key == OriginalFormatKeyName).Value, 
                     x => MakeExtensions(ref x, items)),
-                TraceyiLoggerParameters p => Tracer.Scope(
+                TraceyiLoggerParameters p => tracer.Scope(
                     p.Message, 
                     p.Extensions, 
                     p.OperationId),
-                _ => Tracer.Scope(state),
+                _ => tracer.Scope(state),
             };
         }
 
@@ -48,13 +48,13 @@
             switch (state)
             {
                 case IEnumerable<KeyValuePair<string, object>> items:
-                    Tracer.RaiseTracing(
+                    tracer.RaiseTracing(
                         traceAction,
                         items.FirstOrDefault(x => x.Key == OriginalFormatKeyName).Value,
                         x => MakeExtensions(ref x, items, eventId, exception));
                     break;
                 case TraceyiLoggerParameters p:
-                    Tracer.RaiseTracing(
+                    tracer.RaiseTracing(
                         traceAction,
                         p.Message, x =>
                         {
@@ -63,7 +63,7 @@
                         });
                     break;
                 default:
-                    Tracer.RaiseTracing(
+                    tracer.RaiseTracing(
                         traceAction,
                         state,
                         x => MakeExtensions(ref x, eventId, exception));

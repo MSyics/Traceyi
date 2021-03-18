@@ -48,22 +48,6 @@ namespace MSyics.Traceyi
             }
         }
 
-        sealed class ExtensionsObject : DynamicObject
-        {
-            public readonly Dictionary<string, object> Items = new();
-
-            public override bool TryGetMember(GetMemberBinder binder, out object result)
-            {
-                return Items.TryGetValue(binder.Name, out result);
-            }
-
-            public override bool TrySetMember(SetMemberBinder binder, object value)
-            {
-                Items[binder.Name] = value;
-                return true;
-            }
-        }
-
         [JsonExtensionData]
         public IDictionary<string, object> Extensions
         {
@@ -169,5 +153,22 @@ namespace MSyics.Traceyi
         /// マシン名を取得します。
         /// </summary>
         public string MachineName { get; } = machineName;
+
+
+        internal sealed class ExtensionsObject : DynamicObject
+        {
+            public readonly Dictionary<string, object> Items = new();
+
+            public override bool TryGetMember(GetMemberBinder binder, out object result)
+            {
+                return Items.TryGetValue(binder.Name, out result);
+            }
+
+            public override bool TrySetMember(SetMemberBinder binder, object value)
+            {
+                Items[binder.Name] = value;
+                return true;
+            }
+        }
     }
 }

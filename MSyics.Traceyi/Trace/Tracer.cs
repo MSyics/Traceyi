@@ -103,11 +103,10 @@ namespace MSyics.Traceyi
         public void Start(object message, Action<dynamic> extensions = null, object operationId = null) => Start(message, extensions, operationId, false);
         public void Start(Action<dynamic> extensions = null, object operationId = null) => Start(null, extensions, operationId, false);
 
-        internal string Start(object message, Action<dynamic> extensions, object operationId, bool withScopeObject)
+        internal string Start(object message, Action<dynamic> extensions, object operationId, bool withEntry)
         {
-            var scope = new TraceScope()
-            {
-                WithScopeObject = withScopeObject,
+            var scope = new TraceScope(withEntry)
+            { 
                 OperationId = operationId ?? Context.CurrentScope.OperationId,
                 Id = $"{DateTimeOffset.Now.Ticks:x16}",
                 ParentId = Context.CurrentScope.Id,
@@ -131,7 +130,7 @@ namespace MSyics.Traceyi
 
             RaiseTracing(scope, DateTimeOffset.Now, TraceAction.Stop, message, extensions);
 
-            if (scope.WithScopeObject) { return; }
+            if (scope.WithEntry) { return; }
             if (Context.ScopeStack.Count == 0) { return; }
 
             Context.ScopeStack.Pop();

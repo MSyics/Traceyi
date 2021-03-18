@@ -14,12 +14,12 @@ namespace MSyics.Traceyi
     /// </summary>
     public static class Traceable
     {
-        private readonly static HashSet<ITraceListener> Listeners = new HashSet<ITraceListener>();
-        private readonly static Dictionary<string, Tracer> Tracers = new Dictionary<string, Tracer>();
-        private readonly static TraceListenerElementConfiguration ListenerConfig = new TraceListenerElementConfiguration();
+        private readonly static HashSet<ITraceListener> Listeners = new();
+        private readonly static Dictionary<string, Tracer> Tracers = new();
+        private readonly static TraceListenerElementConfiguration ListenerConfig = new();
 
         internal static TraceContext Context => _context.Value;
-        private static readonly Lazy<TraceContext> _context = new Lazy<TraceContext>(() => new TraceContext(), true);
+        private static readonly Lazy<TraceContext> _context = new(() => new TraceContext(), true);
 
         /// <summary>
         /// 構成ファイルで設定した Tracer オブジェクトを取得します。

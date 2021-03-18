@@ -5,7 +5,7 @@
 
     public static partial class TraceyiLoggerExtensions
     {
-        #region Information
+        #region BeginScope
         /// <summary>
         /// 
         /// </summary>

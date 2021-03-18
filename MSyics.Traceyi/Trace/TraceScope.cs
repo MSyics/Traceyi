@@ -7,15 +7,17 @@ namespace MSyics.Traceyi
     /// </summary>
     public sealed class TraceScope
     {
-        /// <summary>
-        /// 操作が無い状態を表します。
-        /// </summary>
-        internal readonly static TraceScope NullScope = new();
+        public TraceScope(bool withEntry)
+        {
+            WithEntry = withEntry;
+        }
 
-        /// <summary>
-        /// スコープを使用しているかどうかを示す値を取得します。
-        /// </summary>
-        public bool WithScopeObject { get; internal set; }
+        public TraceScope()
+        {
+        }
+
+        internal readonly static TraceScope NullScope = new();
+        internal bool WithEntry { get; }
 
         /// <summary>
         /// スコープ ID を取得します。

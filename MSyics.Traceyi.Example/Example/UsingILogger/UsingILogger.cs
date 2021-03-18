@@ -31,7 +31,7 @@ namespace MSyics.Traceyi
         {
             var ex = new ApplicationException("hgoehgoe", new NullReferenceException("piyopiyo"));
 
-            //using (logger.BeginScope())
+            using (logger.BeginScope())
             //using (logger.BeginScope("{hoge} {piyo|_,4:R}", "1", 2))
             //using (logger.BeginScope("{hoge} {piyo|_,4:R}", x =>
             //{

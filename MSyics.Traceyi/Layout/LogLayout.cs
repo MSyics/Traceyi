@@ -14,7 +14,7 @@ namespace MSyics.Traceyi.Layout
         /// <summary>
         /// 初期レイアウトを示す固定値です。
         /// </summary>
-        public readonly static string DefaultLayout = "{dateTime:O}{tab}{scopeNumber}{tab}{scopeId|_,16:R}{tab}{parentId|_,16:R}{tab}{threadId}{tab}{activityId}{tab}{machineName}{tab}{processId}{tab}{processName}{tab}{action}{tab}{elapsed:d\\.hh\\:mm\\:ss\\.fffffff}{tab}{operationId}{tab}{message}{tab}{extensions}";
+        public readonly static string DefaultLayout = "{dateTime:yyyy-MM-ddTHH:mm:ss.fffffffzzz}{tab}{scopeId|_,16:R}{tab}{scopeParentId|_,16:R}{tab}{scopeDepth}{tab}{threadId}{tab}{activityId}{tab}{machineName}{tab}{processId}{tab}{processName}{tab}{action}{tab}{elapsed:d\\.hh\\:mm\\:ss\\.fffffff}{tab}{operationId}{tab}{message}{tab}{extensions}";
 
         private readonly IFormatProvider formatProvider = new LogLayoutFormatProvider();
         private string format;
@@ -96,8 +96,8 @@ namespace MSyics.Traceyi.Layout
                 new LogLayoutPart { Name = "activityId", CanFormat = true },
                 new LogLayoutPart { Name = "operationId", CanFormat = true },
                 new LogLayoutPart { Name = "scopeId", CanFormat = true },
-                new LogLayoutPart { Name = "parentId", CanFormat = true },
-                new LogLayoutPart { Name = "scopeNumber", CanFormat = true },
+                new LogLayoutPart { Name = "scopeParentId", CanFormat = true },
+                new LogLayoutPart { Name = "scopeDepth", CanFormat = true },
                 new LogLayoutPart { Name = "threadId", CanFormat = true },
                 new LogLayoutPart { Name = "processId", CanFormat = true },
                 new LogLayoutPart { Name = "processName", CanFormat = true },

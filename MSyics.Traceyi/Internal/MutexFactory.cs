@@ -11,7 +11,7 @@ namespace MSyics.Traceyi
     /// </summary>
     internal sealed class MutexFactory
     {
-        public static MutexFactory Create() => new MutexFactory();
+        public static MutexFactory Create() => new();
 
         const int maxLength = 260;
         readonly string prefix = @"Global\";
