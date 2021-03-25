@@ -22,7 +22,6 @@ namespace MSyics.Traceyi
             Tracer.Information("out of scope");
             using (Tracer.Scope("start", operationId: nameof(ShowAsync)))
             { 
-
                 Method001();
             }
             Tracer.Stop("-");

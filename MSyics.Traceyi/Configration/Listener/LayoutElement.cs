@@ -10,7 +10,7 @@ namespace MSyics.Traceyi.Configration
         /// <summary>
         /// レイアウト形式を取得または設定します。
         /// </summary>
-        public string Format { get; set; } = LogLayout.DefaultLayout;
+        public string Format { get; set; } = LogLayout.DefaultFormatting;
 
         /// <summary>
         /// 実行オブジェクトを取得します。

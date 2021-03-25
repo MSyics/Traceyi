@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
+using System.Text.Json;
 
 namespace MSyics.Traceyi.Layout
 {
@@ -68,10 +69,11 @@ namespace MSyics.Traceyi.Layout
                     {
                         try
                         {
-                            return System.Text.Json.JsonSerializer.Serialize(arg);
+                            return JsonSerializer.Serialize(arg);
                         }
-                        catch (Exception)
+                        catch (Exception ex)
                         {
+                            Debug.Print($"{ex}");
                         }
                     }
 

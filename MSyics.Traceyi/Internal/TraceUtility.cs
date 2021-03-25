@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -10,7 +11,7 @@ namespace MSyics.Traceyi
     /// <summary>
     /// トレースデータに関するユーティリティークラスです。
     /// </summary>
-    internal static class TraceUtility
+    public static class TraceUtility
     {
         /// <summary>
         /// ライブラリで定義されているすべての型を取得します。
@@ -21,7 +22,7 @@ namespace MSyics.Traceyi
         /// トレースしたメンバー情報を取得します。
         /// </summary>
         /// <returns>メンバー情報</returns>
-        internal static MemberInfo GetTracedMemberInfo()
+        public static MemberInfo GetTracedMemberInfo()
         {
             var stack = new StackTrace(false);
             if (stack.FrameCount == 0) { return null; }

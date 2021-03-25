@@ -5,6 +5,8 @@
 
     public static partial class TraceyiLoggerExtensions
     {
+        public static TraceContext GetContext(this ILogger _) => Traceable.Context;
+
         #region BeginScope
         /// <summary>
         /// 
@@ -24,7 +26,11 @@
         /// 
         /// </summary>
         public static void Log(this ILogger logger, LogLevel logLevel, EventId eventId, Exception exception, object message, Action<dynamic> extensions) =>
-            logger.Log(logLevel, eventId, new TraceyiLoggerParameters { Message = message, Extensions = extensions, }, exception, null);
+            logger.Log(logLevel, eventId, new TraceyiLoggerParameters
+            {
+                Message = message,
+                Extensions = extensions,
+            }, exception, null);
         #endregion
 
         #region LogTrace

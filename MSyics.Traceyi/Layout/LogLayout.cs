@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -14,7 +15,7 @@ namespace MSyics.Traceyi.Layout
         /// <summary>
         /// 初期レイアウトを示す固定値です。
         /// </summary>
-        public readonly static string DefaultLayout = "{dateTime:yyyy-MM-ddTHH:mm:ss.fffffffzzz}{tab}{scopeId|_,16:R}{tab}{scopeParentId|_,16:R}{tab}{scopeDepth}{tab}{threadId}{tab}{activityId}{tab}{machineName}{tab}{processId}{tab}{processName}{tab}{action}{tab}{elapsed:d\\.hh\\:mm\\:ss\\.fffffff}{tab}{operationId}{tab}{message}{tab}{extensions}";
+        public readonly static string DefaultFormatting = "{dateTime:yyyy-MM-ddTHH:mm:ss.fffffffzzz}{tab}{scopeId|_,16:R}{tab}{scopeParentId|_,16:R}{tab}{scopeDepth}{tab}{threadId}{tab}{activityId}{tab}{machineName}{tab}{processId}{tab}{processName}{tab}{action}{tab}{elapsed:d\\.hh\\:mm\\:ss\\.fffffff}{tab}{operationId}{tab}{message}{tab}{extensions}";
 
         private readonly IFormatProvider formatProvider = new LogLayoutFormatProvider();
         private string format;
@@ -24,34 +25,41 @@ namespace MSyics.Traceyi.Layout
         /// <summary>
         /// TextLayout クラスのインスタンスを初期化します。
         /// </summary>
-        public LogLayout(string layout) => Layout = layout;
+        public LogLayout(string formatting) => Formatting = formatting;
 
         /// <summary>
         /// TextLayout クラスのインスタンスを初期化します。
         /// </summary>
-        public LogLayout() : this(DefaultLayout)
+        public LogLayout() : this(DefaultFormatting)
         {
         }
 
         /// <summary>
         /// レイアウトを取得または設定します。
         /// </summary>
-        public string Layout
+        public string Formatting
         {
-            get => _layout;
+            get => _formatting;
             set
             {
-                if (_layout == value) { return; }
-                _layout = value;
+                if (_formatting == value) { return; }
+                _formatting = value;
                 makedFormat = false;
             }
         }
-        private string _layout;
+        private string _formatting;
 
         /// <summary>
         /// 改行文字を取得または設定します。
         /// </summary>
         public string NewLine { get; set; }
+
+
+        class MyClass
+        {
+            [JsonExtensionData]
+            public IDictionary<string, object> Items { get; set; } = new Dictionary<string, object>();
+        }
 
         /// <summary>
         /// ログにフォーマットした情報を書き込みます。
@@ -59,18 +67,36 @@ namespace MSyics.Traceyi.Layout
         /// <param name="e">トレースイベントデータ</param>
         public string Format(TraceEventArgs e)
         {
-            SetFormattedLayout();
+            try
+            {
+                MyClass myClass = new();
+                myClass.Items["Traced"] = e.Traced;
+                myClass.Items["action"] = e.Action;
+                myClass.Items["elapsed"] = e.Elapsed;
+                if (e.Message is not null) { myClass.Items["message"] = e.Message; }
+                if (e.ActivityId is not null) { myClass.Items["activityId"] = e.ActivityId; }
+                if (e.Scope?.OperationId is not null) { myClass.Items["operationId"] = e.Scope.OperationId; }
+                if (e.Scope?.Id is not null) { myClass.Items["scopeId"] = e.Scope.Id; }
+                if (e.Scope?.ParentId is not null) { myClass.Items["scopeParentId"] = e.Scope.ParentId; }
+                if (e.Scope?.Depth is not null) { myClass.Items["scopeDepth"] = e.Scope.Depth; }
+                myClass.Items["threadId"] = e.ThreadId;
+                myClass.Items["processId"] = e.ProcessId;
+                myClass.Items["processName"] = e.ProcessName;
+                myClass.Items["machineName"] = e.MachineName;
+                foreach (var ex in e.Extensions.Where(x => x.Value is not null))
+                {
+                    myClass.Items[ex.Key] = ex.Value;
+                }
 
-            //try
-            //{
-            //    return JsonSerializer.Serialize(e, options);
-            //}
-            //catch (Exception ex)
-            //{
-            //    Debug.Print($"Failed to Json conversion of extensions. {ex}");
-            //    return e.Extensions.ToString();
-            //}
+                return JsonSerializer.Serialize(myClass, options);
+            }
+            catch (Exception ex)
+            {
+                Debug.Print($"Failed to Json conversion of extensions. {ex}");
+                return e.Extensions.ToString();
+            }
 
+            MakeFormat();
             return string.Format(
                 formatProvider,
                 format,
@@ -92,7 +118,7 @@ namespace MSyics.Traceyi.Layout
                 GetExtensionsJson(e));
         }
 
-        private void SetFormattedLayout()
+        private void MakeFormat()
         {
             if (makedFormat) { return; }
 
@@ -114,18 +140,19 @@ namespace MSyics.Traceyi.Layout
                 new LogLayoutPart { Name = "machineName", CanFormat = true },
                 new LogLayoutPart { Name = "extensions", CanFormat = false });
 
-            format = converter.Convert(Layout.Trim());
+            format = converter.Convert(Formatting.Trim());
             useExtensions = converter.IsPartPlaced("extensions");
             makedFormat = true;
         }
 
         readonly JsonSerializerOptions options = new(JsonSerializerDefaults.Web)
         {
-            WriteIndented = false,
-            Converters = 
-            { 
+            WriteIndented = true,
+            PropertyNameCaseInsensitive = true,
+            Converters =
+            {
                 new JsonStringEnumConverter(),
-                new TimeSpanToStringJsonConverter(), 
+                new TimeSpanToStringJsonConverter(),
                 new ExceptionToStringJsonConverter(),
             }
         };

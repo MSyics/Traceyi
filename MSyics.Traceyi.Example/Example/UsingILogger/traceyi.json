@@ -2,7 +2,7 @@
   "Traceyi": {
     "Tracer": [
       {
-        "Listeners": [ "console" ],
+        "Listeners": [ "console", "file" ],
         "Filters": "all"
       }
     ],
@@ -12,6 +12,18 @@
           "Name": "console",
           "UseLock": false,
           "UseAsync": true
+        }
+      ],
+      "File": [
+        {
+          "Name": "file",
+          "UseLock": false,
+          "UseAsync": true,
+          "UseMutex": false,
+          "KeepFilesOpen": true,
+          "MaxLength": 25000000,
+          "MaxArchiveCount": 1,
+          "Path": "UsingILogger\\app_{processName}.log"
         }
       ]
     }

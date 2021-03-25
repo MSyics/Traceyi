@@ -7,6 +7,8 @@ namespace MSyics.Traceyi
     /// </summary>
     public sealed class TraceScope
     {
+        internal readonly static TraceScope NullScope = new();
+        
         public TraceScope(bool withEntry)
         {
             WithEntry = withEntry;
@@ -16,7 +18,6 @@ namespace MSyics.Traceyi
         {
         }
 
-        internal readonly static TraceScope NullScope = new();
         internal bool WithEntry { get; }
 
         /// <summary>
