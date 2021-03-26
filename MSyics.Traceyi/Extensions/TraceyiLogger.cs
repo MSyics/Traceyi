@@ -11,7 +11,6 @@
     internal class TraceyiLogger : ILogger
     {
         private static readonly string OriginalFormatKeyName = "{OriginalFormat}";
-        private static readonly string PlaceholderKeyOperationId = "operationId".ToUpperInvariant();
         private readonly Tracer tracer;
 
         public TraceyiLogger(Tracer tracer)
@@ -35,7 +34,7 @@
                 TraceyiLoggerParameters p => tracer.Scope(
                     p.Message,
                     p.Extensions,
-                    p.OperationId),
+                    p.ScopeLabel),
                 _ => tracer.Scope(state),
             };
         }

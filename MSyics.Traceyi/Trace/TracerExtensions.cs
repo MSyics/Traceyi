@@ -13,16 +13,16 @@ namespace MSyics.Traceyi
         /// <param name="tracer">トレースオブジェクト</param>
         /// <param name="message">開始メッセージ</param>
         /// <param name="extensions"></param>
-        /// <param name="operationId">操作 ID</param>
-        public static TraceScopeEntry Scope(this Tracer tracer, object message, Action<dynamic> extensions = null, object operationId = null)
+        /// <param name="label">操作 ID</param>
+        public static TraceScopeEntry Scope(this Tracer tracer, object message, Action<dynamic> extensions = null, object label = null)
         {
             var scope = new TraceScopeEntry();
-            scope.Start(tracer, message, extensions, operationId);
+            scope.Start(tracer, message, extensions, label);
             return scope;
         }
 
-        public static TraceScopeEntry Scope(this Tracer tracer, Action<dynamic> extensions = null, object operationId = null) =>
-            Scope(tracer, null, extensions, operationId);
+        public static TraceScopeEntry Scope(this Tracer tracer, Action<dynamic> extensions = null, object label = null) =>
+            Scope(tracer, null, extensions, label);
 
         /// <summary>
         /// 指定したフィルターに動作が含まれているかどうかを判定します。

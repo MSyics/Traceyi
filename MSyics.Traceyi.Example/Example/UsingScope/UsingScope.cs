@@ -20,7 +20,7 @@ namespace MSyics.Traceyi
         public override Task ShowAsync()
         {
             Tracer.Information("out of scope");
-            using (Tracer.Scope("start", operationId: nameof(ShowAsync)))
+            using (Tracer.Scope("start", label: nameof(ShowAsync)))
             { 
                 Method001();
             }
@@ -31,18 +31,18 @@ namespace MSyics.Traceyi
 
         private void Method001()
         {
-            using var ts = Tracer.Scope("start", operationId: nameof(Method001));
+            using var ts = Tracer.Scope("start", label: nameof(Method001));
 
             Method002();
 
             Tracer.Stop("001");
-            Tracer.Start("001", operationId: $"{nameof(Method001)}`");
+            Tracer.Start("001", label: $"{nameof(Method001)}`");
 
         }
 
         private void Method002()
         {
-            using var ts = Tracer.Scope("start", operationId: nameof(Method002));
+            using var ts = Tracer.Scope("start", label: nameof(Method002));
 
             Tracer.Information("002");
             Method003();
@@ -50,7 +50,7 @@ namespace MSyics.Traceyi
 
         private void Method003()
         {
-            using var ts = Tracer.Scope("start", operationId: nameof(Method003));
+            using var ts = Tracer.Scope("start", label: nameof(Method003));
 
             Tracer.Information("003");
         }

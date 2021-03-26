@@ -2,7 +2,7 @@
   "Traceyi": {
     "Tracer": [
       {
-        "Listeners": [ "console", "file" ],
+        "Listeners": [ "console", "console2", "file" ],
         "Filters": "all"
       }
     ],
@@ -11,7 +11,18 @@
         {
           "Name": "console",
           "UseLock": false,
-          "UseAsync": true
+          "UseAsync": true,
+          "Layout": {
+            "UseAction": true
+          }
+        },
+        {
+          "Name": "console2",
+          "UseLock": false,
+          "UseAsync": true,
+          "Layout": {
+            "Format": "{@=>json}"
+          }
         }
       ],
       "File": [

@@ -36,9 +36,9 @@ namespace MSyics.Traceyi
         public int Depth { get; internal set; }
 
         /// <summary>
-        /// 操作の識別子を取得します。
+        /// スコープラベルを取得します。
         /// </summary>
-        public object OperationId { get; internal set; }
+        public object Label { get; internal set; }
 
         /// <summary>
         /// 操作の開始日時を取得します。

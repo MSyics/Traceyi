@@ -11,14 +11,14 @@
         /// <summary>
         /// 
         /// </summary>
-        public static IDisposable BeginScope(this ILogger logger, object message, Action<dynamic> extensions = null, object operationId = null) =>
-            logger.BeginScope(new TraceyiLoggerParameters { Message = message, Extensions = extensions, OperationId = operationId, });
+        public static IDisposable BeginScope(this ILogger logger, object message, Action<dynamic> extensions = null, object label = null) =>
+            logger.BeginScope(new TraceyiLoggerParameters { Message = message, Extensions = extensions, ScopeLabel = label, });
 
         /// <summary>
         /// 
         /// </summary>
-        public static IDisposable BeginScope(this ILogger logger, Action<dynamic> extensions = null, object operationId = null) =>
-            BeginScope(logger, null, extensions, operationId);
+        public static IDisposable BeginScope(this ILogger logger, Action<dynamic> extensions = null, object label = null) =>
+            BeginScope(logger, null, extensions, label);
         #endregion
 
         #region Log

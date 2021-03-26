@@ -15,122 +15,101 @@ namespace MSyics.Traceyi.Layout
         /// <summary>
         /// 初期レイアウトを示す固定値です。
         /// </summary>
-        public readonly static string DefaultFormatting = "{dateTime:yyyy-MM-ddTHH:mm:ss.fffffffzzz}{tab}{scopeId|_,16:R}{tab}{scopeParentId|_,16:R}{tab}{scopeDepth}{tab}{threadId}{tab}{activityId}{tab}{machineName}{tab}{processId}{tab}{processName}{tab}{action}{tab}{elapsed:d\\.hh\\:mm\\:ss\\.fffffff}{tab}{operationId}{tab}{message}{tab}{extensions}";
+        public readonly static string DefaultFormat = "{action| ,8:R} =>{tab}{dateTime:yyyy-MM-ddTHH:mm:ss.fffffffzzz}{tab}{elapsed:d\\.hh\\:mm\\:ss\\.fffffff}{tab}{scopeId|-,16:R}{tab}{scopeParentId|-,16:R}{tab}{scopeDepth}{tab}{scopeLabel}{tab}{activityId}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}{newLine}{extensions=>json,indent}";
 
         private readonly IFormatProvider formatProvider = new LogLayoutFormatProvider();
-        private string format;
-        private bool makedFormat;
-        private bool useExtensions;
+        private bool initialized;
+        private string actualFormat;
+        private bool hasExtensions;
+        private bool hasPartValueSet;
 
         /// <summary>
         /// TextLayout クラスのインスタンスを初期化します。
         /// </summary>
-        public LogLayout(string formatting) => Formatting = formatting;
+        public LogLayout(string format) => Format = format;
 
         /// <summary>
         /// TextLayout クラスのインスタンスを初期化します。
         /// </summary>
-        public LogLayout() : this(DefaultFormatting)
+        public LogLayout() : this(DefaultFormat)
         {
         }
 
+        public bool UseAction { get; set; } = true;
+        public bool UseTraced { get; set; } = true;
+        public bool UseElapsed { get; set; } = true;
+        public bool UseActivityId { get; set; } = true;
+        public bool UseScopeLabel { get; set; } = true;
+        public bool UseScopeId { get; set; } = true;
+        public bool UseScopeParentId { get; set; } = true;
+        public bool UseScopeDepth { get; set; } = true;
+        public bool UseThreadId { get; set; } = true;
+        public bool UseProcessId { get; set; } = true;
+        public bool UseProcessName { get; set; } = true;
+        public bool UseMachineName { get; set; } = true;
+        public bool UseMessage { get; set; } = true;
+        public bool UseExtensions { get; set; } = true;
+        public bool UsePartValueSet { get; set; } = true;
+
         /// <summary>
-        /// レイアウトを取得または設定します。
+        /// フォーマットを取得または設定します。
         /// </summary>
-        public string Formatting
+        public string Format
         {
-            get => _formatting;
+            get => _format;
             set
             {
-                if (_formatting == value) { return; }
-                _formatting = value;
-                makedFormat = false;
+                if (_format == value) { return; }
+                _format = value;
+                initialized = false;
             }
         }
-        private string _formatting;
+        private string _format;
 
         /// <summary>
         /// 改行文字を取得または設定します。
         /// </summary>
         public string NewLine { get; set; }
 
-
-        class MyClass
+        /// <inheritdoc/>>
+        public string GetLog(TraceEventArgs e)
         {
-            [JsonExtensionData]
-            public IDictionary<string, object> Items { get; set; } = new Dictionary<string, object>();
-        }
+            Initialize();
 
-        /// <summary>
-        /// ログにフォーマットした情報を書き込みます。
-        /// </summary>
-        /// <param name="e">トレースイベントデータ</param>
-        public string Format(TraceEventArgs e)
-        {
-            try
-            {
-                MyClass myClass = new();
-                myClass.Items["Traced"] = e.Traced;
-                myClass.Items["action"] = e.Action;
-                myClass.Items["elapsed"] = e.Elapsed;
-                if (e.Message is not null) { myClass.Items["message"] = e.Message; }
-                if (e.ActivityId is not null) { myClass.Items["activityId"] = e.ActivityId; }
-                if (e.Scope?.OperationId is not null) { myClass.Items["operationId"] = e.Scope.OperationId; }
-                if (e.Scope?.Id is not null) { myClass.Items["scopeId"] = e.Scope.Id; }
-                if (e.Scope?.ParentId is not null) { myClass.Items["scopeParentId"] = e.Scope.ParentId; }
-                if (e.Scope?.Depth is not null) { myClass.Items["scopeDepth"] = e.Scope.Depth; }
-                myClass.Items["threadId"] = e.ThreadId;
-                myClass.Items["processId"] = e.ProcessId;
-                myClass.Items["processName"] = e.ProcessName;
-                myClass.Items["machineName"] = e.MachineName;
-                foreach (var ex in e.Extensions.Where(x => x.Value is not null))
-                {
-                    myClass.Items[ex.Key] = ex.Value;
-                }
-
-                return JsonSerializer.Serialize(myClass, options);
-            }
-            catch (Exception ex)
-            {
-                Debug.Print($"Failed to Json conversion of extensions. {ex}");
-                return e.Extensions.ToString();
-            }
-
-            MakeFormat();
             return string.Format(
                 formatProvider,
-                format,
+                actualFormat,
                 "\t",
                 NewLine,
-                e.Traced,
-                e.Action,
-                e.Elapsed,
-                e.Message,
-                e.ActivityId,
-                e.Scope.OperationId,
-                e.Scope.Id,
-                e.Scope.ParentId,
-                e.Scope.Depth,
-                e.ThreadId,
-                e.ProcessId,
-                e.ProcessName,
-                e.MachineName,
-                GetExtensionsJson(e));
+                UseAction ? e.Action : null,
+                UseTraced ? e.Traced : null,
+                UseElapsed ? e.Elapsed : null,
+                UseActivityId ? e.ActivityId : null,
+                UseScopeLabel ? e.ScopeLabel : null,
+                UseScopeId ? e.ScopeId : null,
+                UseScopeParentId ? e.ScopeParentId : null,
+                UseScopeDepth ? e.ScopeDepth : null,
+                UseThreadId ? e.ThreadId : null,
+                UseProcessId ? e.ProcessId : null,
+                UseProcessName ? e.ProcessName : null,
+                UseMachineName ? e.MachineName : null,
+                UseMessage ? e.Message : null,
+                UseExtensions ? GetExtensions(e) : null,
+                UsePartValueSet ? CreatePartValueSet(e) : null).TrimEnd('\r', '\n');
         }
 
-        private void MakeFormat()
+        private void Initialize()
         {
-            if (makedFormat) { return; }
+            if (initialized) { return; }
 
             var converter = new LogLayoutConverter(
                 new LogLayoutPart { Name = "tab", CanFormat = false },
                 new LogLayoutPart { Name = "newLine", CanFormat = false },
-                new LogLayoutPart { Name = "dateTime", CanFormat = true },
                 new LogLayoutPart { Name = "action", CanFormat = true },
+                new LogLayoutPart { Name = "dateTime", CanFormat = true },
                 new LogLayoutPart { Name = "elapsed", CanFormat = true },
-                new LogLayoutPart { Name = "message", CanFormat = true },
                 new LogLayoutPart { Name = "activityId", CanFormat = true },
-                new LogLayoutPart { Name = "operationId", CanFormat = true },
+                new LogLayoutPart { Name = "scopeLabel", CanFormat = true },
                 new LogLayoutPart { Name = "scopeId", CanFormat = true },
                 new LogLayoutPart { Name = "scopeParentId", CanFormat = true },
                 new LogLayoutPart { Name = "scopeDepth", CanFormat = true },
@@ -138,39 +117,45 @@ namespace MSyics.Traceyi.Layout
                 new LogLayoutPart { Name = "processId", CanFormat = true },
                 new LogLayoutPart { Name = "processName", CanFormat = true },
                 new LogLayoutPart { Name = "machineName", CanFormat = true },
-                new LogLayoutPart { Name = "extensions", CanFormat = false });
+                new LogLayoutPart { Name = "message", CanFormat = true },
+                new LogLayoutPart { Name = "extensions", CanFormat = true },
+                new LogLayoutPart { Name = "@", CanFormat = true });
 
-            format = converter.Convert(Formatting.Trim());
-            useExtensions = converter.IsPartPlaced("extensions");
-            makedFormat = true;
+            actualFormat = converter.Convert(Format.Trim());
+
+            hasExtensions = converter.IsPartPlaced("extensions");
+            hasPartValueSet = converter.IsPartPlaced("@");
+
+            initialized = true;
         }
 
-        readonly JsonSerializerOptions options = new(JsonSerializerDefaults.Web)
+        private IDictionary<string, object> GetExtensions(TraceEventArgs e)
         {
-            WriteIndented = true,
-            PropertyNameCaseInsensitive = true,
-            Converters =
-            {
-                new JsonStringEnumConverter(),
-                new TimeSpanToStringJsonConverter(),
-                new ExceptionToStringJsonConverter(),
-            }
-        };
+            if (!hasExtensions) { return null; }
 
-        private string GetExtensionsJson(TraceEventArgs e)
+            return e.Extensions.Count == 0 ? null : e.Extensions;
+        }
+
+        private LogLayoutPartValueSet CreatePartValueSet(TraceEventArgs e)
         {
-            if (!useExtensions) { return null; }
-            if (e.Extensions.Count == 0) { return null; }
+            if (!hasPartValueSet) { return null; }
 
-            try
-            {
-                return JsonSerializer.Serialize(e.Extensions, options);
-            }
-            catch (Exception ex)
-            {
-                Debug.Print($"Failed to Json conversion of extensions. {ex}");
-                return e.Extensions.ToString();
-            }
+            return new LogLayoutPartValueSetBuilder().
+                SetValue("action", e.Action, UseAction).
+                SetValue("traced", e.Traced, UseTraced).
+                SetValue("elapsed", e.Elapsed, UseElapsed).
+                SetNullableValue("activityId", e.ActivityId, UseActivityId).
+                SetNullableValue("scopeLabel", e.ScopeLabel, UseScopeLabel).
+                SetNullableValue("scopeId", e.ScopeId, UseScopeId).
+                SetNullableValue("scopeParentId", e.ScopeParentId, UseScopeParentId).
+                SetValue("scopeDepth", e.ScopeDepth, UseScopeDepth).
+                SetValue("threadId", e.ThreadId, UseThreadId).
+                SetValue("processId", e.ProcessId, UseProcessId).
+                SetNullableValue("processName", e.ProcessName, UseProcessName).
+                SetNullableValue("machineName", e.MachineName, UseMachineName).
+                SetNullableValue("message", e.Message, UseMessage).
+                SetExtensions(e.Extensions, UseExtensions).
+                Build();
         }
     }
 }

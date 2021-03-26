@@ -27,6 +27,7 @@ namespace MSyics.Traceyi
         }
         #endregion
 
+        readonly TraceScope scope;
         private readonly Action<dynamic> extensions;
         private readonly object messageLayout;
 
@@ -34,7 +35,7 @@ namespace MSyics.Traceyi
         {
             Traced = traced;
             Action = action;
-            Scope = scope;
+            this.scope = scope;
             Elapsed = scope.Depth == 0 || action == TraceAction.Start ? TimeSpan.Zero : traced - scope.Started;
 
             this.extensions = extensions;
@@ -48,44 +49,49 @@ namespace MSyics.Traceyi
             }
         }
 
-        [JsonExtensionData]
-        public IDictionary<string, object> Extensions
-        {
-            get
-            {
-                if (_extensions == null)
-                {
-                    var obj = new ExtensionsObject();
-                    try
-                    {
-                        extensions?.Invoke(obj);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.Print($"{ex}");
-                    }
-                    _extensions = obj.Items;
-                }
-                return _extensions;
-            }
-        }
-        private IDictionary<string, object> _extensions;
-
         /// <summary>
-        /// トレース操作を取得します。
+        /// トレースの動作を取得または設定します。
         /// </summary>
-        //[JsonIgnore]
-        public TraceScope Scope { get; }
-
+        public TraceAction Action { get; }
         /// <summary>
         /// トレースした日時を取得または設定します。
         /// </summary>
         public DateTimeOffset Traced { get; }
 
         /// <summary>
-        /// トレースの動作を取得または設定します。
+        /// 経過時間を取得または設定します。
         /// </summary>
-        public TraceAction Action { get; }
+        public TimeSpan Elapsed { get; }
+
+        /// <summary>
+        /// スレッドに関連付けられた一意な識別子を取得します。
+        /// </summary>
+        public object ActivityId { get; } = Traceable.Context.ActivityId;
+
+        public string ScopeId => scope?.Id;
+        public string ScopeParentId => scope?.ParentId;
+        public int ScopeDepth => scope?.Depth ?? default;
+        public object ScopeLabel => scope?.Label;
+
+        /// <summary>
+        /// マネージスレッドの一意な識別子を取得します。
+        /// </summary>
+        public int ThreadId { get; } = Thread.CurrentThread.ManagedThreadId;
+
+        /// <summary>
+        /// プロセスの一意な識別子を取得します。
+        /// </summary>
+        public int ProcessId { get; } = processId;
+
+        /// <summary>
+        /// プロセスの名前を取得します。
+        /// </summary>
+        public string ProcessName { get; } = processName;
+
+        /// <summary>
+        /// マシン名を取得します。
+        /// </summary>
+        public string MachineName { get; } = machineName;
 
         /// <summary>
         /// メッセージを取得します。
@@ -124,36 +130,28 @@ namespace MSyics.Traceyi
         }
         private object _message;
 
-        /// <summary>
-        /// 経過時間を取得または設定します。
-        /// </summary>
-        public TimeSpan Elapsed { get; }
-
-        /// <summary>
-        /// スレッドに関連付けられた一意な識別子を取得します。
-        /// </summary>
-        public object ActivityId { get; } = Traceable.Context.ActivityId;
-
-        /// <summary>
-        /// マネージスレッドの一意な識別子を取得します。
-        /// </summary>
-        public int ThreadId { get; } = Thread.CurrentThread.ManagedThreadId;
-
-        /// <summary>
-        /// プロセスの一意な識別子を取得します。
-        /// </summary>
-        public int ProcessId { get; } = processId;
-
-        /// <summary>
-        /// プロセスの名前を取得します。
-        /// </summary>
-        public string ProcessName { get; } = processName;
-
-        /// <summary>
-        /// マシン名を取得します。
-        /// </summary>
-        public string MachineName { get; } = machineName;
-
+        [JsonExtensionData]
+        public IDictionary<string, object> Extensions
+        {
+            get
+            {
+                if (_extensions == null)
+                {
+                    var obj = new ExtensionsObject();
+                    try
+                    {
+                        extensions?.Invoke(obj);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.Print($"{ex}");
+                    }
+                    _extensions = obj.Items;
+                }
+                return _extensions;
+            }
+        }
+        private IDictionary<string, object> _extensions;
 
         internal sealed class ExtensionsObject : DynamicObject
         {

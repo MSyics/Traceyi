@@ -49,9 +49,9 @@ namespace MSyics.Traceyi.Listeners
         {
             try
             {
-                var line = Layout.Format(e);
-                if (string.IsNullOrEmpty(line)) { return; }
-                TextWriter.WriteLine(line);
+                var log = Layout.GetLog(e);
+                if (string.IsNullOrEmpty(log)) { return; }
+                TextWriter.WriteLine(log);
             }
             catch (FormatException)
             {

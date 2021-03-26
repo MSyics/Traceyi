@@ -226,7 +226,7 @@ namespace MSyics.Traceyi
         {
             Tracer.Stop("stop");
             Tracer.Start("start");
-            using (var scope = Tracer.Scope(1, operationId: "scope"))
+            using (var scope = Tracer.Scope(1, label: "scope"))
             {
                 Tracer.Information("hogehoge");
 
@@ -255,7 +255,7 @@ namespace MSyics.Traceyi
             Tracer.Stop("stop");
             Tracer.Information("piyopiyo");
 
-            Tracer.Start(operationId: "hoge");
+            Tracer.Start(label: "hoge");
         }
 
         public List<string> Convert(string layout, int count)

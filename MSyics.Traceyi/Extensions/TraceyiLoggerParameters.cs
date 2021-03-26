@@ -9,6 +9,6 @@ namespace MSyics.Traceyi
     {
         public object Message { get; set; }
         public Action<dynamic> Extensions { get; set; }
-        public object OperationId { get; set; }
+        public object ScopeLabel { get; set; }
     }
 }

@@ -100,14 +100,14 @@ namespace MSyics.Traceyi
         /// <summary>
         /// 操作の開始メッセージを残します。
         /// </summary>
-        public void Start(object message, Action<dynamic> extensions = null, object operationId = null) => Start(message, extensions, operationId, false);
-        public void Start(Action<dynamic> extensions = null, object operationId = null) => Start(null, extensions, operationId, false);
+        public void Start(object message, Action<dynamic> extensions = null, object label = null) => Start(message, extensions, label, false);
+        public void Start(Action<dynamic> extensions = null, object label = null) => Start(null, extensions, label, false);
 
-        internal string Start(object message, Action<dynamic> extensions, object operationId, bool withEntry)
+        internal string Start(object message, Action<dynamic> extensions, object label, bool withEntry)
         {
             var scope = new TraceScope(withEntry)
             { 
-                OperationId = operationId ?? Context.CurrentScope.OperationId,
+                Label = label ?? Context.CurrentScope.Label,
                 Id = $"{DateTimeOffset.Now.Ticks:x16}",
                 ParentId = Context.CurrentScope.Id,
                 Depth = Context.ScopeStack.Count + 1,

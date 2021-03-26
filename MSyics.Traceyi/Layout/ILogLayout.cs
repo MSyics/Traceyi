@@ -8,10 +8,10 @@ namespace MSyics.Traceyi.Layout
     public interface ILogLayout
     {
         /// <summary>
-        /// 書式設定されたログデータを取得します。
+        /// トレースイベントデータを書式設定したログを取得します。
         /// </summary>
         /// <param name="e">トレースイベントデータ</param>
-        /// <returns>ログデータ</returns>
-        string Format(TraceEventArgs e);
+        /// <returns>ログ</returns>
+        string GetLog(TraceEventArgs e);
     }
 }

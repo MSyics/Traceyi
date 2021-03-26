@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace MSyics.Traceyi.Layout
 {
@@ -11,6 +12,7 @@ namespace MSyics.Traceyi.Layout
     /// </summary>
     public sealed class LogLayoutFormatProvider : IFormatProvider, ICustomFormatter
     {
+        #region Static Members
         /// <summary>
         /// 書式内の区切り文字を示す固定値です。
         /// </summary>
@@ -37,6 +39,29 @@ namespace MSyics.Traceyi.Layout
 
             return arg.ToString();
         }
+        #endregion
+
+        static readonly JsonSerializerOptions IndentedOptions;
+        static readonly JsonSerializerOptions NotIndentedOptions;
+
+        static LogLayoutFormatProvider()
+        {
+            IndentedOptions = new(JsonSerializerDefaults.Web)
+            {
+                WriteIndented = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                Converters =
+                {
+                    new JsonStringEnumConverter(),
+                    new TimeSpanToStringJsonConverter(),
+                    new ExceptionToStringJsonConverter(),
+                }
+            };
+            NotIndentedOptions = new(IndentedOptions)
+            {
+                WriteIndented = false
+            };
+        }
 
         #region IFormatProvider Members
         /// <summary>
@@ -62,14 +87,22 @@ namespace MSyics.Traceyi.Layout
             {
                 if (format.Contains(SerializeFormatSpecifier))
                 {
-                    var formats = format.Split(new[] { SerializeFormatSpecifier }, StringSplitOptions.None);
+                    if (arg is null)
+                    {
+                        return Format(format, arg);
+                    }
+
+                    var formats = format.Split(new[] { SerializeFormatSpecifier, "," }, StringSplitOptions.None);
 
                     // JSON
-                    if (formats.Length == 2 && formats[1].ToUpperInvariant().Trim() == JsonFormatSpecifier)
+                    if (formats[1].ToUpperInvariant().Trim() == JsonFormatSpecifier)
                     {
                         try
                         {
-                            return JsonSerializer.Serialize(arg);
+                            return JsonSerializer.Serialize(arg, 
+                                formats.Length >= 3 && formats[2].ToUpperInvariant().Trim() == "INDENT" 
+                                ? IndentedOptions 
+                                : NotIndentedOptions);
                         }
                         catch (Exception ex)
                         {
@@ -84,7 +117,6 @@ namespace MSyics.Traceyi.Layout
                 if (format.Contains(FormatSpecifier))
                 {
                     var formats = format.Split(new[] { FormatSpecifier }, StringSplitOptions.None);
-
 
                     // 標準書式の取得
                     var standardFormat = formats[0];

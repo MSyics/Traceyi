@@ -10,9 +10,9 @@ namespace MSyics.Traceyi
         private bool stopped = false;
         private Action<object, Action<dynamic>> stop;
 
-        internal void Start(Tracer tracer, object message, Action<dynamic> extensions, object operationId)
+        internal void Start(Tracer tracer, object message, Action<dynamic> extensions, object label)
         {
-            var scopeId = tracer.Start(message, extensions, operationId, true);
+            var scopeId = tracer.Start(message, extensions, label, true);
             stop = (m, e) => tracer.Stop(scopeId, DateTimeOffset.Now, m, e);
         }
 

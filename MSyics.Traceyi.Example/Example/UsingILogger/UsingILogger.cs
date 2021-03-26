@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Dynamic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,11 +31,12 @@ namespace MSyics.Traceyi
         {
             Traceable.Shutdown();
         }
-        
+
         public override async Task ShowAsync()
         {
             //logger.GetContext().ActivityId = "a001";
-            using var _ = logger.BeginScope(operationId: "o000");
+            logger.LogInformation("hogehoge");
+            using var _ = logger.BeginScope(label: "o000");
             using (logger.BeginScope(x =>
             {
             }))
@@ -43,12 +45,33 @@ namespace MSyics.Traceyi
                 {
                     logger.GetContext().ActivityId = "a002";
                     logger.LogInformation("hogehoge");
-                    logger.LogInformation("hogehoge", x =>
+                    logger.LogCritical("hogehoge");
+                    logger.LogWarning("hogehoge");
+                    logger.LogError("hogehoge");
+                    logger.LogTrace(null, x => { });
+                    logger.LogDebug("hogehoge", x =>
                     {
                         x.a = 1;
                         x.b = 2;
-                        x.c = 3;
+                        x.c = null;
                     });
+                    logger.LogDebug(x =>
+                    {
+                        x.a = 1;
+                        x.b = 2;
+                        x.c = null;
+                    });
+                    logger.LogInformation(new ApplicationException("hogehoge"));
+
+                    try
+                    {
+                        File.Open("hoge", FileMode.Open);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(ex);
+                        logger.LogError(ex, "error");
+                    }
                 });
             }
 
