@@ -43,7 +43,7 @@ namespace MSyics.Traceyi.Listeners
         {
         }
 
-        public (int start, int length) ColoringPosition { get; set; }
+        public (int start, int length) Coloring { get; set; } = (0, 1);
 
         private bool TryGetColoringSettings(ReadOnlySpan<char> span, out int start, out int length, out bool toLast)
         {
@@ -51,48 +51,48 @@ namespace MSyics.Traceyi.Listeners
             length = 0;
             toLast = false;
 
-            if (ColoringPosition.start < 0)
+            if (Coloring.start < 0)
             {
-                if (ColoringPosition.length < 0)
+                if (Coloring.length < 0)
                 {
                     return false;
                 }
-                length = ColoringPosition.start + ColoringPosition.length;
+                length = Coloring.start + Coloring.length;
             }
             else
             {
-                if (ColoringPosition.length < 0)
+                if (Coloring.length < 0)
                 {
-                    double i = ColoringPosition.start + ColoringPosition.length;
+                    double i = Coloring.start + Coloring.length;
                     if (i > span.Length)
                     {
                         return false;
                     }
                     if (i < 0)
                     {
-                        length = ColoringPosition.start;
+                        length = Coloring.start;
                     }
                     else
                     {
-                        start = ColoringPosition.start + ColoringPosition.length;
-                        length = Math.Abs(ColoringPosition.length);
+                        start = Coloring.start + Coloring.length;
+                        length = Math.Abs(Coloring.length);
                     }
                 }
                 else
                 {
-                    if (ColoringPosition.start > span.Length)
+                    if (Coloring.start > span.Length)
                     {
                         return false;
                     }
-                    start = ColoringPosition.start;
-                    double i = ColoringPosition.start + ColoringPosition.length;
+                    start = Coloring.start;
+                    double i = Coloring.start + Coloring.length;
                     if (i > span.Length - start)
                     {
                         length = span.Length - start;
                     }
                     else
                     {
-                        length = ColoringPosition.length;
+                        length = Coloring.length;
                     }
                 }
             }

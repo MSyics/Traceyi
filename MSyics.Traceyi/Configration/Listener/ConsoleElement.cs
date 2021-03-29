@@ -26,7 +26,7 @@ namespace MSyics.Traceyi.Configration
                  UseAsync = UseAsync,
                  CloseTimeout = CloseTimeout,
                  Encoding = GetEncoding(),
-                 ColoringPosition = (Coloring.Start, Coloring.Length),
+                 Coloring = (Coloring.Start, Coloring.Length),
              };
     }
 
