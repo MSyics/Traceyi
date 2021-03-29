@@ -12,7 +12,7 @@ namespace MSyics.Traceyi
                 //Add<SetupByConfiguration>().
                 //Add<UsingTraceMethod>().
                 //Add<UsingCustomTraceListener>().
-                //Add<UsingShiftrJIS>().
+                //Add<UsingShiftJIS>().
                 //Add<UsingScope>().
                 //Add<UsingAsync>().
                 //Add<UsingArchive>().

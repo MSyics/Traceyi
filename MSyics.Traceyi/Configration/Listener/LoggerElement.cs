@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Text;
 
 namespace MSyics.Traceyi.Configration
@@ -31,7 +32,7 @@ namespace MSyics.Traceyi.Configration
         /// <summary>
         /// 文字エンコーディングの値を取得または設定します。
         /// </summary>
-        public string Encoding { get; set; } = System.Text.Encoding.Default.CodePage.ToString();
+        public string Encoding { get; set; } = System.Text.Encoding.UTF8.CodePage.ToString();
 
         /// <summary>
         /// Layout 要素を取得または設定します。
@@ -60,8 +61,9 @@ namespace MSyics.Traceyi.Configration
                 {
                     return System.Text.Encoding.GetEncoding(Encoding);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Debug.Print($"{ex}");
                     return System.Text.Encoding.Default;
                 }
             }

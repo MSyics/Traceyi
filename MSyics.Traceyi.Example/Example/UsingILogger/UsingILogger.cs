@@ -34,7 +34,7 @@ namespace MSyics.Traceyi
 
         public override async Task ShowAsync()
         {
-            //logger.GetContext().ActivityId = "a001";
+            logger.GetContext().ActivityId = "あいうえお";
             logger.LogInformation("hogehoge");
             using var _ = logger.BeginScope(label: "o000");
             using (logger.BeginScope(x =>
@@ -47,7 +47,7 @@ namespace MSyics.Traceyi
                     logger.LogInformation("hogehoge");
                     logger.LogCritical("hogehoge");
                     logger.LogWarning("hogehoge");
-                    logger.LogError("hogehoge");
+                    logger.LogError("■あいうえお");
                     logger.LogTrace(null, x => { });
                     logger.LogDebug("hogehoge", x =>
                     {
@@ -71,6 +71,23 @@ namespace MSyics.Traceyi
                     {
                         logger.LogError(ex);
                         logger.LogError(ex, "error");
+                    }
+
+                    for (int i = 0; i < 10; i++)
+                    {
+                        logger.LogInformation("hogehoge");
+                    }
+                    try
+                    {
+                        File.Open("hoge", FileMode.Open);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(ex);
+                    }
+                    for (int i = 0; i < 10; i++)
+                    {
+                        logger.LogInformation("hogehoge");
                     }
                 });
             }

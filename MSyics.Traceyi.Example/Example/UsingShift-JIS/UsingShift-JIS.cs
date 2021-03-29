@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace MSyics.Traceyi
 {
-    class UsingShiftrJIS : Example
+    class UsingShiftJIS : Example
     {
-        public override string Name => nameof(UsingShiftrJIS);
+        public override string Name => nameof(UsingShiftJIS);
 
         public override void Setup()
         {

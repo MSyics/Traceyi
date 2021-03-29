@@ -12,6 +12,8 @@ namespace MSyics.Traceyi.Configration
         /// </summary>
         public bool UseErrorStream { get; set; } = false;
 
+        public ConsoleColoringSettings Coloring { get; set; } = new() { Start = 0, Length = 1 };
+
         /// <summary>
         /// 実行オブジェクトを取得します。
         /// </summary>
@@ -24,6 +26,13 @@ namespace MSyics.Traceyi.Configration
                  UseAsync = UseAsync,
                  CloseTimeout = CloseTimeout,
                  Encoding = GetEncoding(),
+                 ColoringPosition = (Coloring.Start, Coloring.Length),
              };
+    }
+
+    public record ConsoleColoringSettings()
+    {
+        public int Start { get; set; }
+        public int Length { get; set; }
     }
 }

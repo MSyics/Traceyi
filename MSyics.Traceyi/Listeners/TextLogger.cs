@@ -52,6 +52,7 @@ namespace MSyics.Traceyi.Listeners
                 var log = Layout.GetLog(e);
                 if (string.IsNullOrEmpty(log)) { return; }
                 TextWriter.WriteLine(log);
+                
             }
             catch (FormatException)
             {
