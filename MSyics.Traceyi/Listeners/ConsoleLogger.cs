@@ -43,6 +43,9 @@ namespace MSyics.Traceyi.Listeners
         {
         }
 
+        /// <summary>
+        /// 文字の着色位置を取得または設定します。
+        /// </summary>
         public (int start, int length) Coloring { get; set; } = (0, 1);
 
         private bool TryGetColoringSettings(ReadOnlySpan<char> span, out int start, out int length, out bool toLast)

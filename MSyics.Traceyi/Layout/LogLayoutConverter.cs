@@ -92,7 +92,7 @@ namespace MSyics.Traceyi.Layout
             if (value.Length == 0) { return true; }
 
             var c = value[0];
-            if (c == ':' || c == ',' || c == '|') { return true; }
+            if (c == ':' || c == ',' || c == '|' || c == '[') { return true; }
 
             // =>
             if (value[0] == '=' && value[1] == '>') { return true; }

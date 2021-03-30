@@ -2,7 +2,7 @@
   "Traceyi": {
     "Tracer": [
       {
-        "Listeners": [ "console", "console22", "aaafile2" ],
+        "Listeners": [ "console", "console22", "file" ],
         "Filters": "all"
       }
     ],
@@ -15,11 +15,10 @@
           "Encoding": "utf-8",
           "coloring": {
             "start": 0,
-            "length": 1
+            "length": 99999999
           },
           "Layout": {
-            "format": "{@=>json}",
-            "StateMembers": "all"
+            "format": "{@[all]=>json}"
           }
         },
         {
@@ -41,7 +40,10 @@
           "KeepFilesOpen": true,
           "MaxLength": 25000000,
           "MaxArchiveCount": 1,
-          "Path": "UsingILogger\\app_{processName}.log"
+          "Path": "UsingILogger\\app_{processName}.log",
+          "Layout": {
+            "format": "{action}{tab}{@[message]=>json,indent}"
+          }
         }
       ]
     }

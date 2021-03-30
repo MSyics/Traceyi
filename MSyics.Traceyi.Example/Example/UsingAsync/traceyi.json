@@ -23,7 +23,10 @@
           "KeepFilesOpen": true,
           "MaxLength": 25000000,
           "MaxArchiveCount": 1,
-          "Path": "app.log"
+          "Path": "app.log",
+          "layout": {
+            //"format": "{@=>json}"
+          }
         }
       ]
     }

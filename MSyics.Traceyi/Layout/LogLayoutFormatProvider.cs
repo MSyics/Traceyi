@@ -2,8 +2,10 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Text.Unicode;
 
 namespace MSyics.Traceyi.Layout
 {
@@ -19,6 +21,29 @@ namespace MSyics.Traceyi.Layout
         public static readonly string FormatSpecifier = "|";
         public static readonly string SerializeFormatSpecifier = "=>";
         public static readonly string JsonFormatSpecifier = "JSON";
+        public static readonly string IndentSpecifier = "INDENT";
+        static readonly JsonSerializerOptions IndentedOptions;
+        static readonly JsonSerializerOptions NotIndentedOptions;
+
+        static LogLayoutFormatProvider()
+        {
+            IndentedOptions = new(JsonSerializerDefaults.Web)
+            {
+                Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
+                WriteIndented = true,
+                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+                Converters =
+                {
+                    new JsonStringEnumConverter(),
+                    new TimeSpanToStringJsonConverter(),
+                    new ExceptionToStringJsonConverter(),
+                }
+            };
+            NotIndentedOptions = new(IndentedOptions)
+            {
+                WriteIndented = false
+            };
+        }
 
         /// <summary>
         /// 指定した書式およびカルチャ固有の書式情報を使用して、指定したオブジェクトの値をそれと等価な文字列形式に変換します。
@@ -41,27 +66,7 @@ namespace MSyics.Traceyi.Layout
         }
         #endregion
 
-        static readonly JsonSerializerOptions IndentedOptions;
-        static readonly JsonSerializerOptions NotIndentedOptions;
-
-        static LogLayoutFormatProvider()
-        {
-            IndentedOptions = new(JsonSerializerDefaults.Web)
-            {
-                WriteIndented = true,
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
-                Converters =
-                {
-                    new JsonStringEnumConverter(),
-                    new TimeSpanToStringJsonConverter(),
-                    new ExceptionToStringJsonConverter(),
-                }
-            };
-            NotIndentedOptions = new(IndentedOptions)
-            {
-                WriteIndented = false
-            };
-        }
+        private readonly ILogStateBuilder logStateBuilder = new LogStateBuilder();
 
         #region IFormatProvider Members
         /// <summary>
@@ -92,16 +97,43 @@ namespace MSyics.Traceyi.Layout
                         return Format(format, arg);
                     }
 
-                    var formats = format.Split(new[] { SerializeFormatSpecifier, "," }, StringSplitOptions.None);
+                    var formats = format.Split(new[] { SerializeFormatSpecifier }, StringSplitOptions.None);
+                    var right = formats[1].Split(new[] { "," }, StringSplitOptions.None);
 
                     // JSON
-                    if (formats[1].ToUpperInvariant().Trim() == JsonFormatSpecifier)
+                    if (right[0].ToUpperInvariant().Trim() == JsonFormatSpecifier)
                     {
+                        if (arg is TraceEventArgs e)
+                        {
+                            LogStateMembers members = LogStateMembers.All;
+
+                            // TODO: cache
+                            var left = formats[0].AsSpan();
+                            var startIndex = left.IndexOf('[');
+                            if (startIndex >= 0)
+                            {
+                                var endIndex = left.LastIndexOf(']');
+#if NETCOREAPP
+                                var value = (endIndex == -1 ? left[startIndex..] : left[startIndex..endIndex]);
+#else
+                                var value = (endIndex == -1 ? left.Slice(startIndex) : left.Slice(startIndex, endIndex - startIndex));
+#endif
+                                if (Enum.TryParse<LogStateMembers>(value.TrimStart('[').TrimEnd(']').ToString(), true, out var result))
+                                {
+                                    members = result;
+                                }
+                            }
+                            arg = logStateBuilder.SetEvent(e, members).Build();
+                            if (arg is null)
+                            {
+                                return Format(format, arg);
+                            }
+                        }
+
                         try
                         {
-                            return JsonSerializer.Serialize(arg, 
-                                formats.Length >= 3 && formats[2].ToUpperInvariant().Trim() == "INDENT" 
-                                ? IndentedOptions 
+                            return JsonSerializer.Serialize(arg, right.Length > 1 && right[1].ToUpperInvariant().Trim() == IndentSpecifier
+                                ? IndentedOptions
                                 : NotIndentedOptions);
                         }
                         catch (Exception ex)

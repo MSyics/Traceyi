@@ -12,10 +12,9 @@ namespace MSyics.Traceyi.Layout
         /// <summary>
         /// 初期レイアウトを示す固定値です。
         /// </summary>
-        public readonly static string DefaultFormat = "{action| ,8:L}{tab}{dateTime:yyyy-MM-ddTHH:mm:ss.fffffffzzz}{tab}{elapsed:d\\.hh\\:mm\\:ss\\.fffffff}{tab}{scopeId|-,16:R}{tab}{scopeParentId|-,16:R}{tab}{scopeDepth}{tab}{scopeLabel}{tab}{activityId}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}{tab}{extensions=>json}{newLine}{@=>json,indent}";
+        public readonly static string DefaultFormat = "{action| ,8:L}{tab}{traced:yyyy-MM-ddTHH:mm:ss.fffffffzzz}{tab}{elapsed:d\\.hh\\:mm\\:ss\\.fffffff}{tab}{scopeId|-,16:R}{tab}{scopeParentId|-,16:R}{tab}{scopeDepth}{tab}{scopeLabel}{tab}{activityId}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}{tab}{extensions=>json}";
 
         private readonly IFormatProvider formatProvider = new LogLayoutFormatProvider();
-        private readonly ILogStateBuilder logStateBuilder = new LogStateBuilder();
         private bool initialized;
         private string actualFormat;
         private bool hasExtensions;
@@ -53,11 +52,6 @@ namespace MSyics.Traceyi.Layout
         /// </summary>
         public string NewLine { get; set; } = Environment.NewLine;
 
-        /// <summary>
-        /// 記録データのメンバーを取得または設定します。
-        /// </summary>
-        public LogStateMembers StateMembers { get; set; } = LogStateMembers.All;
-
         #region ILogLayout Members
         /// <inheritdoc/>>
         public string GetLog(TraceEventArgs e)
@@ -83,7 +77,7 @@ namespace MSyics.Traceyi.Layout
                 e.MachineName,
                 e.Message,
                 GetExtensions(ref e),
-                CreateLogState(ref e)).
+                GetEvnetArgs(ref e)).
                 TrimEnd('\r', '\n');
         }
         #endregion
@@ -96,7 +90,7 @@ namespace MSyics.Traceyi.Layout
                 new LogLayoutPart { Name = "tab", CanFormat = false },
                 new LogLayoutPart { Name = "newLine", CanFormat = false },
                 new LogLayoutPart { Name = "action", CanFormat = true },
-                new LogLayoutPart { Name = "dateTime", CanFormat = true },
+                new LogLayoutPart { Name = "traced", CanFormat = true },
                 new LogLayoutPart { Name = "elapsed", CanFormat = true },
                 new LogLayoutPart { Name = "activityId", CanFormat = true },
                 new LogLayoutPart { Name = "scopeLabel", CanFormat = true },
@@ -125,10 +119,10 @@ namespace MSyics.Traceyi.Layout
             return e.Extensions.Count == 0 ? null : e.Extensions;
         }
 
-        private LogState CreateLogState(ref TraceEventArgs e)
+        private TraceEventArgs GetEvnetArgs(ref TraceEventArgs e)
         {
             if (!hasLogState) { return null; }
-            return logStateBuilder.SetEvent(e, StateMembers).Build();
+            return e;
         }
     }
 }
