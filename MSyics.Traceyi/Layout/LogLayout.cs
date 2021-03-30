@@ -7,25 +7,6 @@ using System.Text.Json.Serialization;
 
 namespace MSyics.Traceyi.Layout
 {
-    public sealed class LogLayoutPartValueSetSettings
-    {
-        public bool UseAction { get; set; } = true;
-        public bool UseTraced { get; set; } = true;
-        public bool UseElapsed { get; set; } = true;
-        public bool UseActivityId { get; set; } = true;
-        public bool UseScopeLabel { get; set; } = true;
-        public bool UseScopeId { get; set; } = true;
-        public bool UseScopeParentId { get; set; } = true;
-        public bool UseScopeDepth { get; set; } = true;
-        public bool UseThreadId { get; set; } = true;
-        public bool UseProcessId { get; set; } = true;
-        public bool UseProcessName { get; set; } = true;
-        public bool UseMachineName { get; set; } = true;
-        public bool UseMessage { get; set; } = true;
-        public bool UseExtensions { get; set; } = true;
-        public bool UsePartValueSet { get; set; } = true;
-    }
-
     /// <summary>
     /// 指定したレイアウトで書式設定されたログを取得します。
     /// </summary>
@@ -40,7 +21,7 @@ namespace MSyics.Traceyi.Layout
         private bool initialized;
         private string actualFormat;
         private bool hasExtensions;
-        private bool hasPartValueSet;
+        private bool hasLogState;
 
         /// <summary>
         /// TextLayout クラスのインスタンスを初期化します。
@@ -53,22 +34,6 @@ namespace MSyics.Traceyi.Layout
         public LogLayout() : this(DefaultFormat)
         {
         }
-
-        public bool UseAction { get; set; } = true;
-        public bool UseTraced { get; set; } = true;
-        public bool UseElapsed { get; set; } = true;
-        public bool UseActivityId { get; set; } = true;
-        public bool UseScopeLabel { get; set; } = true;
-        public bool UseScopeId { get; set; } = true;
-        public bool UseScopeParentId { get; set; } = true;
-        public bool UseScopeDepth { get; set; } = true;
-        public bool UseThreadId { get; set; } = true;
-        public bool UseProcessId { get; set; } = true;
-        public bool UseProcessName { get; set; } = true;
-        public bool UseMachineName { get; set; } = true;
-        public bool UseMessage { get; set; } = true;
-        public bool UseExtensions { get; set; } = true;
-        public bool UsePartValueSet { get; set; } = true;
 
         /// <summary>
         /// フォーマットを取得または設定します。
@@ -88,9 +53,12 @@ namespace MSyics.Traceyi.Layout
         /// <summary>
         /// 改行文字を取得または設定します。
         /// </summary>
-        public string NewLine { get; set; }
+        public string NewLine { get; set; } = Environment.NewLine;
 
-        public LogLayoutPartValueSetSettings PartValueSetSettings { get; } = new();
+        /// <summary>
+        /// 記録データのメンバーを取得または設定します。
+        /// </summary>
+        public LogStateMembers StateMembers { get; set; } = LogStateMembers.All;
 
         #region ILogLayout Members
         /// <inheritdoc/>>
@@ -116,8 +84,9 @@ namespace MSyics.Traceyi.Layout
                 e.ProcessName,
                 e.MachineName,
                 e.Message,
-                GetExtensions(e),
-                CreatePartValueSet(e)).TrimEnd('\r', '\n');
+                GetExtensions(ref e),
+                CreateLogState(ref e)).
+                TrimEnd('\r', '\n');
         }
         #endregion
 
@@ -146,41 +115,22 @@ namespace MSyics.Traceyi.Layout
 
             actualFormat = converter.Convert(Format.Trim());
 
-            Console.WriteLine(actualFormat);
-
             hasExtensions = converter.IsPartPlaced("extensions");
-            hasPartValueSet = converter.IsPartPlaced("@");
+            hasLogState = converter.IsPartPlaced("@");
 
             initialized = true;
         }
 
-        private IDictionary<string, object> GetExtensions(TraceEventArgs e)
+        private IDictionary<string, object> GetExtensions(ref TraceEventArgs e)
         {
             if (!hasExtensions) { return null; }
-
             return e.Extensions.Count == 0 ? null : e.Extensions;
         }
 
-        private LogState CreatePartValueSet(TraceEventArgs e)
+        private LogState CreateLogState(ref TraceEventArgs e)
         {
-            if (!hasPartValueSet) { return null; }
-
-            return new LogStateBuilder().
-                SetValue("action", e.Action, PartValueSetSettings.UseAction, false).
-                SetValue("traced", e.Traced, PartValueSetSettings.UseTraced).
-                SetValue("elapsed", e.Elapsed, PartValueSetSettings.UseElapsed).
-                SetNullableValue("activityId", e.ActivityId, PartValueSetSettings.UseActivityId).
-                SetNullableValue("scopeLabel", e.ScopeLabel, PartValueSetSettings.UseScopeLabel).
-                SetNullableValue("scopeId", e.ScopeId, PartValueSetSettings.UseScopeId).
-                SetNullableValue("scopeParentId", e.ScopeParentId, PartValueSetSettings.UseScopeParentId).
-                SetValue("scopeDepth", e.ScopeDepth, PartValueSetSettings.UseScopeDepth).
-                SetValue("threadId", e.ThreadId, PartValueSetSettings.UseThreadId).
-                SetValue("processId", e.ProcessId, PartValueSetSettings.UseProcessId).
-                SetNullableValue("processName", e.ProcessName, PartValueSetSettings.UseProcessName).
-                SetNullableValue("machineName", e.MachineName, PartValueSetSettings.UseMachineName).
-                SetNullableValue("message", e.Message, PartValueSetSettings.UseMessage).
-                SetExtensions(e.Extensions, PartValueSetSettings.UseExtensions).
-                Build();
+            if (!hasLogState) { return null; }
+            return new LogStateBuilder().SetEvent(e, StateMembers).Build();
         }
     }
 }

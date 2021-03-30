@@ -13,7 +13,7 @@
     <PackageProjectUrl>https://github.com/MSyics/Traceyi</PackageProjectUrl>
     <RepositoryUrl>https://github.com/MSyics/Traceyi</RepositoryUrl>
     <PackageLicenseUrl></PackageLicenseUrl>
-    <Copyright>Copyright (c) 2020 MSyics</Copyright>
+    <Copyright>Copyright (c) 2021 MSyics</Copyright>
     <Description>Traceyi is an asynchronous logging library</Description>
     <Platforms>AnyCPU;x64</Platforms>
     <PackageTags>logging trace async</PackageTags>

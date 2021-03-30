@@ -18,7 +18,8 @@
             "length": 1
           },
           "Layout": {
-            "UseAction": true
+            "format": "{@=>json}",
+            "StateMembers": "action"
           }
         },
         {
