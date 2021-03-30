@@ -53,6 +53,7 @@ namespace MSyics.Traceyi
         /// トレースの動作を取得または設定します。
         /// </summary>
         public TraceAction Action { get; }
+
         /// <summary>
         /// トレースした日時を取得または設定します。
         /// </summary>
@@ -68,9 +69,24 @@ namespace MSyics.Traceyi
         /// </summary>
         public object ActivityId { get; } = Traceable.Context.ActivityId;
 
+        /// <summary>
+        /// スコープ ID を取得します。
+        /// </summary>
         public string ScopeId => scope?.Id;
+
+        /// <summary>
+        /// 親スコープ ID を取得します。
+        /// </summary>
         public string ScopeParentId => scope?.ParentId;
+
+        /// <summary>
+        /// スコープの深さを取得します。
+        /// </summary>
         public int ScopeDepth => scope?.Depth ?? default;
+
+        /// <summary>
+        /// スコープラベルを取得します。
+        /// </summary>
         public object ScopeLabel => scope?.Label;
 
         /// <summary>
@@ -130,6 +146,9 @@ namespace MSyics.Traceyi
         }
         private object _message;
 
+        /// <summary>
+        /// 拡張プロパティを取得します。
+        /// </summary>
         [JsonExtensionData]
         public IDictionary<string, object> Extensions
         {
@@ -137,7 +156,7 @@ namespace MSyics.Traceyi
             {
                 if (_extensions == null)
                 {
-                    var obj = new ExtensionsObject();
+                    var obj = new DictionaryedDynamicObject();
                     try
                     {
                         extensions?.Invoke(obj);
@@ -152,21 +171,5 @@ namespace MSyics.Traceyi
             }
         }
         private IDictionary<string, object> _extensions;
-
-        internal sealed class ExtensionsObject : DynamicObject
-        {
-            public readonly Dictionary<string, object> Items = new();
-
-            public override bool TryGetMember(GetMemberBinder binder, out object result)
-            {
-                return Items.TryGetValue(binder.Name, out result);
-            }
-
-            public override bool TrySetMember(SetMemberBinder binder, object value)
-            {
-                Items[binder.Name] = value;
-                return true;
-            }
-        }
     }
 }

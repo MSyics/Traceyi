@@ -34,8 +34,11 @@ namespace MSyics.Traceyi.Layout
                 {
                     var isContinue = false;
                     var startIndex = layoutIndex + 1;
+#if NETCOREAPP
+                    var length = span[(startIndex + 1)..].IndexOf('}') + 1;
+#else
                     var length = span.Slice(startIndex + 1).IndexOf('}') + 1;
-
+#endif
                     if (length > 0)
                     {
                         var template = span.Slice(startIndex, length);
@@ -46,7 +49,11 @@ namespace MSyics.Traceyi.Layout
                             {
                                 if (part.CanFormat)
                                 {
+#if NETCOREAPP
+                                    var formatString = template[part.Name.Length..].Trim();
+#else
                                     var formatString = template.Slice(part.Name.Length).Trim();
+#endif
                                     var separator = GetSeparatorCharacter(formatString);
                                     sb.Append($"{{{itemIndex}{separator}{formatString.ToString()}}}");
                                 }
@@ -77,8 +84,11 @@ namespace MSyics.Traceyi.Layout
         private static bool CanReplacePart(ReadOnlySpan<char> value, LogLayoutPart part)
         {
             if (!value.StartsWith(part.Name.AsSpan(), StringComparison.OrdinalIgnoreCase)) { return false; }
-
+#if NETCOREAPP
+            value = value[part.Name.Length..].Trim();
+#else
             value = value.Slice(part.Name.Length).Trim();
+#endif
             if (value.Length == 0) { return true; }
 
             var c = value[0];

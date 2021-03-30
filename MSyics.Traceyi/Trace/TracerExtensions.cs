@@ -13,7 +13,7 @@ namespace MSyics.Traceyi
         /// <param name="tracer">トレースオブジェクト</param>
         /// <param name="message">開始メッセージ</param>
         /// <param name="extensions"></param>
-        /// <param name="label">操作 ID</param>
+        /// <param name="label">ラベル</param>
         public static TraceScopeEntry Scope(this Tracer tracer, object message, Action<dynamic> extensions = null, object label = null)
         {
             var scope = new TraceScopeEntry();
@@ -21,6 +21,9 @@ namespace MSyics.Traceyi
             return scope;
         }
 
+        /// <summary>
+        /// コードブロックをトレースに参加させます。
+        /// </summary>
         public static TraceScopeEntry Scope(this Tracer tracer, Action<dynamic> extensions = null, object label = null) =>
             Scope(tracer, null, extensions, label);
 

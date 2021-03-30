@@ -28,12 +28,12 @@ namespace MSyics.Traceyi
         public object ActivityId { get => activityId.Value; set => activityId.Value = value; }
 
         /// <summary>
-        /// 現在のトレース操作情報を取得します。
+        /// 現在の操作スコープ情報を取得します。
         /// </summary>
         public TraceScope CurrentScope => ScopeStack.Count == 0 ? TraceScope.NullScope : ScopeStack.Peek();
 
         /// <summary>
-        /// トレース操作情報の一覧を取得します。
+        /// トレース操作スコープの一覧を取得します。
         /// </summary>
         public TraceScope[] Scopes => ScopeStack.ToArray();
 

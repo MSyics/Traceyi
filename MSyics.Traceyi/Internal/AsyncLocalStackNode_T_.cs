@@ -2,9 +2,6 @@
 
 namespace MSyics.Traceyi
 {
-    /// <summary>
-    /// トレース操作のノードを表します。
-    /// </summary>
     internal sealed class AsyncLocalStackNode<T>
     {
         public AsyncLocalStackNode(T element, AsyncLocalStackNode<T> prev = null)

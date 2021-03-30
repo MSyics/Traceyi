@@ -3,7 +3,7 @@
 namespace MSyics.Traceyi
 {
     /// <summary>
-    /// トレース操作を表します。
+    /// トレース操作スコープを表します。
     /// </summary>
     public sealed class TraceScope
     {

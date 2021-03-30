@@ -18,6 +18,7 @@
             this.tracer = tracer;
         }
 
+        #region ILogger Members
         public bool IsEnabled(LogLevel logLevel)
         {
             if (!TryGetTraceAction(logLevel, out var traceAction)) { return true; }
@@ -81,6 +82,7 @@
                     break;
             }
         }
+        #endregion
 
         private bool TryGetTraceAction(LogLevel logLevel, out TraceAction traceAction)
         {
@@ -148,7 +150,7 @@
         {
             MakeExtensions(ref x, eventId, exception);
 
-            var extensions = ((TraceEventArgs.ExtensionsObject)x).Items;
+            var extensions = ((DictionaryedDynamicObject)x).Items;
             foreach (var item in items.Where(x => x.Key != OriginalFormatKeyName))
             {
                 if (GetKey(item.Key.AsSpan(), out var key))

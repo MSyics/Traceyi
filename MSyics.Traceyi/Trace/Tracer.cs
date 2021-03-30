@@ -53,6 +53,10 @@ namespace MSyics.Traceyi
         /// トレースに必要なメッセージを残します。
         /// </summary>
         public void Trace(object message, Action<dynamic> extensions = null) => RaiseTracing(TraceAction.Trace, message, extensions);
+
+        /// <summary>
+        /// トレースに必要なメッセージを残します。
+        /// </summary>
         public void Trace(Action<dynamic> extensions) => Trace(null, extensions);
         #endregion
 
@@ -61,6 +65,10 @@ namespace MSyics.Traceyi
         /// デバッグに必要なメッセージを残します。
         /// </summary>
         public void Debug(object message, Action<dynamic> extensions = null) => RaiseTracing(TraceAction.Debug, message, extensions);
+
+        /// <summary>
+        /// デバッグに必要なメッセージを残します。
+        /// </summary>
         public void Debug(Action<dynamic> extensions) => Debug(null, extensions);
         #endregion
 
@@ -69,6 +77,10 @@ namespace MSyics.Traceyi
         /// 通知メッセージを残します。
         /// </summary>
         public void Information(object message, Action<dynamic> extensions = null) => RaiseTracing(TraceAction.Info, message, extensions);
+
+        /// <summary>
+        /// 通知メッセージを残します。
+        /// </summary>
         public void Information(Action<dynamic> extensions) => Information(null, extensions);
         #endregion
 
@@ -77,6 +89,10 @@ namespace MSyics.Traceyi
         /// 注意メッセージを残します。
         /// </summary>
         public void Warning(object message, Action<dynamic> extensions = null) => RaiseTracing(TraceAction.Warning, message, extensions);
+
+        /// <summary>
+        /// 注意メッセージを残します。
+        /// </summary>
         public void Warning(Action<dynamic> extensions) => Warning(null, extensions);
         #endregion
 
@@ -85,6 +101,10 @@ namespace MSyics.Traceyi
         /// エラーメッセージを残します。
         /// </summary>
         public void Error(object message, Action<dynamic> extensions = null) => RaiseTracing(TraceAction.Error, message, extensions);
+
+        /// <summary>
+        /// エラーメッセージを残します。
+        /// </summary>
         public void Error(Action<dynamic> extensions) => Error(null, extensions);
         #endregion
 
@@ -93,14 +113,22 @@ namespace MSyics.Traceyi
         /// 重大メッセージを残します。
         /// </summary>
         public void Critical(object message, Action<dynamic> extensions = null) => RaiseTracing(TraceAction.Critical, message, extensions);
+
+        /// <summary>
+        /// 重大メッセージを残します。
+        /// </summary>
         public void Critical(Action<dynamic> extensions) => Critical(null, extensions);
         #endregion
 
         #region Start
         /// <summary>
-        /// 操作の開始メッセージを残します。
+        /// 操作スコープの開始メッセージを残します。
         /// </summary>
         public void Start(object message, Action<dynamic> extensions = null, object label = null) => Start(message, extensions, label, false);
+
+        /// <summary>
+        /// 操作スコープの開始メッセージを残します。
+        /// </summary>
         public void Start(Action<dynamic> extensions = null, object label = null) => Start(null, extensions, label, false);
 
         internal string Start(object message, Action<dynamic> extensions, object label, bool withEntry)
@@ -122,7 +150,7 @@ namespace MSyics.Traceyi
 
         #region Stop
         /// <summary>
-        /// 操作の終了メッセージを残します。
+        /// 操作スコープの終了メッセージを残します。
         /// </summary>
         public void Stop(object message, Action<dynamic> extensions = null)
         {
@@ -136,6 +164,9 @@ namespace MSyics.Traceyi
             Context.ScopeStack.Pop();
         }
 
+        /// <summary>
+        /// 操作スコープの終了メッセージを残します。
+        /// </summary>
         public void Stop(Action<dynamic> extensions = null) => Stop(null, extensions);
 
         internal void Stop(string scopeId, DateTimeOffset stopped, object message, Action<dynamic> extensions)

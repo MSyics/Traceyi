@@ -11,7 +11,7 @@ namespace MSyics.Traceyi
     /// <summary>
     /// トレースデータに関するユーティリティークラスです。
     /// </summary>
-    public static class TraceUtility
+    internal static class TraceUtility
     {
         /// <summary>
         /// ライブラリで定義されているすべての型を取得します。
