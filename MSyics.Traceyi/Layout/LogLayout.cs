@@ -165,7 +165,7 @@ namespace MSyics.Traceyi.Layout
         {
             if (!hasPartValueSet) { return null; }
 
-            return new LogLayoutPartValueSetBuilder().
+            return new LogStateBuilder().
                 SetValue("action", e.Action, PartValueSetSettings.UseAction, false).
                 SetValue("traced", e.Traced, PartValueSetSettings.UseTraced).
                 SetValue("elapsed", e.Elapsed, PartValueSetSettings.UseElapsed).

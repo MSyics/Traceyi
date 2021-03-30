@@ -2,11 +2,11 @@
 
 namespace MSyics.Traceyi.Layout
 {
-    internal class LogLayoutPartValueSetBuilder
+    internal class LogStateBuilder
     {
         private readonly Dictionary<string, object> members = new();
 
-        public LogLayoutPartValueSetBuilder SetValue<T>(string member, T value, bool enabled, bool ignoreWhenDefault = true) where T : struct
+        public LogStateBuilder SetValue<T>(string member, T value, bool enabled, bool ignoreWhenDefault = true) where T : struct
         {
             if (enabled)
             {
@@ -25,7 +25,7 @@ namespace MSyics.Traceyi.Layout
             return this;
         }
 
-        public LogLayoutPartValueSetBuilder SetNullableValue<T>(string member, T value, bool enabled) where T : class
+        public LogStateBuilder SetNullableValue<T>(string member, T value, bool enabled) where T : class
         {
             if (enabled && value is not null)
             {
@@ -34,7 +34,7 @@ namespace MSyics.Traceyi.Layout
             return this;
         }
 
-        public LogLayoutPartValueSetBuilder SetExtensions(IDictionary<string, object> extensions, bool enabled)
+        public LogStateBuilder SetExtensions(IDictionary<string, object> extensions, bool enabled)
         {
             if (enabled)
             {
