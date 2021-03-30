@@ -7,6 +7,25 @@ using System.Text.Json.Serialization;
 
 namespace MSyics.Traceyi.Layout
 {
+    public sealed class LogLayoutPartValueSetSettings
+    {
+        public bool UseAction { get; set; } = true;
+        public bool UseTraced { get; set; } = true;
+        public bool UseElapsed { get; set; } = true;
+        public bool UseActivityId { get; set; } = true;
+        public bool UseScopeLabel { get; set; } = true;
+        public bool UseScopeId { get; set; } = true;
+        public bool UseScopeParentId { get; set; } = true;
+        public bool UseScopeDepth { get; set; } = true;
+        public bool UseThreadId { get; set; } = true;
+        public bool UseProcessId { get; set; } = true;
+        public bool UseProcessName { get; set; } = true;
+        public bool UseMachineName { get; set; } = true;
+        public bool UseMessage { get; set; } = true;
+        public bool UseExtensions { get; set; } = true;
+        public bool UsePartValueSet { get; set; } = true;
+    }
+
     /// <summary>
     /// 指定したレイアウトで書式設定されたログを取得します。
     /// </summary>
@@ -15,7 +34,7 @@ namespace MSyics.Traceyi.Layout
         /// <summary>
         /// 初期レイアウトを示す固定値です。
         /// </summary>
-        public readonly static string DefaultFormat = "{action| ,8:L}{tab}{dateTime:yyyy-MM-ddTHH:mm:ss.fffffffzzz}{tab}{elapsed:d\\.hh\\:mm\\:ss\\.fffffff}{tab}{scopeId|-,16:R}{tab}{scopeParentId|-,16:R}{tab}{scopeDepth}{tab}{scopeLabel}{tab}{activityId}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}{newLine}{extensions=>json,indent}";
+        public readonly static string DefaultFormat = "{action| ,8:L}{tab}{dateTime:yyyy-MM-ddTHH:mm:ss.fffffffzzz}{tab}{elapsed:d\\.hh\\:mm\\:ss\\.fffffff}{tab}{scopeId|-,16:R}{tab}{scopeParentId|-,16:R}{tab}{scopeDepth}{tab}{scopeLabel}{tab}{activityId}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}{tab}{extensions=>json}{newLine}{@=>json,indent}";
 
         private readonly IFormatProvider formatProvider = new LogLayoutFormatProvider();
         private bool initialized;
@@ -71,6 +90,9 @@ namespace MSyics.Traceyi.Layout
         /// </summary>
         public string NewLine { get; set; }
 
+        public LogLayoutPartValueSetSettings PartValueSetSettings { get; } = new();
+
+        #region ILogLayout Members
         /// <inheritdoc/>>
         public string GetLog(TraceEventArgs e)
         {
@@ -81,22 +103,23 @@ namespace MSyics.Traceyi.Layout
                 actualFormat,
                 "\t",
                 NewLine,
-                UseAction ? e.Action : null,
-                UseTraced ? e.Traced : null,
-                UseElapsed ? e.Elapsed : null,
-                UseActivityId ? e.ActivityId : null,
-                UseScopeLabel ? e.ScopeLabel : null,
-                UseScopeId ? e.ScopeId : null,
-                UseScopeParentId ? e.ScopeParentId : null,
-                UseScopeDepth ? e.ScopeDepth : null,
-                UseThreadId ? e.ThreadId : null,
-                UseProcessId ? e.ProcessId : null,
-                UseProcessName ? e.ProcessName : null,
-                UseMachineName ? e.MachineName : null,
-                UseMessage ? e.Message : null,
-                UseExtensions ? GetExtensions(e) : null,
-                UsePartValueSet ? CreatePartValueSet(e) : null).TrimEnd('\r', '\n');
+                e.Action,
+                e.Traced,
+                e.Elapsed,
+                e.ActivityId,
+                e.ScopeLabel,
+                e.ScopeId,
+                e.ScopeParentId,
+                e.ScopeDepth,
+                e.ThreadId,
+                e.ProcessId,
+                e.ProcessName,
+                e.MachineName,
+                e.Message,
+                GetExtensions(e),
+                CreatePartValueSet(e)).TrimEnd('\r', '\n');
         }
+        #endregion
 
         private void Initialize()
         {
@@ -123,6 +146,8 @@ namespace MSyics.Traceyi.Layout
 
             actualFormat = converter.Convert(Format.Trim());
 
+            Console.WriteLine(actualFormat);
+
             hasExtensions = converter.IsPartPlaced("extensions");
             hasPartValueSet = converter.IsPartPlaced("@");
 
@@ -136,25 +161,25 @@ namespace MSyics.Traceyi.Layout
             return e.Extensions.Count == 0 ? null : e.Extensions;
         }
 
-        private LogLayoutPartValueSet CreatePartValueSet(TraceEventArgs e)
+        private LogState CreatePartValueSet(TraceEventArgs e)
         {
             if (!hasPartValueSet) { return null; }
 
             return new LogLayoutPartValueSetBuilder().
-                SetValue("action", e.Action, UseAction, false).
-                SetValue("traced", e.Traced, UseTraced).
-                SetValue("elapsed", e.Elapsed, UseElapsed).
-                SetNullableValue("activityId", e.ActivityId, UseActivityId).
-                SetNullableValue("scopeLabel", e.ScopeLabel, UseScopeLabel).
-                SetNullableValue("scopeId", e.ScopeId, UseScopeId).
-                SetNullableValue("scopeParentId", e.ScopeParentId, UseScopeParentId).
-                SetValue("scopeDepth", e.ScopeDepth, UseScopeDepth).
-                SetValue("threadId", e.ThreadId, UseThreadId).
-                SetValue("processId", e.ProcessId, UseProcessId).
-                SetNullableValue("processName", e.ProcessName, UseProcessName).
-                SetNullableValue("machineName", e.MachineName, UseMachineName).
-                SetNullableValue("message", e.Message, UseMessage).
-                SetExtensions(e.Extensions, UseExtensions).
+                SetValue("action", e.Action, PartValueSetSettings.UseAction, false).
+                SetValue("traced", e.Traced, PartValueSetSettings.UseTraced).
+                SetValue("elapsed", e.Elapsed, PartValueSetSettings.UseElapsed).
+                SetNullableValue("activityId", e.ActivityId, PartValueSetSettings.UseActivityId).
+                SetNullableValue("scopeLabel", e.ScopeLabel, PartValueSetSettings.UseScopeLabel).
+                SetNullableValue("scopeId", e.ScopeId, PartValueSetSettings.UseScopeId).
+                SetNullableValue("scopeParentId", e.ScopeParentId, PartValueSetSettings.UseScopeParentId).
+                SetValue("scopeDepth", e.ScopeDepth, PartValueSetSettings.UseScopeDepth).
+                SetValue("threadId", e.ThreadId, PartValueSetSettings.UseThreadId).
+                SetValue("processId", e.ProcessId, PartValueSetSettings.UseProcessId).
+                SetNullableValue("processName", e.ProcessName, PartValueSetSettings.UseProcessName).
+                SetNullableValue("machineName", e.MachineName, PartValueSetSettings.UseMachineName).
+                SetNullableValue("message", e.Message, PartValueSetSettings.UseMessage).
+                SetExtensions(e.Extensions, PartValueSetSettings.UseExtensions).
                 Build();
         }
     }

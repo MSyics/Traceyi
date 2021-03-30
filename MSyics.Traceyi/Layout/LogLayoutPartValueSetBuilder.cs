@@ -4,9 +4,9 @@ namespace MSyics.Traceyi.Layout
 {
     internal class LogLayoutPartValueSetBuilder
     {
-        private readonly Dictionary<string, object> items = new();
+        private readonly Dictionary<string, object> members = new();
 
-        public LogLayoutPartValueSetBuilder SetValue<T>(string name, T value, bool enabled, bool ignoreWhenDefault = true) where T : struct
+        public LogLayoutPartValueSetBuilder SetValue<T>(string member, T value, bool enabled, bool ignoreWhenDefault = true) where T : struct
         {
             if (enabled)
             {
@@ -14,22 +14,22 @@ namespace MSyics.Traceyi.Layout
                 {
                     if (!value.Equals(default(T)))
                     {
-                        items[name] = value;
+                        members[member] = value;
                     }
                 }
                 else
                 {
-                    items[name] = value;
+                    members[member] = value;
                 }
             }
             return this;
         }
 
-        public LogLayoutPartValueSetBuilder SetNullableValue<T>(string name, T value, bool enabled) where T : class
+        public LogLayoutPartValueSetBuilder SetNullableValue<T>(string member, T value, bool enabled) where T : class
         {
             if (enabled && value is not null)
             {
-                items[name] = value;
+                members[member] = value;
             }
             return this;
         }
@@ -40,16 +40,16 @@ namespace MSyics.Traceyi.Layout
             {
                 foreach (var ex in extensions)
                 {
-                    items[ex.Key] = ex.Value;
+                    members[ex.Key] = ex.Value;
                 }
             }
             return this;
         }
 
-        public LogLayoutPartValueSet Build()
+        public LogState Build()
         {
-            if (items.Count == 0) return null;
-            return new() { Items = items };
+            if (members.Count == 0) return null;
+            return new() { Members = members };
         }
     }
 }

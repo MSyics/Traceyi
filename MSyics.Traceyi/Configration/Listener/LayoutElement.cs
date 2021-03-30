@@ -12,6 +12,8 @@ namespace MSyics.Traceyi.Configration
         /// </summary>
         public string Format { get; set; } = LogLayout.DefaultFormat;
 
+        public LogLayoutPartValueSetSettings PartValueSetSettings { get; set; }
+
         /// <summary>
         /// トレースした日時を使用するかどうかを示す値を取得または設定します。
         /// </summary>
@@ -65,7 +67,7 @@ namespace MSyics.Traceyi.Configration
         /// <summary>
         /// プロセス ID を使用するかどうかを示す値を取得または設定します。
         /// </summary>
-        public bool UseProcessId { get; set; } = true;
+        public bool UseProcessId { get; set; } = false;
 
         /// <summary>
         /// プロセス名を使用するかどうかを示す値を取得または設定します。

@@ -3,9 +3,9 @@ using System.Text.Json.Serialization;
 
 namespace MSyics.Traceyi.Layout
 {
-    internal class LogLayoutPartValueSet
+    internal class LogState
     {
         [JsonExtensionData]
-        public IDictionary<string, object> Items { get; set; }
+        public IDictionary<string, object> Members { get; set; }
     }
 }
