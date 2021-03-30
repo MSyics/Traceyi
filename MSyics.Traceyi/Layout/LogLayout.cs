@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace MSyics.Traceyi.Layout
 {
@@ -18,6 +15,7 @@ namespace MSyics.Traceyi.Layout
         public readonly static string DefaultFormat = "{action| ,8:L}{tab}{dateTime:yyyy-MM-ddTHH:mm:ss.fffffffzzz}{tab}{elapsed:d\\.hh\\:mm\\:ss\\.fffffff}{tab}{scopeId|-,16:R}{tab}{scopeParentId|-,16:R}{tab}{scopeDepth}{tab}{scopeLabel}{tab}{activityId}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}{tab}{extensions=>json}{newLine}{@=>json,indent}";
 
         private readonly IFormatProvider formatProvider = new LogLayoutFormatProvider();
+        private readonly ILogStateBuilder logStateBuilder = new LogStateBuilder();
         private bool initialized;
         private string actualFormat;
         private bool hasExtensions;
@@ -130,7 +128,7 @@ namespace MSyics.Traceyi.Layout
         private LogState CreateLogState(ref TraceEventArgs e)
         {
             if (!hasLogState) { return null; }
-            return new LogStateBuilder().SetEvent(e, StateMembers).Build();
+            return logStateBuilder.SetEvent(e, StateMembers).Build();
         }
     }
 }

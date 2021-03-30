@@ -19,7 +19,7 @@
           },
           "Layout": {
             "format": "{@=>json}",
-            "StateMembers": "action"
+            "StateMembers": "all"
           }
         },
         {
