@@ -73,8 +73,8 @@ namespace MSyics.Traceyi
         /// </summary>
         public void Remove(string path)
         {
-            if (string.IsNullOrEmpty(path)) { return; }
-            if (!streams.TryGetValue(path, out var stream)) { return; }
+            if (string.IsNullOrEmpty(path)) return; 
+            if (!streams.TryGetValue(path, out var stream)) return; 
 
             factory.Dispose(stream);
             streams.Remove(path);
@@ -85,7 +85,7 @@ namespace MSyics.Traceyi
         /// </summary>
         public void Clear()
         {
-            if (streams.Count == 0) { return; }
+            if (streams.Count == 0) return; 
 
             lock (((ICollection)streams).SyncRoot)
             {

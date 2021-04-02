@@ -21,7 +21,7 @@
         #region ILogger Members
         public bool IsEnabled(LogLevel logLevel)
         {
-            if (!TryGetTraceAction(logLevel, out var traceAction)) { return true; }
+            if (!TryGetTraceAction(logLevel, out var traceAction)) return true;
             return tracer.Filters.Contains(traceAction);
         }
 
@@ -42,25 +42,19 @@
 
         public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
         {
-            if (!TryGetTraceAction(logLevel, out var traceAction)) { return; }
+            if (!TryGetTraceAction(logLevel, out var traceAction)) return;
 
             switch (state)
             {
-                case IEnumerable<KeyValuePair<string, object>> items:
-                    object format;
-                    try
-                    {
-                        format = items.FirstOrDefault(x => x.Key == OriginalFormatKeyName).Value;
-                    }
-                    catch (Exception ex)
-                    {
-                        format = ex;
-                    }
-
+                case IEnumerable<KeyValuePair<string, object>> keyValuePairs:
+                    var items = keyValuePairs.ToArray();
                     tracer.RaiseTracing(
                         traceAction,
-                        format,
-                        x => MakeExtensions(ref x, items, eventId, exception));
+                        items.FirstOrDefault(x => x.Key == OriginalFormatKeyName).Value ?? formatter.Invoke(state, exception),
+                        x =>
+                        {
+                            MakeExtensions(ref x, items, eventId, exception);
+                        });
                     break;
 
                 case TraceyiLoggerParameters p:
@@ -78,7 +72,10 @@
                     tracer.RaiseTracing(
                         traceAction,
                         state,
-                        x => MakeExtensions(ref x, eventId, exception));
+                        x =>
+                        {
+                            MakeExtensions(ref x, eventId, exception);
+                        });
                     break;
             }
         }
@@ -150,8 +147,8 @@
         {
             MakeExtensions(ref x, eventId, exception);
 
-            var extensions = ((DictionaryedDynamicObject)x).Items;
-            foreach (var item in items.Where(x => x.Key != OriginalFormatKeyName))
+            var extensions = ((DictionaryedDynamicObject)x).Members;
+            foreach (var item in items.Where(x => x.Key != OriginalFormatKeyName).ToArray())
             {
                 if (GetKey(item.Key.AsSpan(), out var key))
                 {

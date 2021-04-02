@@ -56,10 +56,8 @@ namespace MSyics.Traceyi.Listeners
 
             if (Coloring.start < 0)
             {
-                if (Coloring.length < 0)
-                {
-                    return false;
-                }
+                if (Coloring.length < 0) return false;
+
                 length = Coloring.start + Coloring.length;
             }
             else
@@ -67,10 +65,8 @@ namespace MSyics.Traceyi.Listeners
                 if (Coloring.length < 0)
                 {
                     double i = Coloring.start + Coloring.length;
-                    if (i > span.Length)
-                    {
-                        return false;
-                    }
+                    if (i > span.Length) return false;
+
                     if (i < 0)
                     {
                         length = Coloring.start;
@@ -83,10 +79,8 @@ namespace MSyics.Traceyi.Listeners
                 }
                 else
                 {
-                    if (Coloring.start > span.Length)
-                    {
-                        return false;
-                    }
+                    if (Coloring.start > span.Length) return false;
+
                     start = Coloring.start;
                     double i = Coloring.start + Coloring.length;
                     if (i > span.Length - start)
@@ -111,54 +105,43 @@ namespace MSyics.Traceyi.Listeners
         protected internal override void WriteCore(TraceEventArgs e)
         {
             var log = Layout.GetLog(e);
-            if (string.IsNullOrEmpty(log))
-            {
-                return;
-            }
+            if (string.IsNullOrEmpty(log)) return;
 
             Console.OutputEncoding = Encoding;
             TextWriter = useErrorStream ? Console.Error : Console.Out;
 
+            var span = log.AsSpan();
+            if (!TryGetColoringSettings(span, out var start, out var length, out var toLast))
+            {
+                TextWriter.WriteLine(log);
+                return;
+            }
+
+            if (start > 0)
+            {
+                TextWriter.Write(span.Slice(0, start).ToString());
+            }
+
             try
             {
-                var span = log.AsSpan();
-                if (!TryGetColoringSettings(span, out var start, out var length, out var toLast))
+                SetConsoleColor(e.Action);
+                if (toLast)
                 {
-                    TextWriter.WriteLine(log);
+                    TextWriter.WriteLine(span.Slice(start, length).ToString());
                     return;
                 }
 
-                if (start > 0)
-                {
-                    TextWriter.Write(span.Slice(0, start).ToString());
-                }
-
-                try
-                {
-                    SetConsoleColor(e.Action);
-                    if (toLast)
-                    {
-                        TextWriter.WriteLine(span.Slice(start, length).ToString());
-                        return;
-                    }
-
-                    TextWriter.Write(span.Slice(start, length).ToString());
-                }
-                finally
-                {
-                    Console.ForegroundColor = defaultColor;
-                }
-
-                TextWriter.WriteLine(span.Slice(start + length).ToString());
+                TextWriter.Write(span.Slice(start, length).ToString());
             }
-            catch (FormatException)
+            finally
             {
-                TextWriter.WriteLine($"Can't write in because the layout is in the wrong format.");
+                Console.ForegroundColor = defaultColor;
             }
-            catch (Exception ex)
-            {
-                TextWriter.WriteLine($"Can't write in.{NewLine}{ex}");
-            }
+#if NETCOREAPP
+            TextWriter.WriteLine(span[(start + length)..].ToString());
+#else
+            TextWriter.WriteLine(span.Slice(start + length).ToString());
+#endif
         }
 
         protected override void DisposeUnmanagedResources()

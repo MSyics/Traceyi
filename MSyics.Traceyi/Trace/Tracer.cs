@@ -36,14 +36,14 @@ namespace MSyics.Traceyi
 
         internal void RaiseTracing(TraceAction action, object message, Action<dynamic> extensions)
         {
-            if (!Filters.Contains(action)) { return; }
+            if (!Filters.Contains(action)) return;
 
             Tracing?.Invoke(this, new TraceEventArgs(Context.CurrentScope, DateTimeOffset.Now, action, message, extensions));
         }
 
         internal void RaiseTracing(TraceScope scope, DateTimeOffset traced, TraceAction action, object message, Action<dynamic> extensions)
         {
-            if (!Filters.Contains(action)) { return; }
+            if (!Filters.Contains(action)) return;
 
             Tracing?.Invoke(this, new TraceEventArgs(scope, traced, action, message, extensions));
         }
@@ -134,7 +134,7 @@ namespace MSyics.Traceyi
         internal string Start(object message, Action<dynamic> extensions, object label, bool withEntry)
         {
             var scope = new TraceScope(withEntry)
-            { 
+            {
                 Label = label ?? Context.CurrentScope.Label,
                 Id = $"{DateTimeOffset.Now.Ticks:x16}",
                 ParentId = Context.CurrentScope.Id,
@@ -158,10 +158,10 @@ namespace MSyics.Traceyi
 
             RaiseTracing(scope, DateTimeOffset.Now, TraceAction.Stop, message, extensions);
 
-            if (scope.WithEntry) { return; }
-            if (Context.ScopeStack.Count == 0) { return; }
+            if (scope.WithEntry) return;
+            if (Context.ScopeStack.Count == 0) return;
 
-            Context.ScopeStack.Pop();
+            Context.ScopeStack.TryPop();
         }
 
         /// <summary>
@@ -184,11 +184,11 @@ namespace MSyics.Traceyi
                     RaiseTracing(scope, stopped, TraceAction.Stop, null, null);
                 }
 
-                if (Context.ScopeStack.Count == 0) { break; }
+                if (Context.ScopeStack.Count == 0) break;
 
-                Context.ScopeStack.Pop();
+                Context.ScopeStack.TryPop();
 
-                if (scopeId == scope.Id) { break; }
+                if (scopeId == scope.Id) break;
             }
         }
         #endregion

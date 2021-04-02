@@ -23,7 +23,8 @@ namespace MSyics.Traceyi
         /// <param name="extensions"></param>
         public void Stop(object message, Action<dynamic> extensions = null)
         {
-            if (stopped) { return; }
+            if (stopped) return;
+
             stopped = true;
             stop?.Invoke(message, extensions);
             stop = null;

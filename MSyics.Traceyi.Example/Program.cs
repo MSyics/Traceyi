@@ -14,11 +14,16 @@ namespace MSyics.Traceyi
                 //Add<UsingCustomTraceListener>().
                 //Add<UsingShiftJIS>().
                 //Add<UsingScope>().
-                Add<UsingAsync>().
+
                 //Add<UsingArchive>().
                 //Add<UsingExtensions>().
                 //Add<UsingTest>().
-                //Add<UsingILogger>().
+
+                Add<UsingILogger>().
+
+                Add<UsingAsync>().
+                Add<UsingAsync>().
+                Add<UsingAsync>().
 
                 ShowAsync();
         }

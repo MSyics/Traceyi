@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Reflection;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Text.Unicode;
 
 namespace MSyics.Traceyi.Layout
 {
@@ -29,14 +30,17 @@ namespace MSyics.Traceyi.Layout
         {
             IndentedOptions = new(JsonSerializerDefaults.Web)
             {
-                Encoder = JavaScriptEncoder.Create(UnicodeRanges.All),
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                //ReferenceHandler = ReferenceHandler.Preserve,
                 WriteIndented = true,
                 DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
                 Converters =
                 {
                     new JsonStringEnumConverter(),
-                    new TimeSpanToStringJsonConverter(),
-                    new ExceptionToStringJsonConverter(),
+                    new JsonStringTimeSpanConverter(),
+                    new JsonStringPolymorphicConverter<Exception>(),
+                    new JsonStringPolymorphicConverter<MemberInfo>(),
+                    new JsonStringIfWriteFailureConverter(),
                 }
             };
             NotIndentedOptions = new(IndentedOptions)
@@ -73,10 +77,7 @@ namespace MSyics.Traceyi.Layout
         /// 指定した型の書式指定サービスを提供するオブジェクトを返します。
         /// </summary>
         /// <param name="formatType">返す書式オブジェクトの型を指定するオブジェクト。 </param>
-        public object GetFormat(Type formatType)
-        {
-            return formatType == typeof(ICustomFormatter) ? this : null;
-        }
+        public object GetFormat(Type formatType) => formatType == typeof(ICustomFormatter) ? this : null;
         #endregion
 
         #region ICustomFormatter Members
@@ -105,7 +106,7 @@ namespace MSyics.Traceyi.Layout
                     {
                         if (arg is TraceEventArgs e)
                         {
-                            LogStateMembers members = LogStateMembers.All;
+                            LogStateMembersOfTraceEvent members = LogStateMembersOfTraceEvent.All;
 
                             // TODO: cache
                             var left = formats[0].AsSpan();
@@ -118,7 +119,7 @@ namespace MSyics.Traceyi.Layout
 #else
                                 var value = (endIndex == -1 ? left.Slice(startIndex) : left.Slice(startIndex, endIndex - startIndex));
 #endif
-                                if (Enum.TryParse<LogStateMembers>(value.TrimStart('[').TrimEnd(']').ToString(), true, out var result))
+                                if (Enum.TryParse<LogStateMembersOfTraceEvent>(value.TrimStart('[').TrimEnd(']').ToString(), true, out var result))
                                 {
                                     members = result;
                                 }
@@ -130,20 +131,22 @@ namespace MSyics.Traceyi.Layout
                             }
                         }
 
+                        var options = right.Length > 1 && right[1].Trim().ToUpperInvariant() == IndentSpecifier
+                            ? IndentedOptions
+                            : NotIndentedOptions;
+
                         try
                         {
-                            return JsonSerializer.Serialize(arg, right.Length > 1 && right[1].ToUpperInvariant().Trim() == IndentSpecifier
-                                ? IndentedOptions
-                                : NotIndentedOptions);
+                            return JsonSerializer.Serialize(arg, options);
                         }
                         catch (Exception ex)
                         {
-                            Debug.Print($"{ex}");
+                            Debug.WriteLine($"{arg}, {ex.Message}");
+                            return JsonSerializer.Serialize(arg.ToString(), options);
                         }
                     }
 
-                    Debug.Print($"The input string [{format}] is not in the correct format.");
-                    return arg.ToString();
+                    return Format(format, arg);
                 }
 
                 if (format.Contains(FormatSpecifier))
@@ -159,8 +162,8 @@ namespace MSyics.Traceyi.Layout
 
                     if (customFormats.Length != 3)
                     {
-                        Debug.Print($"The input string [{format}] is not in the correct format.");
-                        return arg.ToString();
+                        Debug.WriteLine($"The input string [{format}] is not in the correct format.");
+                        return Format(format, arg);
                     }
 
                     // 文字数不足のときに埋める文字の取得
@@ -178,8 +181,8 @@ namespace MSyics.Traceyi.Layout
                     // 文字数の取得
                     if (!int.TryParse(customFormats[1], out var count))
                     {
-                        Debug.Print($"The input string [{format}] is not in the correct format.");
-                        return arg.ToString();
+                        Debug.WriteLine($"The input string [{format}] is not in the correct format.");
+                        return Format(format, arg);
                     }
 
                     if (count < 0)
@@ -191,8 +194,8 @@ namespace MSyics.Traceyi.Layout
                     var position = customFormats[2].ToUpperInvariant();
                     if (position.Length != 1)
                     {
-                        Debug.Print($"The input string [{format}] is not in the correct format.");
-                        return arg.ToString();
+                        Debug.WriteLine($"The input string [{format}] is not in the correct format.");
+                        return Format(format, arg);
                     }
 
                     // 文字埋め
@@ -221,8 +224,8 @@ namespace MSyics.Traceyi.Layout
                         }
                     }
 
-                    Debug.Print($"The input string [{format}] is not in the correct format.");
-                    return arg.ToString();
+                    Debug.WriteLine($"The input string [{format}] is not in the correct format.");
+                    return Format(format, arg);
                 }
             }
             return Format(format, arg);

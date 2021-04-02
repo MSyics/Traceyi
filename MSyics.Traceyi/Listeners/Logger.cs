@@ -39,9 +39,10 @@ namespace MSyics.Traceyi.Listeners
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                channel.Writer.TryComplete(e);
+                Debug.WriteLine(ex.Message);
+                channel.Writer.TryComplete(ex);
             }
         }
 
@@ -70,20 +71,16 @@ namespace MSyics.Traceyi.Listeners
         /// </summary>
         public void OnTracing(object sender, TraceEventArgs e)
         {
-            if (cts.IsCancellationRequested) { return; }
+            if (cts.IsCancellationRequested) return;
             if (UseAsync)
             {
                 try
                 {
                     _ = WriteAsync(e);
                 }
-                catch (TaskCanceledException ex)
-                {
-                    Debug.Print($"{ex}");
-                }
                 catch (Exception ex)
                 {
-                    Debug.Print($"{ex}");
+                    Debug.WriteLine(ex.Message);
                 }
             }
             else
@@ -112,7 +109,7 @@ namespace MSyics.Traceyi.Listeners
                     }
                     catch (Exception ex)
                     {
-                        Debug.Print($"{ex}");
+                        Debug.WriteLine(ex.Message);
                     }
                 }
             }
@@ -124,7 +121,7 @@ namespace MSyics.Traceyi.Listeners
                 }
                 catch (Exception ex)
                 {
-                    Debug.Print($"{ex}");
+                    Debug.WriteLine(ex.Message);
                 }
             }
         }
@@ -172,15 +169,19 @@ namespace MSyics.Traceyi.Listeners
             if (Disposed) { return; }
             Disposed = true;
 
+            cts.Cancel(false);
+
             channel.Writer.TryComplete();
-            if (consumer != null)
+            if (consumer is not null)
             {
                 consumer.Wait(CloseTimeout);
-                consumer.Dispose();
+                if (consumer.IsCompleted)
+                {
+                    consumer.Dispose();
+                }
             }
             //Task.Run(() => { while (traceEvents.Count != 0) ; }).Wait(CloseTimeout);
 
-            cts.Cancel(false);
             cts.Dispose();
 
             if (disposing) { DisposeManagedResources(); }

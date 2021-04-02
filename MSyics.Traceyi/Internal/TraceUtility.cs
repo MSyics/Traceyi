@@ -25,7 +25,7 @@ namespace MSyics.Traceyi
         public static MemberInfo GetTracedMemberInfo()
         {
             var stack = new StackTrace(false);
-            if (stack.FrameCount == 0) { return null; }
+            if (stack.FrameCount == 0) return null;
 
             return stack.
                 GetFrames().
@@ -42,7 +42,7 @@ namespace MSyics.Traceyi
         internal static string GetOperationId()
         {
             var stack = new StackTrace(false);
-            if (stack.FrameCount == 0) { return null; }
+            if (stack.FrameCount == 0) return null;
 
             var method = stack.
                 GetFrames().

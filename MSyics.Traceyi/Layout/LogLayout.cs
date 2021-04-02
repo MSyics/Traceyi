@@ -12,13 +12,13 @@ namespace MSyics.Traceyi.Layout
         /// <summary>
         /// 初期レイアウトを示す固定値です。
         /// </summary>
-        public readonly static string DefaultFormat = "{action| ,8:L}{tab}{traced:yyyy-MM-ddTHH:mm:ss.fffffffzzz}{tab}{elapsed:d\\.hh\\:mm\\:ss\\.fffffff}{tab}{scopeId|-,16:R}{tab}{scopeParentId|-,16:R}{tab}{scopeDepth}{tab}{scopeLabel}{tab}{activityId}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}{tab}{extensions=>json}";
+        public readonly static string DefaultFormat = "{action}{tab}{traced:yyyy-MM-ddTHH:mm:ss.fffffffzzz}{tab}{elapsed:d\\.hh\\:mm\\:ss\\.fffffff}{tab}{scopeId|-,16:R}{tab}{scopeParentId|-,16:R}{tab}{scopeDepth}{tab}{scopeLabel}{tab}{activityId}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}{tab}{extensions=>json}";
 
         private readonly IFormatProvider formatProvider = new LogLayoutFormatProvider();
         private bool initialized;
         private string actualFormat;
         private bool hasExtensions;
-        private bool hasLogState;
+        private bool hasEventArgs;
 
         /// <summary>
         /// TextLayout クラスのインスタンスを初期化します。
@@ -40,7 +40,7 @@ namespace MSyics.Traceyi.Layout
             get => _format;
             set
             {
-                if (_format == value) { return; }
+                if (_format == value) return;
                 _format = value;
                 initialized = false;
             }
@@ -53,7 +53,6 @@ namespace MSyics.Traceyi.Layout
         public string NewLine { get; set; } = Environment.NewLine;
 
         #region ILogLayout Members
-        /// <inheritdoc/>>
         public string GetLog(TraceEventArgs e)
         {
             Initialize();
@@ -84,7 +83,7 @@ namespace MSyics.Traceyi.Layout
 
         private void Initialize()
         {
-            if (initialized) { return; }
+            if (initialized) return; 
 
             var converter = new LogLayoutConverter(
                 new LogLayoutPart { Name = "tab", CanFormat = false },
@@ -108,20 +107,20 @@ namespace MSyics.Traceyi.Layout
             actualFormat = converter.Convert(Format.Trim());
 
             hasExtensions = converter.IsPartPlaced("extensions");
-            hasLogState = converter.IsPartPlaced("@");
+            hasEventArgs = converter.IsPartPlaced("@");
 
             initialized = true;
         }
 
         private IDictionary<string, object> GetExtensions(ref TraceEventArgs e)
         {
-            if (!hasExtensions) { return null; }
+            if (!hasExtensions) return null;
             return e.Extensions.Count == 0 ? null : e.Extensions;
         }
 
         private TraceEventArgs GetEvnetArgs(ref TraceEventArgs e)
         {
-            if (!hasLogState) { return null; }
+            if (!hasEventArgs) return null;
             return e;
         }
     }

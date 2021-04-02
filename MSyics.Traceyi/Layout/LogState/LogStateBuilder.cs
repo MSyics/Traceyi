@@ -7,23 +7,18 @@ namespace MSyics.Traceyi.Layout
     /// </summary>
     public class LogStateBuilder : ILogStateBuilder
     {
-        /// <inheritdoc/>
-        public ILogStateBuilder SetEvent(TraceEventArgs e, LogStateMembers members = LogStateMembers.All) =>
-            new InternalLogStateBuilder().SetEvent(e, members);
+        public ILogStateBuilder SetEvent(TraceEventArgs e, LogStateMembersOfTraceEvent members = LogStateMembersOfTraceEvent.All) =>
+            new LogStateBuilderInternal().SetEvent(e, members);
 
-        /// <inheritdoc/>
-        public ILogStateBuilder Set<T>(string member, T value, bool enabled, bool ignoreWhenDefault = true) where T : struct =>
-            new InternalLogStateBuilder().Set(member, value, enabled, ignoreWhenDefault);
+        public ILogStateBuilder Set<T>(string member, T value, bool enabled = true, bool ignoreWhenDefault = true) where T : struct =>
+            new LogStateBuilderInternal().Set(member, value, enabled, ignoreWhenDefault);
 
-        /// <inheritdoc/>
-        public ILogStateBuilder SetNullable<T>(string member, T value, bool enabled) where T : class =>
-            new InternalLogStateBuilder().SetNullable(member, value, enabled);
+        public ILogStateBuilder SetNullable<T>(string member, T value, bool enabled = true) where T : class =>
+            new LogStateBuilderInternal().SetNullable(member, value, enabled);
 
-        /// <inheritdoc/>
-        public ILogStateBuilder SetExtensions(IDictionary<string, object> extensions, bool enabled) =>
-            new InternalLogStateBuilder().SetExtensions(extensions, enabled);
+        public ILogStateBuilder SetExtensions(IDictionary<string, object> extensions, bool enabled = true) =>
+            new LogStateBuilderInternal().SetExtensions(extensions, enabled);
 
-        /// <inheritdoc/>
-        public LogState Build() => new InternalLogStateBuilder().Build();
+        public LogState Build() => new LogStateBuilderInternal().Build();
     }
 }

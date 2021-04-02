@@ -7,11 +7,8 @@ namespace MSyics.Traceyi
     /// </summary>
     internal class FileStreamFactory : IFileStreamFactory
     {
-        public FileStream Create(string path) => new(path, FileMode.Append, FileAccess.Write, FileShare.Read, 40960, FileOptions.None);
+        public FileStream Create(string path) => new(path, FileMode.Append, FileAccess.Write, FileShare.Read, 4096, FileOptions.None);
 
-        public void Dispose(FileStream stream)
-        {
-            stream.Dispose();
-        }
+        public void Dispose(FileStream stream) => stream.Dispose();
     }
 }

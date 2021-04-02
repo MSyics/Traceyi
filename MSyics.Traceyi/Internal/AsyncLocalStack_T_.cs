@@ -32,6 +32,38 @@ namespace MSyics.Traceyi
         }
 
         /// <summary>
+        /// スタックの先頭にあるオブジェクトの削除を試みます。
+        /// </summary>
+        public bool TryPop(out T value)
+        {
+            var node = local.Value;
+            if (node == null)
+            {
+                value = default;
+                return false;
+            }
+
+            local.Value = node.Prev;
+            value = node.Element;
+            return true;
+        }
+
+        /// <summary>
+        /// スタックの先頭にあるオブジェクトの削除を試みます。
+        /// </summary>
+        public bool TryPop()
+        {
+            var node = local.Value;
+            if (node == null)
+            {
+                return false;
+            }
+
+            local.Value = node.Prev;
+            return true;
+        }
+
+        /// <summary>
         /// スタックの先頭にオブジェクトを挿入します。
         /// </summary>
         public void Push(T element) => local.Value = new AsyncLocalStackNode<T>(element, local.Value);

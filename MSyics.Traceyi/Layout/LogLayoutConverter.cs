@@ -67,7 +67,8 @@ namespace MSyics.Traceyi.Layout
                                 break;
                             }
                         }
-                        if (isContinue) { continue; }
+
+                        if (isContinue) continue;
                     }
                     sb.Append('{');
                 }
@@ -83,19 +84,18 @@ namespace MSyics.Traceyi.Layout
 
         private static bool CanReplacePart(ReadOnlySpan<char> value, LogLayoutPart part)
         {
-            if (!value.StartsWith(part.Name.AsSpan(), StringComparison.OrdinalIgnoreCase)) { return false; }
+            if (!value.StartsWith(part.Name.AsSpan(), StringComparison.OrdinalIgnoreCase)) return false;
 #if NETCOREAPP
             value = value[part.Name.Length..].Trim();
 #else
             value = value.Slice(part.Name.Length).Trim();
 #endif
-            if (value.Length == 0) { return true; }
+            if (value.Length == 0) return true;
 
             var c = value[0];
-            if (c == ':' || c == ',' || c == '|' || c == '[') { return true; }
-
+            if (c == ':' || c == ',' || c == '|' || c == '[') return true;
             // =>
-            if (value[0] == '=' && value[1] == '>') { return true; }
+            if (value[0] == '=' && value[1] == '>') return true;
 
             return false;
         }
@@ -105,9 +105,9 @@ namespace MSyics.Traceyi.Layout
         /// </summary>
         private static string GetSeparatorCharacter(ReadOnlySpan<char> format)
         {
-            if (format.StartsWith(":".AsSpan())) { return string.Empty; }
-            if (format.StartsWith(",".AsSpan())) { return string.Empty; }
-            if (format.IsEmpty) { return string.Empty; }
+            if (format.StartsWith(":".AsSpan())) return string.Empty;
+            if (format.StartsWith(",".AsSpan())) return string.Empty;
+            if (format.IsEmpty) return string.Empty;
             return ":";
         }
     }

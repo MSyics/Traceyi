@@ -1,20 +1,19 @@
 ﻿using System.Collections.Generic;
 using System.Dynamic;
+using System.Text.Json.Serialization;
 
 namespace MSyics.Traceyi
 {
     internal sealed class DictionaryedDynamicObject : DynamicObject
     {
-        public readonly Dictionary<string, object> Items = new();
+        [JsonExtensionData]
+        public readonly Dictionary<string, object> Members = new();
 
-        public override bool TryGetMember(GetMemberBinder binder, out object result)
-        {
-            return Items.TryGetValue(binder.Name, out result);
-        }
+        public override bool TryGetMember(GetMemberBinder binder, out object result) => Members.TryGetValue(binder.Name, out result);
 
         public override bool TrySetMember(SetMemberBinder binder, object value)
         {
-            Items[binder.Name] = value;
+            Members[binder.Name] = value;
             return true;
         }
     }

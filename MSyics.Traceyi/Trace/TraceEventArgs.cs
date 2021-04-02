@@ -27,7 +27,7 @@ namespace MSyics.Traceyi
         }
         #endregion
 
-        readonly TraceScope scope;
+        private readonly TraceScope scope;
         private readonly Action<dynamic> extensions;
         private readonly object messageLayout;
 
@@ -136,7 +136,7 @@ namespace MSyics.Traceyi
                     }
                     catch (Exception ex)
                     {
-                        Debug.Print($"{ex}");
+                        Debug.WriteLine(ex.Message);
                         _message = messageLayout;
                     }
                 }
@@ -163,9 +163,9 @@ namespace MSyics.Traceyi
                     }
                     catch (Exception ex)
                     {
-                        Debug.Print($"{ex}");
+                        Debug.WriteLine(ex.Message);
                     }
-                    _extensions = obj.Items;
+                    _extensions = obj.Members;
                 }
                 return _extensions;
             }

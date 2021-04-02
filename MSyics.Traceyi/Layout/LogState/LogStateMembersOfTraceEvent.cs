@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace MSyics.Traceyi.Layout
 {
     /// <summary>
-    /// 記録データに使用するメンバーを表します。
+    /// トレースイベントの記録データに使用するメンバーを表します。
     /// </summary>
     [Flags]
-    public enum LogStateMembers
+    public enum LogStateMembersOfTraceEvent
     {
         Action = 1,
         Traced = 1 << 2,

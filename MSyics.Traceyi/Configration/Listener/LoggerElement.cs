@@ -50,8 +50,9 @@ namespace MSyics.Traceyi.Configration
                 {
                     return System.Text.Encoding.GetEncoding(codepage);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    Debug.WriteLine(ex.Message);
                     return System.Text.Encoding.Default;
                 }
             }
@@ -63,7 +64,7 @@ namespace MSyics.Traceyi.Configration
                 }
                 catch (Exception ex)
                 {
-                    Debug.Print($"{ex}");
+                    Debug.WriteLine(ex.Message);
                     return System.Text.Encoding.Default;
                 }
             }

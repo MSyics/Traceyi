@@ -8,10 +8,8 @@
     [ProviderAlias("Traceyi")]
     public class TraceyiLoggerProvider : ILoggerProvider
     {
-        /// <inheritdoc/>
         public ILogger CreateLogger(string categoryName) => new TraceyiLogger(Traceable.Get(categoryName));
 
-        /// <inheritdoc/>
         public void Dispose() => Traceable.Shutdown();
     }
 }

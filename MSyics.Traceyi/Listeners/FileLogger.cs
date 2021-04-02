@@ -129,22 +129,22 @@ namespace MSyics.Traceyi.Listeners
 
             void Write()
             {
-                Rotate(path);
-
                 try
                 {
-                    using var log = new BasicFileLogger(Streams.GetOrAdd(path), Encoding, Layout)
-                    {
-                        Name = Name,
-                        NewLine = NewLine,
-                    };
-
-                    log.WriteCore(e);
+                    Rotate(path);
                 }
                 catch (Exception ex)
                 {
-                    Debug.Print($"{ex}");
+                    Debug.WriteLine(ex.Message);
                 }
+
+                using var log = new BasicFileLogger(Streams.GetOrAdd(path), Encoding, Layout)
+                {
+                    Name = Name,
+                    NewLine = NewLine,
+                };
+
+                log.WriteCore(e);
             }
         }
 
@@ -153,28 +153,21 @@ namespace MSyics.Traceyi.Listeners
         /// </summary>
         private void Rotate(string path)
         {
-            if (MaxLength <= 0) { return; }
+            if (MaxLength <= 0) return;
 
             Streams.TryGetLength(path, out var length);
-            if (MaxLength > length) { return; }
+            if (MaxLength > length) return;
 
             Streams.Remove(path);
 
             var source = new FileInfo(path);
-            try
+            if (CanArchive)
             {
-                if (CanArchive)
-                {
-                    Archive(source);
-                }
-                else
-                {
-                    source.Delete();
-                }
+                Archive(source);
             }
-            catch (Exception ex)
+            else
             {
-                Debug.Print($"{ex}");
+                source.Delete();
             }
         }
 
@@ -197,7 +190,7 @@ namespace MSyics.Traceyi.Listeners
                 }
                 catch (Exception ex)
                 {
-                    Debug.Print($"{ex}");
+                    Debug.WriteLine(ex.Message);
                 }
             }
 
@@ -213,7 +206,7 @@ namespace MSyics.Traceyi.Listeners
                 }
                 catch (Exception ex)
                 {
-                    Debug.Print($"{ex}");
+                    Debug.WriteLine(ex.Message);
                 }
             }
 
@@ -253,7 +246,7 @@ namespace MSyics.Traceyi.Listeners
                 }
                 catch (Exception ex)
                 {
-                    Debug.Print($"{ex}");
+                    Debug.WriteLine(ex.Message);
                 }
 
                 return result;

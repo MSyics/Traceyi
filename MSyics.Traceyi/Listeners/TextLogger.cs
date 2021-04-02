@@ -1,10 +1,7 @@
 ﻿using MSyics.Traceyi.Layout;
 using System;
-using System.Diagnostics;
 using System.IO;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace MSyics.Traceyi.Listeners
 {
@@ -50,17 +47,14 @@ namespace MSyics.Traceyi.Listeners
             try
             {
                 var log = Layout.GetLog(e);
-                if (string.IsNullOrEmpty(log)) { return; }
+                if (string.IsNullOrEmpty(log)) return; 
+
                 TextWriter.WriteLine(log);
                 
             }
-            catch (FormatException)
-            {
-                TextWriter.WriteLine($"Can't write in because the layout is in the wrong format.");
-            }
             catch (Exception ex)
             {
-                TextWriter.WriteLine($"Can't write in.{NewLine}{ex}");
+                TextWriter.WriteLine(ex.Message);
             }
         }
 
@@ -74,11 +68,11 @@ namespace MSyics.Traceyi.Listeners
         /// </summary>
         public string NewLine
         {
-            get => TextWriter.NewLine;
+            get => TextWriter?.NewLine;
             set
             {
                 TextWriter.NewLine = value;
-
+                
                 if (Layout is LogLayout layout)
                 {
                     layout.NewLine = value;

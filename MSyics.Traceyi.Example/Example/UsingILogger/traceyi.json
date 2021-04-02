@@ -15,10 +15,10 @@
           "Encoding": "utf-8",
           "coloring": {
             "start": 0,
-            "length": 99999999
+            "length": 1
           },
           "Layout": {
-            "format": "{@[all]=>json}"
+            "format": "----------------{newLine}{activityId=>json}{newline}{extensions=>json,indent}{newline}{@[all]=>json,indent}"
           }
         },
         {
@@ -27,7 +27,7 @@
           "UseAsync": true,
           "Encoding": "utf-8",
           "Layout": {
-            "Format": "{@=>json}"
+            "Format": "{@=>json,indent}"
           }
         }
       ],

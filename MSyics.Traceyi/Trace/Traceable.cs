@@ -27,8 +27,8 @@ namespace MSyics.Traceyi
         /// <param name="name">取得する Tracer オブジェクトの名前</param>
         public static Tracer Get(string name = "")
         {
-            if (Tracers.TryGetValue(name.ToUpperInvariant(), out var value)) { return value; }
-            if (Tracers.TryGetValue("", out var @default)) { return @default; }
+            if (Tracers.TryGetValue(name.ToUpperInvariant(), out var value)) return value;
+            if (Tracers.TryGetValue("", out var @default)) return @default;
             return new Tracer();
         }
 
@@ -88,13 +88,13 @@ namespace MSyics.Traceyi
         /// <param name="usable">カスタムリスナーを登録することで構成情報からリスナーオブジェクトを取得できるようにします。</param>
         public static void Add(IConfiguration configuration, Action<ITraceListenerElementConfiguration> usable = null)
         {
-            if (configuration == null) { return; }
+            if (configuration == null) return;
 
             var tracerSection = configuration.GetSection("Traceyi:Tracer");
-            if (!tracerSection.Exists()) { return; }
+            if (!tracerSection.Exists()) return;
 
             var listenerSection = configuration.GetSection("Traceyi:Listener");
-            if (!listenerSection.Exists()) { return; }
+            if (!listenerSection.Exists()) return;
 
             usable?.Invoke(ListenerConfig);
 

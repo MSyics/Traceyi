@@ -34,7 +34,12 @@ namespace MSyics.Traceyi
 
         public override async Task ShowAsync()
         {
-            logger.GetContext().ActivityId = "あいうえお";
+
+            Hoge hoge = new() { Id = 100 };
+            hoge.Value = hoge;
+            Hoge a = new() { Id = 100 };
+
+            logger.GetContext().ActivityId = hoge;
             logger.LogInformation("hogehoge");
             using var _ = logger.BeginScope(label: "o000");
             using (logger.BeginScope(x =>
@@ -61,7 +66,6 @@ namespace MSyics.Traceyi
                         x.b = 2;
                         x.c = null;
                     });
-                    logger.LogInformation(new ApplicationException("hogehoge"));
 
                     try
                     {
@@ -69,31 +73,40 @@ namespace MSyics.Traceyi
                     }
                     catch (Exception ex)
                     {
-                        logger.LogError(ex);
                         logger.LogError(ex, "error");
                     }
 
-                    for (int i = 0; i < 10; i++)
+                    //for (int i = 0; i < 10; i++)
+                    //{
+                    //    logger.LogInformation("hogehoge");
+                    //}
+
+                    logger.LogError(x => x.hoge = hoge);
+                    logger.LogError(x => x.hoge = new[] { hoge });
+                    logger.LogError(x => x.hoge = new[] { 1, 2 });
+                    
+                    IDictionary<string, object> dic = new Dictionary<string, object>
                     {
-                        logger.LogInformation("hogehoge");
-                    }
-                    try
-                    {
-                        File.Open("hoge", FileMode.Open);
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.LogError(ex);
-                    }
-                    for (int i = 0; i < 10; i++)
-                    {
-                        logger.LogInformation("hogehoge");
-                    }
+                        ["hogehoge"] = 100
+                    };
+                    logger.GetContext().ActivityId = a;
+                    logger.LogError(x => x.hoge = null);
+
+                    var pi = typeof(Hoge).GetProperty(nameof(Hoge.Value));
+                    logger.GetContext().ActivityId = pi;
+                    logger.LogError(x => x.hoge = pi);
+
                 });
             }
 
 
             await Task.CompletedTask;
+        }
+
+        class Hoge
+        {
+            public int Id { get; set; }
+            public Hoge Value { get; set; }
         }
     }
 }
