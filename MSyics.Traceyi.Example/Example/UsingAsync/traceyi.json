@@ -25,7 +25,7 @@
           "MaxArchiveCount": 1,
           "Path": "app.log",
           "layout": {
-            "format": "{@=>json}"
+            "format": "{@}"
           }
         }
       ]

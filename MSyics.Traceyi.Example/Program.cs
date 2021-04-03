@@ -21,7 +21,7 @@ namespace MSyics.Traceyi
 
                 Add<UsingILogger>().
 
-                //Add<UsingAsync>().
+                Add<UsingAsync>().
                 //Add<UsingAsync>().
                 //Add<UsingAsync>().
 

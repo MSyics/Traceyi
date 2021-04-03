@@ -95,7 +95,7 @@ namespace MSyics.Traceyi
                     var pi = typeof(Hoge).GetProperty(nameof(Hoge.Value));
                     logger.GetContext().ActivityId = pi;
                     logger.LogError(x => x.hoge = pi);
-
+                    logger.LogError("{hoge}, {hoge2}", 100, 200);
                 });
             }
 

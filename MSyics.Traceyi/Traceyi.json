@@ -1,67 +1,68 @@
 ﻿{
   "Traceyi": {
+    // トレース動作のフィルター設定とリスナー登録
     "Tracer": [
-      // トレースする動作のフィルターを設定する。複数指定可。
-      // ................................................................
-      // Name   : filter 要素の名前
-      // Filter :
-      // Listeners :
-      // Filters : {TraceFilters}
-      //         None       : 無し
-      //         Trace      : トレース
-      //         Debug      : デバッグ
-      //         Info       : 通知
-      //         Warning    : 注意
-      //         Error      : エラー
-      //         Critical   : 重大
-      //         Start      : 開始
-      //         Stop       : 停止
-      //         Actions    : Info, Warning, Error, Critical, Start, Stop
-      //         All        : すべて
       {
+        // 要素の名前
         "Name": "",
+        // フィルター、カンマ区切りで複数設定可
+        //
+        // Trace    : トレース
+        // Debug    : デバッグ
+        // Info     : 通知
+        // Warning  : 注意
+        // Error    : エラー
+        // Critical : 重大
+        // Start    : 開始
+        // Stop     : 停止
+        // Actions  : Info, Warning, Error, Critical, Start, Stop
+        // All      : すべて
+        // None     : 無し
         "Filters": "All",
-        "Listeners": [ "console", "file" ]
-      },
-      {
-        "Name": "specific",
-        "Filters": "All",
+        // リスナー設定で指定した名前でリスナー登録
         "Listeners": [ "console", "file" ]
       }
     ],
+    // リスナー設定
     "Listener": {
+      // コンソール出力
       "Console": [
-        // コンソールに出力する
-        // ................................................................
-        // Name           : 要素の名前
-        // UseLock        : ロックをかけるかどうか（省略：false）
-        // UseAsync       : 非同期 I/O または同期 I/O のどちらを使用するか（省略：true）
-        // NewLine        : 改行文字（省略：\r\n）
-        // Encoding       : エンコーディング（省略：UTF-8）
-        // UseErrorStream : エラーストリームを使用するかどうか（省略：false）
         {
+          // 要素の名前
           "Name": "console",
-          "UseLock": true,
-          "UseAsync": false,
+          // 排他制御するかどうか（省略：false）
+          "UseLock": false,
+          // 非同期 I/O または同期 I/O のどちらを使用するか（省略：true）
+          "UseAsync": true,
+          // 改行文字（省略：\r\n）
           "NewLine": "\r\n",
-          "Encoding": "shift-jis",
+          // エンコーディング（省略：UTF-8）
+          "Encoding": "utf-8",
+          // 終了待機時間（省略：-1 ms）
+          "CloseTimeout": "00:00:01",
+          // エラーストリームを使用するかどうか（省略：false）
           "UseErrorStream": false,
           // 出力するログのレイアウトを指定する（省略可）
           // ................................................................
           // レイアウト項目
           //
-          // {tab}         : タブ
-          // {newLine}     : 改行
-          // {dateTime}    : DateTimeOffset 型
-          // {action}      : TraceAction 型
-          // {elapsed}     : TimeSpan 型
-          // {message}     : Object 型
-          // {activityId}  : Object 型
-          // {operationId} : Object 型
-          // {threadId}    : Int32 型
-          // {processId}   : Int32 型
-          // {processName} : String 型
-          // {machineName} : String 型
+          // {tab}           : タブ
+          // {newLine}       : 改行
+          // {traced}        : DateTimeOffset 型
+          // {action}        : TraceAction 型
+          // {elapsed}       : TimeSpan 型
+          // {message}       : Object 型
+          // {activityId}    : Object 型
+          // {scopeLabel}    : Object 型
+          // {scopeId}       : String 型
+          // {scopeParentId} : String 型
+          // {scopeDepth}    : Int32 型
+          // {threadId}      : Int32 型
+          // {processId}     : Int32 型
+          // {processName}   : String 型
+          // {machineName}   : String 型
+          // {extensions}    : IDictionary<string, object> 型
+          // {@}             : TraceEventArgs 型
           //
           // 書式設定
           // ................................................................
@@ -81,46 +82,84 @@
           //
           // {message|_, 20:R}
           // {threadId, 4:D4|_, 8:L}
+          //
+          // {@} TraceEventArgs 書式設定
+          // ................................................................
+          // 出力項目を指定可能（省略：all）
+          //
+          // {@[出力項目]}
+          // {@[all]}
+          // {@[action,traced,message]}
+          // 
+          // Action
+          // Traced
+          // Elapsed
+          // ActivityId
+          // ScopeLabel
+          // ScopeId
+          // ScopeParentId
+          // ScopeDepth
+          // ThreadId
+          // ProcessId
+          // ProcessName
+          // MachineName
+          // Message
+          // Extensions
+          // All
+          //
+          // JSON 書式設定
+          // ................................................................
+          // JSON 出力が可能
+          //
+          // {[項目名]=>json}
+          // {[項目名]=>json[,indent:自動整形]}
+          //
           "Layout": {
-            "Format": "{dateTime:O}{tab}{action}{tab}{elapsed:d\\.hh\\:mm\\:ss\\.fffffff}{tab}{operationId}{tab}{activityId}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}"
+            "Format": "{traced:O}{tab}{action}{tab}{elapsed:d\\.hh\\:mm\\:ss\\.fffffff}{tab}{scopeLabel}{tab}{activityId}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}"
+          },
+          // 文字色設定（省略可）
+          "coloring": {
+            // 着色開始位置（省略：0）
+            "start": 0,
+            // 着色文字数（省略：1）
+            "length": 10
           }
         }
       ],
+      // ファイル出力
       "File": [
-        // 指定した条件で新しいファイルに出力する
-        // ................................................................
-        // Path : パスを指定する。レイアウト指定可能（省略：[ApplicationName].log）
-        //
-        //   {dateTime}    : DateTimeOffset 型
-        //   {threadId}    : Int32 型
-        //   {processId}   : Int32 型
-        //   {processName} : String 型
-        //   {machineName} : String 型
-        //
-        // MaxLength       : ファイルの最大バイトサイズ（省略：0）
-        //                   0 以下の場合は最大長を無視
-        //                   このサイズを超えるときに新しいファイルを作成する
-        // MaxArchiveCount : 最大アーカイブ数（省略：10）
-        //                   0 以下の場合はアーカイブしない
-        //                   アーカイブファイルには連番が振られる
-        // UseMutex        : 複数プロセス（またはリスナー）から同じファイルへ書き込み場合に排他制御するかどうか（省略：false）
-        // KeepFilesOpen   : ファイルを開いたままにするかどうか
-        //                   複数プロセス（またはリスナー）から同一ファイルへ書き込む場合に開いたままだと MaxLength 処理ができないため
-        //                   MaxLength > 0 かつ UseMutex = true の場合は false に強制設定
         {
           "Name": "file",
+          // 出力先パス、レイアウト指定可能（省略：[ApplicationName].log）
+          //
+          // {dateTime}    : DateTimeOffset 型
+          // {threadId}    : Int32 型
+          // {processId}   : Int32 型
+          // {processName} : String 型
+          // {machineName} : String 型
+          //
+          "Path": "Test.log",
           "UseLock": false,
           "UseAsync": true,
+          // 複数プロセス（またはリスナー）から同じファイルへ書き込み場合に排他制御するかどうか（省略：false）
           "UseMutex": false,
+          // ファイルを開いたままにするかどうか
+          // 複数プロセス（またはリスナー）から同一ファイルへ書き込む場合に開いたままだと MaxLength 処理ができないため
+          // MaxLength > 0 かつ UseMutex = true の場合は false に強制設定
           "KeepFilesOpen": true,
+          // ファイルの最大バイトサイズ（省略：0）
+          // 0 以下の場合は最大長を無視
+          // このサイズを超えるときに新しいファイルを作成する
+          "MaxLength": 0,
+          // 最大アーカイブ数（省略：10）
+          // 0 以下の場合はアーカイブしない
+          // アーカイブファイルには連番が振られる
+          "MaxArchiveCount": 10,
           "CloseTimeout": "00:00:01",
           "NewLine": "\r\n",
           "Encoding": "utf-8",
-          "Path": "Test.log",
-          "MaxLength": 0,
-          "MaxArchiveCount": 10,
           "Layout": {
-            "Format": "{dateTime}{tab}{message}"
+            "Format": "{traced}{tab}{message}"
           }
         }
       ]

@@ -24,6 +24,5 @@ namespace MSyics.Traceyi.Layout
         Extensions = 1 << 14,
 
         All = Action | Traced | Elapsed | ActivityId | ScopeLabel | ScopeId | ScopeParentId | ScopeDepth | ThreadId | ProcessId | ProcessName | MachineName | Message | Extensions,
-        None = 1 << 100,
     }
 }

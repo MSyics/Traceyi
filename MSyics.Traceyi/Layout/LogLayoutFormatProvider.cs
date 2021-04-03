@@ -24,6 +24,7 @@ namespace MSyics.Traceyi.Layout
         public static readonly string SerializeFormatSpecifier = "=>";
         public static readonly string JsonFormatSpecifier = "JSON";
         public static readonly string IndentSpecifier = "INDENT";
+        static readonly ILogStateBuilder logStateBuilder = new LogStateBuilder();
         static readonly JsonSerializerOptions IndentedOptions;
         static readonly JsonSerializerOptions NotIndentedOptions;
 
@@ -57,21 +58,17 @@ namespace MSyics.Traceyi.Layout
         /// <param name="arg">書式指定するオブジェクト。</param>
         private static string Format(string format, object arg)
         {
-            if (arg == null)
-            {
-                return string.Empty;
-            }
+            if (arg == null) return string.Empty;
 
-            if (arg is IFormattable formattable)
+            return arg switch
             {
-                return formattable.ToString(format, CultureInfo.CurrentCulture);
-            }
-
-            return arg.ToString();
+                IFormattable formattable => formattable.ToString(format, CultureInfo.CurrentCulture),
+                TraceEventArgs e => logStateBuilder.SetEvent(e).Build().ToString(),
+                IDictionary<string, object> keyValuePairs => logStateBuilder.SetExtensions(keyValuePairs).Build().ToString(),
+                _ => arg.ToString(),
+            };
         }
         #endregion
-
-        private readonly ILogStateBuilder logStateBuilder = new LogStateBuilder();
 
         #region IFormatProvider Members
         /// <summary>
@@ -103,6 +100,11 @@ namespace MSyics.Traceyi.Layout
             if (format.Contains(CustomFormatSpecifier))
             {
                 return ByCustom(format, arg);
+            }
+
+            if (arg is TraceEventArgs e)
+            {
+                return logStateBuilder.SetEvent(e, GetLogStateMembersOfTraceEvent(format.AsSpan())).Build().ToString();
             }
 
             return Format(format, arg);
@@ -213,25 +215,7 @@ namespace MSyics.Traceyi.Layout
         {
             if (arg is TraceEventArgs e)
             {
-                LogStateMembersOfTraceEvent members = LogStateMembersOfTraceEvent.All;
-
-                // TODO: cache
-                var startIndex = left.IndexOf('[');
-                if (startIndex >= 0)
-                {
-                    var endIndex = left.LastIndexOf(']');
-#if NETCOREAPP
-                    var value = (endIndex == -1 ? left[startIndex..] : left[startIndex..endIndex]);
-#else
-                    var value = (endIndex == -1 ? left.Slice(startIndex) : left.Slice(startIndex, endIndex - startIndex));
-#endif
-                    if (Enum.TryParse<LogStateMembersOfTraceEvent>(value.TrimStart('[').TrimEnd(']').ToString(), true, out var result))
-                    {
-                        members = result;
-                    }
-                }
-
-                arg = logStateBuilder.SetEvent(e, members).Build();
+                arg = logStateBuilder.SetEvent(e, GetLogStateMembersOfTraceEvent(left)).Build();
                 if (arg is null)
                 {
                     return Format(format, arg);
@@ -253,5 +237,27 @@ namespace MSyics.Traceyi.Layout
             }
         }
 
+        private LogStateMembersOfTraceEvent GetLogStateMembersOfTraceEvent(ReadOnlySpan<char> span)
+        {
+            LogStateMembersOfTraceEvent members = LogStateMembersOfTraceEvent.All;
+
+            // TODO: cache
+            var startIndex = span.IndexOf('[');
+            if (startIndex >= 0)
+            {
+                var endIndex = span.LastIndexOf(']');
+#if NETCOREAPP
+                var value = (endIndex == -1 ? span[startIndex..] : span[startIndex..endIndex]);
+#else
+                var value = (endIndex == -1 ? span.Slice(startIndex) : span.Slice(startIndex, endIndex - startIndex));
+#endif
+                if (Enum.TryParse<LogStateMembersOfTraceEvent>(value.TrimStart('[').TrimEnd(']').ToString(), true, out var result))
+                {
+                    members = result;
+                }
+            }
+
+            return members;
+        }
     }
 }
