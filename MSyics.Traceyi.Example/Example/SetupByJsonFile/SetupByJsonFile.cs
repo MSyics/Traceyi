@@ -1,8 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace MSyics.Traceyi
 {
@@ -18,7 +14,7 @@ namespace MSyics.Traceyi
 
         public override Task ShowAsync()
         {
-            using (Tracer.Scope())
+            using (Tracer.Scope(label: Name))
             {
                 Tracer.Information(Name);
             }

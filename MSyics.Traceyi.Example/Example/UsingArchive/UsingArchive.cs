@@ -1,11 +1,5 @@
-﻿using MSyics.Traceyi.Layout;
-using MSyics.Traceyi.Listeners;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace MSyics.Traceyi
@@ -22,7 +16,7 @@ namespace MSyics.Traceyi
         }
 
         Tracer SecondTracer;
-        readonly Stopwatch sw = new Stopwatch();
+        readonly Stopwatch sw = new();
 
         public override async Task ShowAsync()
         {
@@ -41,7 +35,6 @@ namespace MSyics.Traceyi
                             await Task.WhenAll(
                                 Task.Run(() => Tracer.Information("test")),
                                 Task.Run(() => SecondTracer.Debug("test")));
-                            //await Task.Delay(1);
                         }
                     }
                 }

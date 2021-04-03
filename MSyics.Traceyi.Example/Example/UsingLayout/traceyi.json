@@ -10,7 +10,7 @@
       "Console": [
         {
           "Name": "console",
-          "UseLock": false,
+          "UseLock": true,
           "UseAsync": true
         }
       ]

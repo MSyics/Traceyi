@@ -9,9 +9,7 @@
     "Listener": {
       "Console": [
         {
-          "Name": "console",
-          "UseLock": true,
-          "UseAsync": false
+          "Name": "console"
         }
       ]
     }

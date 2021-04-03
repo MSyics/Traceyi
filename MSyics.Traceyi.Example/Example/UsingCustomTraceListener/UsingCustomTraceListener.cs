@@ -1,9 +1,6 @@
 ﻿using MSyics.Traceyi.Configration;
-using MSyics.Traceyi.Layout;
 using MSyics.Traceyi.Listeners;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MSyics.Traceyi
@@ -21,7 +18,10 @@ namespace MSyics.Traceyi
 
         public override Task ShowAsync()
         {
-            Tracer.Information(Name);
+            using (Tracer.Scope(label: Name))
+            {
+                Tracer.Information(Name);
+            }
 
             return Task.CompletedTask;
         }
@@ -34,26 +34,28 @@ namespace MSyics.Traceyi
 
     class CustomElement : TraceListenerElement
     {
+        public int Value { get; set; }
+
         public override ITraceListener GetRuntimeObject()
         {
-            return new CustomTraceListener();
+            return new CustomTraceListener
+            {
+                Value = Value,
+            };
         }
     }
 
     class CustomTraceListener : ITraceListener
     {
-        public void Dispose()
-        {
-        }
+        public int Value { get; set; }
 
         public void OnTracing(object sender, TraceEventArgs e)
         {
-            Console.WriteLine(e.Message);
+            Console.WriteLine($"{e.Action} {e.Message} {Value}");
         }
 
-        public void OnTracing(TraceEventArgs e)
+        public void Dispose()
         {
-            Console.WriteLine(e.Message);
         }
     }
 }

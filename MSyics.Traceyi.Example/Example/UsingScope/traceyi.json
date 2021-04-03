@@ -9,19 +9,7 @@
     "Listener": {
       "Console": [
         {
-          "Name": "console",
-          "UseLock": false,
-          "UseAsync": true
-        }
-      ],
-      "File": [
-        {
-          "Name": "file",
-          "UseLock": true,
-          "UseAsync": true,
-          "MaxLength": 5242880,
-          "LeaveFiles": false,
-          "Path": "app.log"
+          "Name": "console"
         }
       ]
     }

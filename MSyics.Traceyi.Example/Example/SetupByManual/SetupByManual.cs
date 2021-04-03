@@ -1,8 +1,5 @@
-﻿using MSyics.Traceyi.Layout;
-using MSyics.Traceyi.Listeners;
+﻿using MSyics.Traceyi.Listeners;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MSyics.Traceyi
@@ -16,14 +13,15 @@ namespace MSyics.Traceyi
             Traceable.Add(
                 name: Name,
                 filters: TraceFilters.All,
-                listeners: x => Console.WriteLine(x));
+                new ActionTraceListener(e => Console.WriteLine($"{e.Action} {e.Message} {e.Elapsed}")),
+                new ConsoleLogger());
 
             Tracer = Traceable.Get(Name);
         }
 
         public override Task ShowAsync()
         {
-            using (Tracer.Scope())
+            using (Tracer.Scope(label: Name))
             {
                 Tracer.Information(Name);
             }

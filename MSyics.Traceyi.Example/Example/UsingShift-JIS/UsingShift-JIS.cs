@@ -1,7 +1,4 @@
-﻿using MSyics.Traceyi.Layout;
-using MSyics.Traceyi.Listeners;
-using System;
-using System.Collections.Generic;
+﻿using MSyics.Traceyi.Listeners;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,7 +17,6 @@ namespace MSyics.Traceyi
                 listeners: new ConsoleLogger()
                 {
                     Encoding = Encoding.GetEncoding("Shift-JIS"),
-                    Layout = new LogLayout("{message}"),
                 });
 
             Tracer = Traceable.Get();
@@ -28,8 +24,11 @@ namespace MSyics.Traceyi
 
         public override Task ShowAsync()
         {
-            Tracer.Information("UsingShiftJIS ほげほげ");
-            Tracer.Information("UsingShiftJIS ほげほげ");
+            using (Tracer.Scope(label: Name))
+            {
+                Tracer.Information("UsingShiftJIS ほげほげ");
+                Tracer.Information("UsingShiftJIS ほげほげ");
+            }
 
             return Task.CompletedTask;
         }

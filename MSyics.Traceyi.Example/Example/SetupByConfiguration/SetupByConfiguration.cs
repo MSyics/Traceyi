@@ -1,8 +1,5 @@
 ﻿using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace MSyics.Traceyi
@@ -13,16 +10,17 @@ namespace MSyics.Traceyi
 
         public override void Setup()
         {
-            Traceable.Add(
-                new ConfigurationBuilder().
+            var configuration = new ConfigurationBuilder().
                 SetBasePath(Directory.GetCurrentDirectory()).
-                AddJsonFile(@"Example\SetupByConfiguration\traceyi.json", false, true).Build());
+                AddJsonFile(@"Example\SetupByConfiguration\traceyi.json", false, true).
+                Build();
+            Traceable.Add(configuration);
             Tracer = Traceable.Get();
         }
 
         public override Task ShowAsync()
         {
-            using (Tracer.Scope())
+            using (Tracer.Scope(label: Name))
             {
                 Tracer.Information(Name);
             }

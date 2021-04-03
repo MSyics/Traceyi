@@ -1,10 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using MSyics.Traceyi.Layout;
-using MSyics.Traceyi.Listeners;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 
 namespace MSyics.Traceyi
 {
@@ -12,15 +6,10 @@ namespace MSyics.Traceyi
     {
         public override string Name => nameof(UsingExtensions);
 
-        private ILogger logger;
-
         public override void Setup()
         {
-            logger = LoggerFactory.Create(x =>
-            {
-                x.ClearProviders();
-                x.AddTraceyi(@"Example\UsingExtensions\traceyi.json");
-            }).CreateLogger<UsingExtensions>();
+            Traceable.Add(@"example\UsingExtensions\traceyi.json");
+            Tracer = Traceable.Get();
         }
 
         public override void Teardown()
@@ -30,10 +19,14 @@ namespace MSyics.Traceyi
 
         public override Task ShowAsync()
         {
-            using (logger.BeginScope("{operationId}", nameof(ShowAsync)))
+            using var scope = Tracer.Scope("test:{test}", x =>
             {
-                logger.LogInformation("test {test}", 100);
-            }
+                x.test = "start";
+            },
+            label: Name);
+            
+            Tracer.Information("test:{test}", x => x.test = "info");
+            scope.Stop("test:{test}", x => x.test = "stop");
 
             return Task.CompletedTask;
         }

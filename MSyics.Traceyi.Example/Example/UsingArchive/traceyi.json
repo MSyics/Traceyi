@@ -28,7 +28,7 @@
           "KeepFilesOpen": true,
           "MaxLength": 10240,
           "MaxArchiveCount": 10000,
-          "Path": "C:\\TraceyiTest\\app.log"
+          "Path": "UsingArchive\\app.log"
         },
         {
           "Name": "file2",
@@ -38,7 +38,7 @@
           "KeepFilesOpen": true,
           "MaxLength": 10240,
           "MaxArchiveCount": 10000,
-          "Path": "C:\\TraceyiTest\\app.log"
+          "Path": "UsingArchive\\app.log"
         }
       ]
     }

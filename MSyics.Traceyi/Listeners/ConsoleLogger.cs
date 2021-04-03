@@ -1,8 +1,5 @@
 ﻿using MSyics.Traceyi.Layout;
 using System;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace MSyics.Traceyi.Listeners
 {
@@ -12,36 +9,26 @@ namespace MSyics.Traceyi.Listeners
     public class ConsoleLogger : TextLogger
     {
         readonly ConsoleColor defaultColor = Console.ForegroundColor;
-        readonly bool useErrorStream = false;
 
         /// <summary>
         /// クラスのインスタンスを初期化します。
         /// </summary>
-        /// <param name="useErrorStream">標準出力ストリームと標準エラーストリームのどちらを使うかを示す値</param>
         /// <param name="layout">レイアウト</param>
-        public ConsoleLogger(bool useErrorStream, ILogLayout layout)
-            : base(System.IO.TextWriter.Null, layout)
+        public ConsoleLogger(ILogLayout layout) : base(System.IO.TextWriter.Null, layout)
         {
-            this.useErrorStream = useErrorStream;
         }
 
         /// <summary>
         /// クラスのインスタンスを初期化します。
         /// </summary>
-        /// <param name="useErrorStream">標準出力ストリームと標準エラーストリームのどちらを使うかを示す値</param>
-        public ConsoleLogger(bool useErrorStream)
-            : base(System.IO.TextWriter.Null)
+        public ConsoleLogger() : base(System.IO.TextWriter.Null)
         {
-            this.useErrorStream = useErrorStream;
         }
 
         /// <summary>
-        /// クラスのインスタンスを初期化します。
+        /// 標準出力ストリームと標準エラーストリームのどちらを使うかを示す値を取得または設定します。
         /// </summary>
-        public ConsoleLogger()
-            : this(false)
-        {
-        }
+        public bool UseErrorStream { get; set; }
 
         /// <summary>
         /// 文字の着色位置を取得または設定します。
@@ -108,7 +95,7 @@ namespace MSyics.Traceyi.Listeners
             if (string.IsNullOrEmpty(log)) return;
 
             Console.OutputEncoding = Encoding;
-            TextWriter = useErrorStream ? Console.Error : Console.Out;
+            TextWriter = UseErrorStream ? Console.Error : Console.Out;
 
             var span = log.AsSpan();
             if (!TryGetColoringSettings(span, out var start, out var length, out var toLast))

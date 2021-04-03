@@ -9,12 +9,7 @@
     "Listener": {
       "Console": [
         {
-          "Name": "console",
-          "UseLock": false,
-          "UseAsync": false,
-          "Layout": {
-            "Format": "{dateTime:yyyy/MM/dd}{tab}{dateTime:HH:mm:ss.ffff}{tab}{action}{tab}{elapsed:d\\.hh\\:mm\\:ss\\.fffffff}{tab}{scopeLabel}{tab}{eventId}{tab}{eventName}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}"
-          }
+          "Name": "console"
         }
       ]
     }

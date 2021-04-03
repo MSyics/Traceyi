@@ -33,7 +33,7 @@
     <None Update="Example\UsingILogger\traceyi.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Example\UsingTest\traceyi.json">
+    <None Update="Example\UsingLayout\traceyi.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Example\UsingTraceMethod\traceyi.json">

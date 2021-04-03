@@ -2,7 +2,7 @@
   "Traceyi": {
     "Tracer": [
       {
-        "Listeners": [ "console", "console22", "file" ],
+        "Listeners": [ "console" ],
         "Filters": "all"
       }
     ],
@@ -18,34 +18,7 @@
             "length": 10
           },
           "Layout": {
-            //"format": "----------------{newLine}{activityId=>json}{newline}{extensions=>json,indent}{newline}{@=>json,indent}"
-            //"format": "{@=>json,indent}"
-            //"format": "{@[extensions]}"
-            "format": "{@[]}"
-          }
-        },
-        {
-          "Name": "console2",
-          "UseLock": true,
-          "UseAsync": true,
-          "Encoding": "utf-8",
-          "Layout": {
-            "Format": "{@=>json,indent}"
-          }
-        }
-      ],
-      "File": [
-        {
-          "Name": "file",
-          "UseLock": false,
-          "UseAsync": true,
-          "UseMutex": false,
-          "KeepFilesOpen": true,
-          "MaxLength": 25000000,
-          "MaxArchiveCount": 1,
-          "Path": "UsingILogger\\app_{processName}.log",
-          "Layout": {
-            "format": "{action}{tab}{@[message]=>json,indent}"
+            "format": "{@=>json,indent}"
           }
         }
       ]

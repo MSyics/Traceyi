@@ -3,9 +3,12 @@ using System;
 
 namespace MSyics.Traceyi
 {
-    internal class ActionTraceListener : ITraceListener
+    /// <summary>
+    /// 
+    /// </summary>
+    public class ActionTraceListener : ITraceListener
     {
-        public Action<TraceEventArgs> Listener { get; set; } = _ => { };
+        private Action<TraceEventArgs> Listener { get; set; } = _ => { };
 
         public ActionTraceListener(Action<TraceEventArgs> listener) => Listener = listener;
 
