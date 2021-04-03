@@ -126,7 +126,11 @@ namespace MSyics.Traceyi
             for (int i = digit; i > 0; i--)
             {
                 var pow = (int)Math.Pow(digit, i - 1);
+#if NETCOREAPP
+                bytes[^i] = (byte)(index / pow);
+#else
                 bytes[bytes.Length - i] = (byte)(index / pow);
+#endif
                 index %= pow;
             }
 

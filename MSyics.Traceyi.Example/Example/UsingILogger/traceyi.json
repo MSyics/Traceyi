@@ -18,7 +18,8 @@
             "length": 1
           },
           "Layout": {
-            "format": "----------------{newLine}{activityId=>json}{newline}{extensions=>json,indent}{newline}{@[all]=>json,indent}"
+            //"format": "----------------{newLine}{activityId=>json}{newline}{extensions=>json,indent}{newline}{@=>json,indent}"
+            "format": "{@=>json,indent}"
           }
         },
         {

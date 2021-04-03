@@ -109,7 +109,6 @@
             }
         }
 
-
         private static bool GetKey(ReadOnlySpan<char> format, out string key)
         {
             var length = format.IndexOf("=>".AsSpan());
