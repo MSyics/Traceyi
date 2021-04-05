@@ -30,6 +30,8 @@
         {
           // 要素の名前
           "Name": "console",
+          // 同時実行数
+          "Concurrency": 1,
           // 排他制御するかどうか（省略：false）
           "UseLock": false,
           // 非同期 I/O または同期 I/O のどちらを使用するか（省略：true）
@@ -130,6 +132,7 @@
       "File": [
         {
           "Name": "file",
+          "Concurrency": 1,
           // 出力先パス、レイアウト指定可能（省略：[ApplicationName].log）
           //
           // {dateTime}    : DateTimeOffset 型

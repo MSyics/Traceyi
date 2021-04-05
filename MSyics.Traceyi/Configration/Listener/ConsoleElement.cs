@@ -21,7 +21,7 @@ namespace MSyics.Traceyi.Configration
         /// 実行オブジェクトを取得します。
         /// </summary>
         public override ITraceListener GetRuntimeObject() =>
-             new ConsoleLogger(Layout.GetRuntimeObject())
+             new ConsoleLogger(Layout.GetRuntimeObject(), Concurrency)
              {
                  Name = Name,
                  NewLine = NewLine,

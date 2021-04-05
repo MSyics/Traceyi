@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 
 namespace MSyics.Traceyi.Listeners
 {
@@ -22,7 +23,8 @@ namespace MSyics.Traceyi.Listeners
         /// <summary>
         /// クラスのインスタンスを初期化します。
         /// </summary>
-        public FileLogger(ILogLayout layout, string path = null, bool useMutex = false, bool keepFilesOpen = true)
+        public FileLogger(ILogLayout layout, string path = null, bool useMutex = false, bool keepFilesOpen = true, int concurrency = 1) : 
+            base(concurrency)
         {
             Layout = layout;
             Path = string.IsNullOrWhiteSpace(path) ? $"{System.IO.Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName)}.log" : path;
@@ -45,8 +47,8 @@ namespace MSyics.Traceyi.Listeners
         /// <summary>
         /// クラスのインスタンスを初期化します。
         /// </summary>
-        public FileLogger(string path = null, bool useMutex = false, bool keepFilesOpen = true)
-            : this(new LogLayout(), path, useMutex, keepFilesOpen)
+        public FileLogger(string path = null, bool useMutex = false, bool keepFilesOpen = true, int concurrency = 1) :
+            this(new LogLayout(), path, useMutex, keepFilesOpen, concurrency)
         {
         }
 
@@ -84,8 +86,8 @@ namespace MSyics.Traceyi.Listeners
             var path = string.Format(
                 formatProvider,
                 FormattedPath,
-                e.Traced,
-                e.ThreadId,
+                DateTimeOffset.Now,
+                Thread.CurrentThread.ManagedThreadId,
                 e.ProcessId,
                 e.ProcessName,
                 e.MachineName);
@@ -138,13 +140,23 @@ namespace MSyics.Traceyi.Listeners
                     Debug.WriteLine(ex.Message);
                 }
 
-                using var log = new BasicFileLogger(Streams.GetOrAdd(path), Encoding, Layout)
+                using var writer = new StreamWriter(Streams.GetOrAdd(path), Encoding)
                 {
-                    Name = Name,
+                    AutoFlush = true,
                     NewLine = NewLine,
                 };
 
-                log.WriteCore(e);
+                try
+                {
+                    var log = Layout.GetLog(e);
+                    if (string.IsNullOrEmpty(log)) return;
+
+                    writer.WriteLine(log);
+                }
+                catch (Exception ex)
+                {
+                    writer.WriteLine(ex.Message);
+                }
             }
         }
 

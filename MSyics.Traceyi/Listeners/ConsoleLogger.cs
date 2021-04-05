@@ -14,7 +14,8 @@ namespace MSyics.Traceyi.Listeners
         /// クラスのインスタンスを初期化します。
         /// </summary>
         /// <param name="layout">レイアウト</param>
-        public ConsoleLogger(ILogLayout layout) : base(System.IO.TextWriter.Null, layout)
+        /// <param name="concurrency">同時実行数</param>
+        public ConsoleLogger(ILogLayout layout, int concurrency = 1) : base(System.IO.TextWriter.Null, layout, concurrency)
         {
         }
 

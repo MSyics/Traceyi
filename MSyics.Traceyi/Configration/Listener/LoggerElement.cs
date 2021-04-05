@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Text;
+using System.Threading;
 
 namespace MSyics.Traceyi.Configration
 {
@@ -22,7 +23,7 @@ namespace MSyics.Traceyi.Configration
         /// <summary>
         /// 終了を待機する時間間隔を取得または設定します。
         /// </summary>
-        public TimeSpan CloseTimeout { get; set; } = TimeSpan.FromMilliseconds(-1);
+        public TimeSpan CloseTimeout { get; set; } = Timeout.InfiniteTimeSpan;
 
         /// <summary>
         /// 改行文字を取得または設定します。

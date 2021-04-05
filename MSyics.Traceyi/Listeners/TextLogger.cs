@@ -13,7 +13,7 @@ namespace MSyics.Traceyi.Listeners
         /// <summary>
         /// TextWriter クラスのインスタンスを初期化します。
         /// </summary>
-        public TextLogger(TextWriter writer, ILogLayout layout)
+        public TextLogger(TextWriter writer, ILogLayout layout, int concurrency = 1) : base(concurrency)
         {
             TextWriter = writer;
             Layout = layout;
@@ -47,10 +47,10 @@ namespace MSyics.Traceyi.Listeners
             try
             {
                 var log = Layout.GetLog(e);
-                if (string.IsNullOrEmpty(log)) return; 
+                if (string.IsNullOrEmpty(log)) return;
 
                 TextWriter.WriteLine(log);
-                
+
             }
             catch (Exception ex)
             {
@@ -72,7 +72,7 @@ namespace MSyics.Traceyi.Listeners
             set
             {
                 TextWriter.NewLine = value;
-                
+
                 if (Layout is LogLayout layout)
                 {
                     layout.NewLine = value;
