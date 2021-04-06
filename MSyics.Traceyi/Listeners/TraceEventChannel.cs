@@ -16,10 +16,10 @@ namespace MSyics.Traceyi.Listeners
         readonly List<Task> consumers = new();
         readonly Action<TraceEventArgs, int> consume;
 
-        public TraceEventChannel(Action<TraceEventArgs, int> consume, int concurrency = 1)
+        public TraceEventChannel(Action<TraceEventArgs, int> consume, int divide = 1)
         {
             this.consume = consume;
-            readers.AddRange(GetReaders(channel.Reader, concurrency));
+            readers.AddRange(Split(channel.Reader, divide));
             consumers.AddRange(readers.Select(reader => ReadAsync(reader)));
         }
 
@@ -41,9 +41,9 @@ namespace MSyics.Traceyi.Listeners
             cts.Dispose();
         }
 
-        private ChannelReader<(TraceEventArgs, int)>[] GetReaders(ChannelReader<TraceEventArgs> reader, int concurrency)
+        private ChannelReader<(TraceEventArgs, int)>[] Split(ChannelReader<TraceEventArgs> reader, int divide)
         {
-            var channels = Enumerable.Range(1, Math.Max(1, concurrency)).Select(i => Channel.CreateUnbounded<(TraceEventArgs, int)>()).ToArray();
+            var channels = Enumerable.Range(1, Math.Max(1, divide)).Select(i => Channel.CreateUnbounded<(TraceEventArgs, int)>()).ToArray();
 
             Task.Run(async () =>
             {
@@ -52,8 +52,9 @@ namespace MSyics.Traceyi.Listeners
                 {
                     while (reader.TryRead(out var item))
                     {
-                        index = (index + 1) % concurrency;
+                        if (cts.IsCancellationRequested) return;
                         await channels[index].Writer.WriteAsync((item, index));
+                        index = (index + 1) % divide;
                     }
                 }
 

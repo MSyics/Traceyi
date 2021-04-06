@@ -36,7 +36,7 @@ namespace MSyics.Traceyi.Configration
         /// 実行オブジェクトを取得します。
         /// </summary>
         public override ITraceEventListener GetRuntimeObject() =>
-            new FileLogger(Path, UseLock, UseAsync, Concurrency, UseMutex, KeepFilesOpen)
+            new FileLogger(Path, UseLock, UseAsync, Divide, UseMutex, KeepFilesOpen)
             {
                 Encoding = GetEncoding(),
                 Layout = Layout.GetRuntimeObject(),

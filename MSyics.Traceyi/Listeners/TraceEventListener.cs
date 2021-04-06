@@ -17,13 +17,13 @@ namespace MSyics.Traceyi.Listeners
         private readonly CancellationTokenSource cts = new();
         private readonly TraceEventChannel channel;
 
-        public TraceEventListener(bool useLock = false, bool useAsync = true,  int concurrency = 1)
+        public TraceEventListener(bool useLock = false, bool useAsync = true,  int divide = 1)
         {
             UseLock = useLock;
             UseAsync = useAsync;
             if (UseAsync)
             {
-                channel = new(Write, concurrency);
+                channel = new(Write, divide);
             }
         }
 
@@ -38,9 +38,9 @@ namespace MSyics.Traceyi.Listeners
         public bool UseAsync { get; private set; } = true;
 
         /// <summary>
-        /// 受信イベントの並列処理数を取得します。
+        /// 受信イベントの処理分割数を取得します。
         /// </summary>
-        public int Concurrency { get; private set; } = 1;
+        public int Divide { get; private set; } = 1;
 
         /// <summary>
         /// 終了を待機する時間間隔を取得または設定します。

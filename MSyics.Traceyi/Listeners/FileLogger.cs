@@ -23,8 +23,8 @@ namespace MSyics.Traceyi.Listeners
         /// <summary>
         /// クラスのインスタンスを初期化します。
         /// </summary>
-        public FileLogger(ILogLayout layout, string path = null, bool useLock = false, bool useAsync = true, int concurrency = 1, bool useMutex = false, bool keepFilesOpen = true) :
-            base(TextWriter.Null, layout, useLock, useAsync, concurrency)
+        public FileLogger(ILogLayout layout, string path = null, bool useLock = false, bool useAsync = true, int divide = 1, bool useMutex = false, bool keepFilesOpen = true) :
+            base(TextWriter.Null, layout, useLock, useAsync, divide)
         {
             Path = string.IsNullOrWhiteSpace(path) ? $"{System.IO.Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName)}.log" : path;
             FormattedPath = CreateFormattedPath();
@@ -46,8 +46,8 @@ namespace MSyics.Traceyi.Listeners
         /// <summary>
         /// クラスのインスタンスを初期化します。
         /// </summary>
-        public FileLogger(string path = null, bool useLock = false, bool useAsync = true, int concurrency = 1, bool useMutex = false, bool keepFilesOpen = true) :
-            this(new LogLayout(), path, useLock, useAsync, concurrency, useMutex, keepFilesOpen)
+        public FileLogger(string path = null, bool useLock = false, bool useAsync = true, int divide = 1, bool useMutex = false, bool keepFilesOpen = true) :
+            this(new LogLayout(), path, useLock, useAsync, divide, useMutex, keepFilesOpen)
         {
         }
 

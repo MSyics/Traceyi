@@ -20,9 +20,9 @@ namespace MSyics.Traceyi.Configration
         public bool UseAsync { get; set; } = true;
 
         /// <summary>
-        /// 受信イベントの並列処理数を取得または設定します。
+        /// 受信イベントの処理分割数を取得または設定します。
         /// </summary>
-        public int Concurrency { get; set; } = 1;
+        public int Divide { get; set; } = 1;
 
         /// <summary>
         /// 終了を待機する時間間隔を取得または設定します。

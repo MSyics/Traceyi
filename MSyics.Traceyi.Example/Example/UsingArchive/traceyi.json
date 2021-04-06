@@ -20,7 +20,7 @@
       "File": [
         {
           "Name": "file",
-          "Concurrency": 2,
+          "Divide": 2,
           "UseLock": false,
           "UseAsync": true,
           "UseMutex": true,
@@ -31,7 +31,7 @@
         },
         {
           "Name": "file2",
-          "Concurrency": 2,
+          "Divide": 2,
           "UseLock": false,
           "UseAsync": true,
           "UseMutex": true,

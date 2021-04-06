@@ -130,8 +130,8 @@
           "UseLock": false,
           // 非同期 I/O または同期 I/O のどちらを使用するか（省略：true）
           "UseAsync": true,
-          // 受信イベントの並列処理数
-          "Concurrency": 1,
+          // 出力分割数
+          "Divide": 1,
           // 出力先パス、レイアウト指定可能（省略：[ApplicationName].log）
           //
           // {dateTime}    : DateTimeOffset 型
@@ -139,7 +139,7 @@
           // {processId}   : Int32 型
           // {processName} : String 型
           // {machineName} : String 型
-          // {index}       : Int32 型、 並列処理インデックス
+          // {index}       : Int32 型、 出力分割インデックス
           //
           "Path": "Test.log",
           // 複数プロセス（またはリスナー）から同じファイルへ書き込み場合に排他制御するかどうか（省略：false）

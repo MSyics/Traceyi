@@ -44,7 +44,7 @@ namespace MSyics.Traceyi
             sw.Start();
             using (logger.BeginScope())
             {
-                await Task.WhenAll(Enumerable.Range(1, 100).Select(i =>
+                await Task.WhenAll(Enumerable.Range(1, 1000).Select(i =>
                 {
                     return Test(10);
                 }));
@@ -83,7 +83,7 @@ namespace MSyics.Traceyi
             DataSource = "using_test.db",
             JournalMode = SQLiteJournalModeEnum.Wal,
             SyncMode = SynchronizationModes.Off,
-            //Pooling = true,
+            Pooling = true,
         };
 
         private DbConnection OpenDbConnection()
@@ -93,7 +93,9 @@ namespace MSyics.Traceyi
             return cnn;
         }
 
-        public HogeLogger() : base(useLock: false, concurrency: 10)
+        readonly DbConnection[] cnns;
+
+        public HogeLogger() : base(useLock: false, useAsync: true, divide: 1)
         {
             using var cnn = OpenDbConnection();
             using var cmd = cnn.CreateCommand();
@@ -107,11 +109,13 @@ namespace MSyics.Traceyi
                 ",elapsed TEXT" +
                 ")";
             cmd.ExecuteNonQuery();
+
+            cnns = Enumerable.Range(1, 5).Select(i => OpenDbConnection()).ToArray();
         }
 
         protected override void WriteCore(TraceEventArgs e, int index)
         {
-            using var cnn = OpenDbConnection();
+            var cnn = cnns[index];
             using var trn = cnn.BeginTransaction();
             using var cmd = cnn.CreateCommand();
             cmd.CommandText =

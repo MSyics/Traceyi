@@ -14,8 +14,8 @@ namespace MSyics.Traceyi.Listeners
         /// <summary>
         /// TextWriter クラスのインスタンスを初期化します。
         /// </summary>
-        public TextLogger(TextWriter writer, ILogLayout layout, bool useLock = false, bool useAsync = true, int concurrency = 1) :
-            base(useLock, useAsync, concurrency)
+        public TextLogger(TextWriter writer, ILogLayout layout, bool useLock = false, bool useAsync = true, int divide = 1) :
+            base(useLock, useAsync, divide)
         {
             TextWriter = writer;
             Layout = layout;

@@ -15,7 +15,7 @@
       "File": [
         {
           "Name": "file",
-          "Concurrency": 1,
+          "Divide": 2,
           "UseLock": false,
           "UseAsync": true,
           "UseMutex": false,
