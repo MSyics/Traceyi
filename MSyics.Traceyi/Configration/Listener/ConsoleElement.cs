@@ -5,7 +5,7 @@ namespace MSyics.Traceyi.Configration
     /// <summary>
     /// Console 要素を表します。
     /// </summary>
-    public class ConsoleElement : LoggerElement
+    public class ConsoleElement : TextLoggerElement
     {
         /// <summary>
         /// エラーストリームを使用するかどうかを示す値を取得または設定します。
@@ -21,13 +21,11 @@ namespace MSyics.Traceyi.Configration
         /// 実行オブジェクトを取得します。
         /// </summary>
         public override ITraceListener GetRuntimeObject() =>
-             new ConsoleLogger(Layout.GetRuntimeObject(), Concurrency)
+             new ConsoleLogger(Layout.GetRuntimeObject())
              {
                  Name = Name,
                  NewLine = NewLine,
                  UseErrorStream = UseErrorStream,
-                 UseLock = UseLock,
-                 UseAsync = UseAsync,
                  CloseTimeout = CloseTimeout,
                  Encoding = GetEncoding(),
                  Coloring = (Coloring.Start, Coloring.Length),

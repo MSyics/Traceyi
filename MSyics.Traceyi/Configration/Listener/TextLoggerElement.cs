@@ -1,30 +1,14 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Text;
-using System.Threading;
 
 namespace MSyics.Traceyi.Configration
 {
     /// <summary>
-    /// Listener セクション要素の中で Logger 要素の基底クラスです。
+    /// Listener セクション要素の中で TextLogger 要素の基底クラスです。
     /// </summary>
-    public abstract class LoggerElement : TraceListenerElement
+    public abstract class TextLoggerElement : TraceListenerElement
     {
-        /// <summary>
-        /// ロックを使用するかどうかを示す値を取得または設定します。
-        /// </summary>
-        public bool UseLock { get; set; } = false;
-
-        /// <summary>
-        /// 非同期 I/O または同期 I/O のどちらを使用するかを示す値を取得または設定します。
-        /// </summary>
-        public bool UseAsync { get; set; } = true;
-
-        /// <summary>
-        /// 終了を待機する時間間隔を取得または設定します。
-        /// </summary>
-        public TimeSpan CloseTimeout { get; set; } = Timeout.InfiniteTimeSpan;
-
         /// <summary>
         /// 改行文字を取得または設定します。
         /// </summary>

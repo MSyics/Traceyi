@@ -1,8 +1,6 @@
 ﻿using System.Collections;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 
 namespace MSyics.Traceyi
 {
@@ -34,10 +32,13 @@ namespace MSyics.Traceyi
         /// </summary>
         public bool TryGetLength(string path, out long length)
         {
-            if (streams.TryGetValue(path, out var stream) && stream.CanWrite)
+            lock (((ICollection)streams).SyncRoot)
             {
-                length = stream.Length;
-                return true;
+                if (streams.TryGetValue(path, out var stream) && stream.CanWrite)
+                {
+                    length = stream.Length;
+                    return true;
+                }
             }
 
             var file = new FileInfo(path);
@@ -46,7 +47,7 @@ namespace MSyics.Traceyi
                 length = file.Length;
                 return true;
             }
-         
+
             length = 0;
             return false;
         }
@@ -56,16 +57,19 @@ namespace MSyics.Traceyi
         /// </summary>
         public FileStream GetOrAdd(string path)
         {
-            if (streams.TryGetValue(path, out var stream) && stream.CanWrite)
+            lock (((ICollection)streams).SyncRoot)
             {
-                stream.Position = stream.Length;
+                if (streams.TryGetValue(path, out var stream) && stream.CanWrite)
+                {
+                    stream.Position = stream.Length;
+                }
+                else
+                {
+                    stream = factory.Create(path);
+                    streams[path] = stream;
+                }
+                return stream;
             }
-            else
-            {
-                stream = factory.Create(path);
-                streams[path] = stream;
-            }
-            return stream;
         }
 
         /// <summary>
@@ -73,11 +77,15 @@ namespace MSyics.Traceyi
         /// </summary>
         public void Remove(string path)
         {
-            if (string.IsNullOrEmpty(path)) return; 
-            if (!streams.TryGetValue(path, out var stream)) return; 
+            if (string.IsNullOrEmpty(path)) return;
 
-            factory.Dispose(stream);
-            streams.Remove(path);
+            lock (((ICollection)streams).SyncRoot)
+            {
+                if (!streams.TryGetValue(path, out var stream)) return;
+
+                factory.Dispose(stream);
+                streams.Remove(path);
+            }
         }
 
         /// <summary>
@@ -85,7 +93,7 @@ namespace MSyics.Traceyi
         /// </summary>
         public void Clear()
         {
-            if (streams.Count == 0) return; 
+            if (streams.Count == 0) return;
 
             lock (((ICollection)streams).SyncRoot)
             {

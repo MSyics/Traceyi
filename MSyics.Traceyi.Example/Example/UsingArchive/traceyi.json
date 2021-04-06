@@ -14,14 +14,13 @@
     "Listener": {
       "Console": [
         {
-          "Name": "console",
-          "UseLock": false,
-          "UseAsync": true
+          "Name": "console"
         }
       ],
       "File": [
         {
           "Name": "file",
+          "Concurrency": 2,
           "UseLock": false,
           "UseAsync": true,
           "UseMutex": true,
@@ -32,6 +31,7 @@
         },
         {
           "Name": "file2",
+          "Concurrency": 2,
           "UseLock": false,
           "UseAsync": true,
           "UseMutex": true,

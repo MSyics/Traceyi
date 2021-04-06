@@ -10,8 +10,6 @@
       "Console": [
         {
           "Name": "console",
-          "UseLock": false,
-          "UseAsync": true,
           "Encoding": "utf-8",
           "coloring": {
             "start": 0,

@@ -17,20 +17,30 @@ namespace MSyics.Traceyi.Listeners
         private readonly CancellationTokenSource cts = new();
         private readonly TraceEventChannel channel;
 
-        public TraceListener(int concurrency = 1)
+        public TraceListener(bool useLock = false, bool useAsync = true,  int concurrency = 1)
         {
-            channel = new(Write, concurrency);
+            UseLock = useLock;
+            UseAsync = useAsync;
+            if (UseAsync)
+            {
+                channel = new(Write, concurrency);
+            }
         }
 
         /// <summary>
-        /// ロックを使用するかどうかを示す値を取得または設定します。
+        /// ロックを使用するかどうかを示す値を取得します。
         /// </summary>
-        public bool UseLock { get; set; } = false;
+        public bool UseLock { get; private set; } = false;
 
         /// <summary>
-        /// 非同期 I/O または同期 I/O のどちらを使用するかを示す値を取得または設定します。
+        /// 非同期 I/O または同期 I/O のどちらを使用するかを示す値を取得します。
         /// </summary>
-        public bool UseAsync { get; set; } = true;
+        public bool UseAsync { get; private set; } = true;
+
+        /// <summary>
+        /// 受信イベントの並列処理数を取得します。
+        /// </summary>
+        public int Concurrency { get; private set; } = 1;
 
         /// <summary>
         /// 終了を待機する時間間隔を取得または設定します。
@@ -52,7 +62,7 @@ namespace MSyics.Traceyi.Listeners
             {
                 try
                 {
-                    _ = WriteAsync(e);
+                    _ = WriteAsync(e).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -68,12 +78,12 @@ namespace MSyics.Traceyi.Listeners
         /// <summary>
         /// トレースデータを書き込みます。
         /// </summary>
-        protected internal abstract void WriteCore(TraceEventArgs e);
+        protected internal abstract void WriteCore(TraceEventArgs e, int index);
 
         /// <summary>
         /// トレースイベント情報を書き込みます。
         /// </summary>
-        private void Write(TraceEventArgs e)
+        private void Write(TraceEventArgs e, int index = 0)
         {
             if (UseLock)
             {
@@ -81,7 +91,7 @@ namespace MSyics.Traceyi.Listeners
                 {
                     try
                     {
-                        WriteCore(e);
+                        WriteCore(e, index);
                     }
                     catch (Exception ex)
                     {
@@ -93,7 +103,7 @@ namespace MSyics.Traceyi.Listeners
             {
                 try
                 {
-                    WriteCore(e);
+                    WriteCore(e, index);
                 }
                 catch (Exception ex)
                 {
@@ -127,7 +137,7 @@ namespace MSyics.Traceyi.Listeners
             Disposed = true;
 
             cts.Cancel(false);
-            channel.CloseAsync(CloseTimeout).Wait();
+            channel?.Close(CloseTimeout);
             cts.Dispose();
 
             if (disposing) { DisposeManagedResources(); }
@@ -143,5 +153,6 @@ namespace MSyics.Traceyi.Listeners
         /// アンマネージリソースを破棄します。
         /// </summary>
         protected virtual void DisposeUnmanagedResources() { }
+      
     }
 }

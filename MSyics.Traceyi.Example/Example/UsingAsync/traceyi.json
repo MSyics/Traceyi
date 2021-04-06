@@ -9,24 +9,26 @@
     "Listener": {
       "Console": [
         {
-          "Name": "console",
-          "Concurrency": 30,
-          "UseLock": true,
-          "UseAsync": true
+          "Name": "console"
         }
       ],
       "File": [
         {
           "Name": "file",
-          "Concurrency": 1,
+          "Concurrency": 5,
           "UseLock": false,
           "UseAsync": true,
           "UseMutex": false,
           "KeepFilesOpen": true,
           "MaxLength": 25000000,
-          "MaxArchiveCount": 1,
-          //"Path": "app_{threadId}.log"
-          "Path": "app.log"
+          "MaxArchiveCount": 0,
+          //"CloseTimeout": "0:0:0.200",
+          //"Path": "app_{threadId}.log",
+          "Path": "app_{index|0,3:R}.log",
+          //"Path": "app.log",
+          "Layout": {
+            //"format": "{action} {elapsed}"
+          }
         }
       ]
     }

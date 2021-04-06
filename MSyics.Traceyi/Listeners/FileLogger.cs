@@ -12,7 +12,7 @@ namespace MSyics.Traceyi.Listeners
     /// <summary>
     /// トレースデータをファイルに記録します。
     /// </summary>
-    public class FileLogger : Logger
+    public class FileLogger : TextLogger
     {
         readonly MutexFactory namedMutex = MutexFactory.Create();
         readonly IFormatProvider formatProvider = new LogLayoutFormatProvider();
@@ -23,10 +23,9 @@ namespace MSyics.Traceyi.Listeners
         /// <summary>
         /// クラスのインスタンスを初期化します。
         /// </summary>
-        public FileLogger(ILogLayout layout, string path = null, bool useMutex = false, bool keepFilesOpen = true, int concurrency = 1) : 
-            base(concurrency)
+        public FileLogger(ILogLayout layout, string path = null, bool useLock = false, bool useAsync = true, int concurrency = 1, bool useMutex = false, bool keepFilesOpen = true) :
+            base(TextWriter.Null, layout, useLock, useAsync, concurrency)
         {
-            Layout = layout;
             Path = string.IsNullOrWhiteSpace(path) ? $"{System.IO.Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName)}.log" : path;
             FormattedPath = CreateFormattedPath();
             UseMutex = useMutex;
@@ -47,8 +46,8 @@ namespace MSyics.Traceyi.Listeners
         /// <summary>
         /// クラスのインスタンスを初期化します。
         /// </summary>
-        public FileLogger(string path = null, bool useMutex = false, bool keepFilesOpen = true, int concurrency = 1) :
-            this(new LogLayout(), path, useMutex, keepFilesOpen, concurrency)
+        public FileLogger(string path = null, bool useLock = false, bool useAsync = true, int concurrency = 1, bool useMutex = false, bool keepFilesOpen = true) :
+            this(new LogLayout(), path, useLock, useAsync, concurrency, useMutex, keepFilesOpen)
         {
         }
 
@@ -73,7 +72,8 @@ namespace MSyics.Traceyi.Listeners
                 new LogLayoutPart { Name = "threadId", CanFormat = true },
                 new LogLayoutPart { Name = "processId", CanFormat = true },
                 new LogLayoutPart { Name = "processName", CanFormat = true },
-                new LogLayoutPart { Name = "machineName", CanFormat = true });
+                new LogLayoutPart { Name = "machineName", CanFormat = true },
+                new LogLayoutPart { Name = "index", CanFormat = true });
 
             return converter.Convert(Path.Trim());
         }
@@ -81,7 +81,7 @@ namespace MSyics.Traceyi.Listeners
         /// <summary>
         /// パスを作成します。
         /// </summary>
-        protected string MakePath(TraceEventArgs e)
+        protected string MakePath(TraceEventArgs e, int index)
         {
             var path = string.Format(
                 formatProvider,
@@ -90,7 +90,8 @@ namespace MSyics.Traceyi.Listeners
                 Thread.CurrentThread.ManagedThreadId,
                 e.ProcessId,
                 e.ProcessName,
-                e.MachineName);
+                e.MachineName,
+                index);
 
             if (!System.IO.Path.IsPathRooted(path))
             {
@@ -108,9 +109,9 @@ namespace MSyics.Traceyi.Listeners
         /// <summary>
         /// トレースデータを書き込みます。
         /// </summary>
-        protected internal override void WriteCore(TraceEventArgs e)
+        protected internal override void WriteCore(TraceEventArgs e, int index)
         {
-            var path = MakePath(e);
+            var path = MakePath(e, index);
             if (UseMutex)
             {
                 using var mutex = namedMutex.Get(path);
@@ -279,21 +280,6 @@ namespace MSyics.Traceyi.Listeners
         /// ファイルの書き込み上限バイト数を取得または設定します。
         /// </summary>
         public long MaxLength { get; set; }
-
-        /// <summary>
-        /// トレースデータの記録形式を取得または設定します。
-        /// </summary>
-        public ILogLayout Layout { get; set; }
-
-        /// <summary>
-        /// 改行文字を取得または設定します。
-        /// </summary>
-        public string NewLine { get; set; } = Environment.NewLine;
-
-        /// <summary>
-        /// 文字エンコーディングを取得または設定します。
-        /// </summary>
-        public Encoding Encoding { get; set; } = Encoding.Default;
 
         /// <summary>
         /// プロセス間同期を使用するかどうか示す値を取得または設定します。

@@ -30,12 +30,6 @@
         {
           // 要素の名前
           "Name": "console",
-          // 同時実行数
-          "Concurrency": 1,
-          // 排他制御するかどうか（省略：false）
-          "UseLock": false,
-          // 非同期 I/O または同期 I/O のどちらを使用するか（省略：true）
-          "UseAsync": true,
           // 改行文字（省略：\r\n）
           "NewLine": "\r\n",
           // エンコーディング（省略：UTF-8）
@@ -132,6 +126,11 @@
       "File": [
         {
           "Name": "file",
+          // 排他制御するかどうか（省略：false）
+          "UseLock": false,
+          // 非同期 I/O または同期 I/O のどちらを使用するか（省略：true）
+          "UseAsync": true,
+          // 受信イベントの並列処理数
           "Concurrency": 1,
           // 出力先パス、レイアウト指定可能（省略：[ApplicationName].log）
           //
@@ -140,10 +139,9 @@
           // {processId}   : Int32 型
           // {processName} : String 型
           // {machineName} : String 型
+          // {index}       : Int32 型、 並列処理インデックス
           //
           "Path": "Test.log",
-          "UseLock": false,
-          "UseAsync": true,
           // 複数プロセス（またはリスナー）から同じファイルへ書き込み場合に排他制御するかどうか（省略：false）
           "UseMutex": false,
           // ファイルを開いたままにするかどうか

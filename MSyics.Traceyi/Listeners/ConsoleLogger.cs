@@ -1,5 +1,6 @@
 ﻿using MSyics.Traceyi.Layout;
 using System;
+using System.Threading;
 
 namespace MSyics.Traceyi.Listeners
 {
@@ -13,9 +14,8 @@ namespace MSyics.Traceyi.Listeners
         /// <summary>
         /// クラスのインスタンスを初期化します。
         /// </summary>
-        /// <param name="layout">レイアウト</param>
-        /// <param name="concurrency">同時実行数</param>
-        public ConsoleLogger(ILogLayout layout, int concurrency = 1) : base(System.IO.TextWriter.Null, layout, concurrency)
+        public ConsoleLogger(ILogLayout layout) :
+            base(System.IO.TextWriter.Null, layout)
         {
         }
 
@@ -90,7 +90,7 @@ namespace MSyics.Traceyi.Listeners
             return length > 0;
         }
 
-        protected internal override void WriteCore(TraceEventArgs e)
+        protected internal override void WriteCore(TraceEventArgs e, int index)
         {
             var log = Layout.GetLog(e);
             if (string.IsNullOrEmpty(log)) return;

@@ -2,18 +2,20 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Threading;
 
 namespace MSyics.Traceyi.Listeners
 {
     /// <summary>
     /// トレースデータを TextWriter オブジェクトを使用して記録します。
     /// </summary>
-    public abstract class TextLogger : Logger
+    public abstract class TextLogger : TraceListener
     {
         /// <summary>
         /// TextWriter クラスのインスタンスを初期化します。
         /// </summary>
-        public TextLogger(TextWriter writer, ILogLayout layout, int concurrency = 1) : base(concurrency)
+        public TextLogger(TextWriter writer, ILogLayout layout, bool useLock = false, bool useAsync = true, int concurrency = 1) :
+            base(useLock, useAsync, concurrency)
         {
             TextWriter = writer;
             Layout = layout;
@@ -42,7 +44,7 @@ namespace MSyics.Traceyi.Listeners
         /// <summary>
         /// トレースデータを書き込みます。
         /// </summary>
-        protected internal override void WriteCore(TraceEventArgs e)
+        protected internal override void WriteCore(TraceEventArgs e, int index)
         {
             try
             {
@@ -50,7 +52,6 @@ namespace MSyics.Traceyi.Listeners
                 if (string.IsNullOrEmpty(log)) return;
 
                 TextWriter.WriteLine(log);
-
             }
             catch (Exception ex)
             {
