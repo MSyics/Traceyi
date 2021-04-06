@@ -7,7 +7,7 @@ namespace MSyics.Traceyi.Configration
     /// <summary>
     /// Listener 要素の基底クラスです。
     /// </summary>
-    public abstract class TraceListenerElement
+    public abstract class TraceEventListenerElement
     {
         /// <summary>
         /// ロックを使用するかどうかを示す値を取得または設定します。
@@ -37,6 +37,6 @@ namespace MSyics.Traceyi.Configration
         /// <summary>
         /// 派生クラスでオーバーライドされると実行オブジェクトを取得します。
         /// </summary>
-        public abstract ITraceListener GetRuntimeObject();
+        public abstract ITraceEventListener GetRuntimeObject();
     }
 }

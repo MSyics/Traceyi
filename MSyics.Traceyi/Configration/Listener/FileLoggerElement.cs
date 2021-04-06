@@ -5,7 +5,7 @@ namespace MSyics.Traceyi.Configration
     /// <summary>
     /// File 要素を表します。
     /// </summary>
-    public class FileElement : TextLoggerElement
+    public class FileLoggerElement : TextLoggerElement
     {
         /// <summary>
         /// パスを取得または設定します。
@@ -35,7 +35,7 @@ namespace MSyics.Traceyi.Configration
         /// <summary>
         /// 実行オブジェクトを取得します。
         /// </summary>
-        public override ITraceListener GetRuntimeObject() =>
+        public override ITraceEventListener GetRuntimeObject() =>
             new FileLogger(Path, UseLock, UseAsync, Concurrency, UseMutex, KeepFilesOpen)
             {
                 Encoding = GetEncoding(),

@@ -13,9 +13,9 @@ namespace MSyics.Traceyi
     /// </summary>
     public static class Traceable
     {
-        private readonly static HashSet<ITraceListener> Listeners = new();
+        private readonly static HashSet<ITraceEventListener> Listeners = new();
         private readonly static Dictionary<string, Tracer> Tracers = new();
-        private readonly static TraceListenerElementConfiguration ListenerConfig = new();
+        private readonly static TraceEventListenerElementConfiguration ListenerConfig = new();
 
         internal static TraceContext Context => _context.Value;
         private static readonly Lazy<TraceContext> _context = new(() => new TraceContext(), true);
@@ -50,7 +50,7 @@ namespace MSyics.Traceyi
         /// <param name="name">名前</param>
         /// <param name="filters">選別するトレース動作</param>
         /// <param name="listeners">トレース情報のリスナー</param>
-        public static void Add(string name = "", TraceFilters filters = TraceFilters.All, params ITraceListener[] listeners)
+        public static void Add(string name = "", TraceFilters filters = TraceFilters.All, params ITraceEventListener[] listeners)
         {
             var tracer = new Tracer
             {
@@ -78,14 +78,14 @@ namespace MSyics.Traceyi
         /// <param name="filters">選別するトレース動作</param>
         /// <param name="listeners">トレース情報のリスナー</param>
         public static void Add(string name = "", TraceFilters filters = TraceFilters.All, params Action<TraceEventArgs>[] listeners) =>
-            Add(name, filters, listeners.Select(x => new ActionTraceListener(x)).ToArray());
+            Add(name, filters, listeners.Select(x => new ActionTraceEventListener(x)).ToArray());
 
         /// <summary>
         /// Tracer オブジェクトを構成情報から登録します。
         /// </summary>
         /// <param name="configuration">構成情報</param>
         /// <param name="usable">カスタムリスナーを登録することで構成情報からリスナーオブジェクトを取得できるようにします。</param>
-        public static void Add(IConfiguration configuration, Action<ITraceListenerElementConfiguration> usable = null)
+        public static void Add(IConfiguration configuration, Action<ITraceEventListenerElementConfiguration> usable = null)
         {
             if (configuration == null) return;
 
@@ -118,7 +118,7 @@ namespace MSyics.Traceyi
         /// </summary>
         /// <param name="jsonFile">JSON ファイルのパス</param>
         /// <param name="usable">カスタムリスナーを登録することで構成情報からリスナーオブジェクトを取得できるようにします。</param>
-        public static void Add(string jsonFile, Action<ITraceListenerElementConfiguration> usable = null) =>
+        public static void Add(string jsonFile, Action<ITraceEventListenerElementConfiguration> usable = null) =>
             Add(new ConfigurationBuilder().AddJsonFile(jsonFile, false, true).Build(), usable);
         #endregion
     }

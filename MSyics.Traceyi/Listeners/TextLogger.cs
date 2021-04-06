@@ -9,7 +9,7 @@ namespace MSyics.Traceyi.Listeners
     /// <summary>
     /// トレースデータを TextWriter オブジェクトを使用して記録します。
     /// </summary>
-    public abstract class TextLogger : TraceListener
+    public abstract class TextLogger : TraceEventListener
     {
         /// <summary>
         /// TextWriter クラスのインスタンスを初期化します。

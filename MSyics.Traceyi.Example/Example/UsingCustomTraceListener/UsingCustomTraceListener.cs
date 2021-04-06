@@ -32,11 +32,11 @@ namespace MSyics.Traceyi
         }
     }
 
-    class CustomElement : TraceListenerElement
+    class CustomElement : TraceEventListenerElement
     {
         public int Value { get; set; }
 
-        public override ITraceListener GetRuntimeObject()
+        public override ITraceEventListener GetRuntimeObject()
         {
             return new CustomTraceListener
             {
@@ -45,7 +45,7 @@ namespace MSyics.Traceyi
         }
     }
 
-    class CustomTraceListener : ITraceListener
+    class CustomTraceListener : ITraceEventListener
     {
         public int Value { get; set; }
 

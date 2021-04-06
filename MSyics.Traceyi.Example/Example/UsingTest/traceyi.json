@@ -1,0 +1,17 @@
+﻿{
+  "Traceyi": {
+    "Tracer": [
+      {
+        "Listeners": [ "hoge" ],
+        "Filters": "all"
+      }
+    ],
+    "Listener": {
+      "Hoge": [
+        {
+          "Name": "hoge"
+        }
+      ]
+    }
+  }
+}

@@ -8,7 +8,7 @@ namespace MSyics.Traceyi.Listeners
     /// <summary>
     /// トレースイベントを受信します。これは抽象クラスです。
     /// </summary>
-    public abstract class TraceListener : IDisposable, ITraceListener
+    public abstract class TraceEventListener : IDisposable, ITraceEventListener
     {
         #region Static Members
         protected static readonly object GlobalLock = new();
@@ -17,7 +17,7 @@ namespace MSyics.Traceyi.Listeners
         private readonly CancellationTokenSource cts = new();
         private readonly TraceEventChannel channel;
 
-        public TraceListener(bool useLock = false, bool useAsync = true,  int concurrency = 1)
+        public TraceEventListener(bool useLock = false, bool useAsync = true,  int concurrency = 1)
         {
             UseLock = useLock;
             UseAsync = useAsync;

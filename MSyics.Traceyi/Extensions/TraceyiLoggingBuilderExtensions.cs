@@ -24,7 +24,7 @@
         /// <summary>
         /// 登録します。
         /// </summary>
-        public static ILoggingBuilder AddTraceyi(this ILoggingBuilder builder, IConfiguration configuration, Action<ITraceListenerElementConfiguration> usable = null)
+        public static ILoggingBuilder AddTraceyi(this ILoggingBuilder builder, IConfiguration configuration, Action<ITraceEventListenerElementConfiguration> usable = null)
         {
             Traceable.Add(configuration, usable);
             return builder.AddTraceyi();
@@ -33,7 +33,7 @@
         /// <summary>
         /// 登録します。
         /// </summary>
-        public static ILoggingBuilder AddTraceyi(this ILoggingBuilder builder, string jsonFile, Action<ITraceListenerElementConfiguration> usable = null)
+        public static ILoggingBuilder AddTraceyi(this ILoggingBuilder builder, string jsonFile, Action<ITraceEventListenerElementConfiguration> usable = null)
         {
             Traceable.Add(jsonFile, usable);
             return builder.AddTraceyi();
@@ -51,7 +51,7 @@
         /// <summary>
         /// 登録します。
         /// </summary>
-        public static ILoggingBuilder AddTraceyi(this ILoggingBuilder builder, string name = "", TraceFilters filters = TraceFilters.All, params ITraceListener[] listeners)
+        public static ILoggingBuilder AddTraceyi(this ILoggingBuilder builder, string name = "", TraceFilters filters = TraceFilters.All, params ITraceEventListener[] listeners)
         {
             Traceable.Add(name, filters, listeners);
             return builder.AddTraceyi();

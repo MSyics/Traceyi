@@ -15,7 +15,7 @@ namespace MSyics.Traceyi
             Tracer = Traceable.Get();
         }
 
-        private readonly Stopwatch sw = new Stopwatch();
+        private readonly Stopwatch sw = new();
 
         public override async Task ShowAsync()
         {

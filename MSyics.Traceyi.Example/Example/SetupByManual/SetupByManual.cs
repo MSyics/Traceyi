@@ -13,7 +13,6 @@ namespace MSyics.Traceyi
             Traceable.Add(
                 name: Name,
                 filters: TraceFilters.All,
-                new ActionTraceListener(e => Console.WriteLine($"{e.Action} {e.Message} {e.Elapsed}")),
                 new ConsoleLogger());
 
             Tracer = Traceable.Get(Name);

@@ -7,7 +7,7 @@ namespace MSyics.Traceyi.Configration
     /// <summary>
     /// Listener セクション要素の中で TextLogger 要素の基底クラスです。
     /// </summary>
-    public abstract class TextLoggerElement : TraceListenerElement
+    public abstract class TextLoggerElement : TraceEventListenerElement
     {
         /// <summary>
         /// 改行文字を取得または設定します。
@@ -22,7 +22,7 @@ namespace MSyics.Traceyi.Configration
         /// <summary>
         /// Layout 要素を取得または設定します。
         /// </summary>
-        public LayoutElement Layout { get; set; } = new LayoutElement();
+        public LogLayoutElement Layout { get; set; } = new LogLayoutElement();
 
         /// <summary>
         /// 文字エンコーディングを取得します。

@@ -10,6 +10,7 @@
   <ItemGroup>
     <PackageReference Include="Exampleyi" Version="3.1.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.7" />
     <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
   </ItemGroup>
 
@@ -29,6 +30,9 @@
     </None>
     <None Update="Example\UsingExtensions\traceyi.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Example\UsingTest\traceyi.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Example\UsingILogger\traceyi.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -5,7 +5,7 @@ namespace MSyics.Traceyi.Configration
     /// <summary>
     /// Layout 要素を表します。
     /// </summary>
-    public class LayoutElement
+    public class LogLayoutElement
     {
         /// <summary>
         /// レイアウト形式を取得または設定します。

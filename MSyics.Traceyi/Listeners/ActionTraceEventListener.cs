@@ -3,14 +3,11 @@ using System;
 
 namespace MSyics.Traceyi
 {
-    /// <summary>
-    /// 
-    /// </summary>
-    public class ActionTraceListener : ITraceListener
+    internal class ActionTraceEventListener : ITraceEventListener
     {
         private Action<TraceEventArgs> Listener { get; set; } = _ => { };
 
-        public ActionTraceListener(Action<TraceEventArgs> listener) => Listener = listener;
+        public ActionTraceEventListener(Action<TraceEventArgs> listener) => Listener = listener;
 
         public void OnTracing(object sender, TraceEventArgs e) => Listener?.Invoke(e);
 
