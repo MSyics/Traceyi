@@ -10,81 +10,114 @@ namespace MSyics.Traceyi.Listeners
 {
     internal class TraceEventChannel
     {
-        readonly List<ChannelReader<(TraceEventArgs e, int index)>> readers = new();
-        readonly CancellationTokenSource cts = new();
-        readonly Channel<TraceEventArgs> channel = Channel.CreateUnbounded<TraceEventArgs>();
-        readonly List<Task> consumers = new();
-        readonly Action<TraceEventArgs, int> consume;
+        readonly Action<TraceEventArgs, int> action;
+        readonly List<Task> tasks = new();
+        readonly int demux;
+        private CancellationTokenSource cts;
+        private Channel<TraceEventArgs> channel;
 
-        public TraceEventChannel(Action<TraceEventArgs, int> consume, int divide = 1)
+        private async Task ReadAsync(ChannelReader<TraceEventArgs> reader, int index, CancellationToken token)
         {
-            this.consume = consume;
-            readers.AddRange(Split(channel.Reader, divide));
-            consumers.AddRange(readers.Select(reader => ReadAsync(reader)));
+            try
+            {
+                while (await reader.WaitToReadAsync(token))
+                {
+                    while (reader.TryRead(out var item))
+                    {
+                        if (token.IsCancellationRequested) return;
+                        action?.Invoke(item, index);
+                    }
+                }
+            }
+            catch (OperationCanceledException) { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+        }
+
+        public TraceEventChannel(Action<TraceEventArgs, int> action, int demux = 1)
+        {
+            this.action = action;
+            this.demux = Math.Max(1, demux);
+        }
+
+        public bool Running { get; private set; }
+
+        public void Open()
+        {
+            if (Running) return;
+            Running = true;
+
+            cts = new();
+            channel = Channel.CreateUnbounded<TraceEventArgs>();
+
+            if (demux > 1)
+            {
+                tasks.AddRange(Split(channel.Reader, demux).Select((channel, index) => ReadAsync(channel.Reader, index, cts.Token)));
+            }
+            else
+            {
+                tasks.Add(ReadAsync(channel.Reader, 0, cts.Token));
+            }
         }
 
         public void Close(TimeSpan timeout)
         {
+            if (!Running) return;
+            Running = false;
+         
             channel.Writer.TryComplete();
             cts.CancelAfter(timeout);
             try
             {
-                Task.WhenAll(consumers).Wait(timeout);
+                Task.WhenAll(tasks).GetAwaiter().GetResult();
             }
-            catch (TaskCanceledException ex)
+            catch (OperationCanceledException) { }
+            catch (Exception ex)
             {
-                Debug.WriteLine(ex.Message);
+                Debug.WriteLine(ex);
             }
-
-            readers.Clear();
-            consumers.Clear();
-            cts.Dispose();
+            tasks.Clear();
         }
 
-        private ChannelReader<(TraceEventArgs, int)>[] Split(ChannelReader<TraceEventArgs> reader, int divide)
+        private Channel<TraceEventArgs>[] Split(ChannelReader<TraceEventArgs> reader, int demux)
         {
-            var channels = Enumerable.Range(1, Math.Max(1, divide)).Select(i => Channel.CreateUnbounded<(TraceEventArgs, int)>()).ToArray();
+            var channels = Enumerable.Range(1, Math.Max(1, demux)).Select(i => Channel.CreateUnbounded<TraceEventArgs>()).ToArray();
 
             Task.Run(async () =>
             {
-                var index = 0;
-                while (await reader.WaitToReadAsync(cts.Token).ConfigureAwait(false))
+                try
                 {
-                    while (reader.TryRead(out var item))
+                    int index = 0;
+                    try
                     {
-                        if (cts.IsCancellationRequested) return;
-                        await channels[index].Writer.WriteAsync((item, index));
-                        index = (index + 1) % divide;
+                        while (await reader.WaitToReadAsync(cts.Token))
+                        {
+                            while (reader.TryRead(out var item))
+                            {
+                                if (cts.Token.IsCancellationRequested) return;
+                                await channels[index].Writer.WriteAsync(item);
+                                index = (index + 1) % demux;
+                            }
+                        }
+                    }
+                    catch (OperationCanceledException) { }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
                     }
                 }
-
-                foreach (var item in channels)
+                finally
                 {
-                    item.Writer.TryComplete();
+                    foreach (var item in channels)
+                    {
+                        item.Writer.TryComplete();
+                    }
                 }
             });
 
-            return channels.Select(x => x.Reader).ToArray();
-        }
-
-        private async Task ReadAsync(ChannelReader<(TraceEventArgs, int)> reader)
-        {
-            try
-            {
-                while (await reader.WaitToReadAsync().ConfigureAwait(false))
-                {
-                    while (reader.TryRead(out var item))
-                    {
-                        if (cts.IsCancellationRequested) return;
-                        consume?.Invoke(item.Item1, item.Item2);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-                channel.Writer.TryComplete(ex);
-            }
+            return channels;
         }
 
         public ValueTask WriteAsync(TraceEventArgs e) => channel.Writer.WriteAsync(e);

@@ -17,21 +17,20 @@ namespace MSyics.Traceyi.Listeners
         readonly MutexFactory namedMutex = MutexFactory.Create();
         readonly IFormatProvider formatProvider = new LogLayoutFormatProvider();
 
-        private FileStreamStore Streams => _streams.Value;
-        readonly Lazy<FileStreamStore> _streams;
+        private FileStreamStore Streams => streams.Value;
+        readonly Lazy<FileStreamStore> streams;
 
         /// <summary>
         /// クラスのインスタンスを初期化します。
         /// </summary>
-        public FileLogger(ILogLayout layout, string path = null, bool useLock = false, bool useAsync = true, int divide = 1, bool useMutex = false, bool keepFilesOpen = true) :
-            base(TextWriter.Null, layout, useLock, useAsync, divide)
+        public FileLogger(ILogLayout layout, string path = null, bool keepFilesOpen = true, int demux = 1) : 
+            base(TextWriter.Null, layout, demux)
         {
             Path = string.IsNullOrWhiteSpace(path) ? $"{System.IO.Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName)}.log" : path;
             FormattedPath = CreateFormattedPath();
-            UseMutex = useMutex;
             KeepFilesOpen = keepFilesOpen;
 
-            _streams = new Lazy<FileStreamStore>(
+            streams = new Lazy<FileStreamStore>(
                 () =>
                 {
                     if (UseMutex && MaxLength > 0)
@@ -46,8 +45,8 @@ namespace MSyics.Traceyi.Listeners
         /// <summary>
         /// クラスのインスタンスを初期化します。
         /// </summary>
-        public FileLogger(string path = null, bool useLock = false, bool useAsync = true, int divide = 1, bool useMutex = false, bool keepFilesOpen = true) :
-            this(new LogLayout(), path, useLock, useAsync, divide, useMutex, keepFilesOpen)
+        public FileLogger(string path = null, bool keepFilesOpen = true, int demux = 1) : 
+            this(new LogLayout(), path, keepFilesOpen, demux)
         {
         }
 
@@ -138,7 +137,7 @@ namespace MSyics.Traceyi.Listeners
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex.Message);
+                    Debug.WriteLine(ex);
                 }
 
                 using var writer = new StreamWriter(Streams.GetOrAdd(path), Encoding)
@@ -161,6 +160,7 @@ namespace MSyics.Traceyi.Listeners
             }
         }
 
+        // TODO: Rotate 遅い
         /// <summary>
         /// ファイルをローテーションします。
         /// </summary>
@@ -203,7 +203,7 @@ namespace MSyics.Traceyi.Listeners
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex.Message);
+                    Debug.WriteLine(ex);
                 }
             }
 
@@ -219,7 +219,7 @@ namespace MSyics.Traceyi.Listeners
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex.Message);
+                    Debug.WriteLine(ex);
                 }
             }
 
@@ -259,7 +259,7 @@ namespace MSyics.Traceyi.Listeners
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex.Message);
+                    Debug.WriteLine(ex);
                 }
 
                 return result;
@@ -284,7 +284,7 @@ namespace MSyics.Traceyi.Listeners
         /// <summary>
         /// プロセス間同期を使用するかどうか示す値を取得または設定します。
         /// </summary>
-        public bool UseMutex { get; private set; } = false;
+        public bool UseMutex { get; set; } = false;
 
         /// <summary>
         /// ファイルを開いたままにしておくかどうかを示す値を取得または設定します。

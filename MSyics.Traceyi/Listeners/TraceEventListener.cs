@@ -2,13 +2,15 @@
 using System.Threading;
 using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MSyics.Traceyi.Listeners
 {
     /// <summary>
     /// トレースイベントを受信します。これは抽象クラスです。
     /// </summary>
-    public abstract class TraceEventListener : IDisposable, ITraceEventListener
+    public abstract class TraceEventListener : ITraceEventListener, IDisposable
     {
         #region Static Members
         protected static readonly object GlobalLock = new();
@@ -17,30 +19,24 @@ namespace MSyics.Traceyi.Listeners
         private readonly CancellationTokenSource cts = new();
         private readonly TraceEventChannel channel;
 
-        public TraceEventListener(bool useLock = false, bool useAsync = true,  int divide = 1)
+        public TraceEventListener(int demux = 1)
         {
-            UseLock = useLock;
-            UseAsync = useAsync;
             if (UseAsync)
             {
-                channel = new(Write, divide);
+                channel = new(Write, demux);
+                channel.Open();
             }
         }
 
         /// <summary>
         /// ロックを使用するかどうかを示す値を取得します。
         /// </summary>
-        public bool UseLock { get; private set; } = false;
+        public bool UseLock { get; set; } = false;
 
         /// <summary>
         /// 非同期 I/O または同期 I/O のどちらを使用するかを示す値を取得します。
         /// </summary>
-        public bool UseAsync { get; private set; } = true;
-
-        /// <summary>
-        /// 受信イベントの処理分割数を取得します。
-        /// </summary>
-        public int Divide { get; private set; } = 1;
+        public bool UseAsync { get; set; } = true;
 
         /// <summary>
         /// 終了を待機する時間間隔を取得または設定します。
@@ -55,18 +51,18 @@ namespace MSyics.Traceyi.Listeners
         /// <summary>
         /// トレースイベントを処理します。
         /// </summary>
-        public void OnTracing(object sender, TraceEventArgs e)
+        public async void OnTracing(object sender, TraceEventArgs e)
         {
             if (cts.IsCancellationRequested) return;
             if (UseAsync)
             {
                 try
                 {
-                    _ = WriteAsync(e).ConfigureAwait(false);
+                    await WriteAsync(e).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex.Message);
+                    Debug.WriteLine(ex);
                 }
             }
             else
@@ -89,17 +85,15 @@ namespace MSyics.Traceyi.Listeners
             {
                 lock (GlobalLock)
                 {
-                    try
-                    {
-                        WriteCore(e, index);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine(ex.Message);
-                    }
+                    Write();
                 }
             }
             else
+            {
+                Write();
+            }
+
+            void Write()
             {
                 try
                 {
@@ -107,7 +101,7 @@ namespace MSyics.Traceyi.Listeners
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex.Message);
+                    Debug.WriteLine(ex);
                 }
             }
         }
@@ -137,8 +131,7 @@ namespace MSyics.Traceyi.Listeners
             Disposed = true;
 
             cts.Cancel(false);
-            channel?.Close(CloseTimeout);
-            cts.Dispose();
+            channel.Close(CloseTimeout);
 
             if (disposing) { DisposeManagedResources(); }
             DisposeUnmanagedResources();
@@ -153,6 +146,5 @@ namespace MSyics.Traceyi.Listeners
         /// アンマネージリソースを破棄します。
         /// </summary>
         protected virtual void DisposeUnmanagedResources() { }
-      
     }
 }

@@ -20,7 +20,7 @@
       "File": [
         {
           "Name": "file",
-          "Divide": 2,
+          "Demux": 1,
           "UseLock": false,
           "UseAsync": true,
           "UseMutex": true,
@@ -31,7 +31,7 @@
         },
         {
           "Name": "file2",
-          "Divide": 2,
+          "Demux": 2,
           "UseLock": false,
           "UseAsync": true,
           "UseMutex": true,

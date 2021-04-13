@@ -131,7 +131,7 @@
           // 非同期 I/O または同期 I/O のどちらを使用するか（省略：true）
           "UseAsync": true,
           // 出力分割数
-          "Divide": 1,
+          "Demux": 1,
           // 出力先パス、レイアウト指定可能（省略：[ApplicationName].log）
           //
           // {dateTime}    : DateTimeOffset 型

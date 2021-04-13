@@ -135,7 +135,7 @@ namespace MSyics.Traceyi
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine(ex.Message);
+                        Debug.WriteLine(ex);
                         _message = messageLayout;
                     }
                 }
@@ -162,7 +162,7 @@ namespace MSyics.Traceyi
                     }
                     catch (Exception ex)
                     {
-                        Debug.WriteLine(ex.Message);
+                        Debug.WriteLine(ex);
                     }
                     _extensions = obj.Members;
                 }

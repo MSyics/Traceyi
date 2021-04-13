@@ -3,6 +3,7 @@ using MSyics.Traceyi.Configration;
 using MSyics.Traceyi.Listeners;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -36,11 +37,17 @@ namespace MSyics.Traceyi
         /// </summary>
         public static void Shutdown()
         {
-            var tasks = Listeners.
-                Select(x => Task.Run(x.Dispose)).
-                ToArray();
-            Task.WaitAll(tasks);
+            try
+            {
+                Task.WhenAll(Listeners.Select(x => Task.Run(x.Dispose))).GetAwaiter().GetResult();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
+            Listeners.Clear();
             Tracers.Clear();
+            Context.Refresh();
         }
 
         #region Configuration

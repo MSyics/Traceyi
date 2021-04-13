@@ -31,7 +31,7 @@
     <None Update="Example\UsingExtensions\traceyi.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Example\UsingTest\traceyi.json">
+    <None Update="Example\UsingDatabase\traceyi.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Example\UsingILogger\traceyi.json">

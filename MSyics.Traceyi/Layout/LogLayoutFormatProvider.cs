@@ -232,7 +232,7 @@ namespace MSyics.Traceyi.Layout
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"{arg}, {ex.Message}");
+                Debug.WriteLine($"{arg}, {ex}");
                 return JsonSerializer.Serialize(arg.ToString(), options);
             }
         }

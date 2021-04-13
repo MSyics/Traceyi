@@ -1,0 +1,22 @@
+﻿{
+  "Traceyi": {
+    "Tracer": [
+      {
+        "Listeners": [ "db" ],
+        "Filters": "all"
+      }
+    ],
+    "Listener": {
+      "UsingDatabase": [
+        {
+          "Name": "db",
+          "UseAsync": true,
+          "UseLock": false,
+          "Demun": 4,
+          "Chunk": 100,
+          "ChunkTimeout": "0:0:1.00"
+        }
+      ]
+    }
+  }
+}

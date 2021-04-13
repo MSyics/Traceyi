@@ -2,30 +2,32 @@
 using MSyics.Traceyi.Configration;
 using MSyics.Traceyi.Listeners;
 using System;
+using System.Collections.Generic;
 using System.Data.Common;
 using System.Data.SQLite;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace MSyics.Traceyi
 {
-    class UsingTest : Example
+    class UsingDatabase : Example
     {
         ILogger logger;
         Stopwatch s_sw = new();
 
-        public override string Name => nameof(UsingTest);
+        public override string Name => nameof(UsingDatabase);
 
         public override void Setup()
         {
+            s_sw.Start();
+
             logger = LoggerFactory.
                 Create(builder =>
                 {
                     builder.ClearProviders();
                     builder.SetMinimumLevel(LogLevel.Trace);
-                    builder.AddTraceyi(@"Example\UsingTest\traceyi.json", usable => usable.In<HogeElement>("hoge"));
+                    builder.AddTraceyi(@"Example\UsingDatabase\traceyi.json", usable => usable.In<UsingDatabaseLoggerElement>("UsingDatabase"));
                 }).
                 CreateLogger<UsingILogger>();
         }
@@ -40,20 +42,27 @@ namespace MSyics.Traceyi
         public override async Task ShowAsync()
         {
             Stopwatch sw = new();
-            s_sw.Start();
             sw.Start();
-            using (logger.BeginScope())
-            {
-                await Task.WhenAll(Enumerable.Range(1, 1000).Select(i =>
-                {
-                    return Test(10);
-                }));
-            }
+
+            await Show001();
             sw.Stop();
             Console.WriteLine(sw.ElapsedMilliseconds);
         }
 
-        private Task Test(int count)
+        public async Task Show001()
+        {
+            using (logger.BeginScope())
+            {
+                await Task.Delay(1000 * 2);
+                await Task.WhenAll(Enumerable.Range(1, 111).Select(i =>
+                {
+                    return Show002(111);
+                }));
+            }
+            await Task.Delay(1000 * 2);
+        }
+
+        private Task Show002(int count)
         {
             return Task.Run(() =>
             {
@@ -65,22 +74,24 @@ namespace MSyics.Traceyi
         }
     }
 
-    class HogeElement : TraceEventListenerElement
+    class UsingDatabaseLoggerElement : ChunkTraceEventListenerElement
     {
         public override ITraceEventListener GetRuntimeObject()
         {
-            return new HogeLogger
+            return new UsingDatabaseLogger(Demux, Chunk)
             {
+                UseAsync = UseAsync,
+                UseLock = UseLock,
+                ChunkTimeout = ChunkTimeout,
             };
         }
     }
 
-    class HogeLogger : TraceEventListener
+    class UsingDatabaseLogger : ChunkTraceEventListener
     {
         readonly SQLiteConnectionStringBuilder connectionStringBuilder = new()
         {
-            //DataSource = ":memory:"
-            DataSource = "using_test.db",
+            DataSource = @"Example\UsingDatabase\using_database.db",
             JournalMode = SQLiteJournalModeEnum.Wal,
             SyncMode = SynchronizationModes.Off,
             Pooling = true,
@@ -93,35 +104,30 @@ namespace MSyics.Traceyi
             return cnn;
         }
 
-        readonly DbConnection[] cnns;
-
-        public HogeLogger() : base(useLock: false, useAsync: true, divide: 1)
+        public UsingDatabaseLogger(int demux = 1, int chunk = 1) : base(demux, chunk)
         {
             using var cnn = OpenDbConnection();
             using var cmd = cnn.CreateCommand();
-            cmd.CommandText = "select sqlite_version()";
-            Console.WriteLine(cmd.ExecuteScalar());
 
-            cmd.CommandText =
-                "CREATE TABLE IF NOT EXISTS logs (" +
-                " action TEXT" +
-                ",traced TEXT" +
-                ",elapsed TEXT" +
-                ")";
+            cmd.CommandText = "CREATE TABLE IF NOT EXISTS logs (action TEXT, traced TEXT, elapsed TEXT)";
             cmd.ExecuteNonQuery();
 
-            cnns = Enumerable.Range(1, 5).Select(i => OpenDbConnection()).ToArray();
+            cmd.CommandText = "DELETE FROM logs";
+            cmd.ExecuteNonQuery();
         }
 
-        protected override void WriteCore(TraceEventArgs e, int index)
+        protected override void WriteCore(IEnumerable<TraceEventArgs> items, int index)
         {
-            var cnn = cnns[index];
+            using var cnn = OpenDbConnection();
             using var trn = cnn.BeginTransaction();
-            using var cmd = cnn.CreateCommand();
-            cmd.CommandText =
-                "INSERT INTO logs VALUES (" +
-                $"'{e.Action}','{e.Traced}','{e.Elapsed}')";
-            cmd.ExecuteNonQuery();
+
+            foreach (var e in items)
+            {
+                using var cmd = cnn.CreateCommand();
+                cmd.CommandText = $"INSERT INTO logs VALUES ('{e.Action}', '{e.Traced}', '{e.Elapsed}')";
+                cmd.ExecuteNonQuery();
+            }
+
             trn.Commit();
         }
     }

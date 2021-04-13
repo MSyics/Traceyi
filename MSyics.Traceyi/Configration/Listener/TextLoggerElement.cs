@@ -10,11 +10,6 @@ namespace MSyics.Traceyi.Configration
     public abstract class TextLoggerElement : TraceEventListenerElement
     {
         /// <summary>
-        /// 改行文字を取得または設定します。
-        /// </summary>
-        public string NewLine { get; set; } = Environment.NewLine;
-
-        /// <summary>
         /// 文字エンコーディングの値を取得または設定します。
         /// </summary>
         public string Encoding { get; set; } = System.Text.Encoding.UTF8.CodePage.ToString();
@@ -23,6 +18,11 @@ namespace MSyics.Traceyi.Configration
         /// Layout 要素を取得または設定します。
         /// </summary>
         public LogLayoutElement Layout { get; set; } = new LogLayoutElement();
+
+        /// <summary>
+        /// 改行文字を取得または設定します。
+        /// </summary>
+        public string NewLine { get; set; } = Environment.NewLine;
 
         /// <summary>
         /// 文字エンコーディングを取得します。
@@ -37,7 +37,7 @@ namespace MSyics.Traceyi.Configration
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex.Message);
+                    Debug.WriteLine(ex);
                     return System.Text.Encoding.Default;
                 }
             }
@@ -49,7 +49,7 @@ namespace MSyics.Traceyi.Configration
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex.Message);
+                    Debug.WriteLine(ex);
                     return System.Text.Encoding.Default;
                 }
             }

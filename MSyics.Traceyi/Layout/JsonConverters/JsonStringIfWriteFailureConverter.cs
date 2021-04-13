@@ -43,7 +43,7 @@ namespace MSyics.Traceyi.Layout
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"{value}, {ex.Message}");
+                Debug.WriteLine($"{value}, {ex}");
                 JsonSerializer.Serialize(writer, value.ToString(), options);
             }
         }

@@ -23,12 +23,14 @@ namespace MSyics.Traceyi.Configration
         public override ITraceEventListener GetRuntimeObject() =>
              new ConsoleLogger(Layout.GetRuntimeObject())
              {
+                 CloseTimeout = CloseTimeout,
+                 Coloring = (Coloring.Start, Coloring.Length),
+                 Encoding = GetEncoding(),
                  Name = Name,
                  NewLine = NewLine,
+                 UseAsync = UseAsync,
                  UseErrorStream = UseErrorStream,
-                 CloseTimeout = CloseTimeout,
-                 Encoding = GetEncoding(),
-                 Coloring = (Coloring.Start, Coloring.Length),
+                 UseLock = UseLock,
              };
     }
 

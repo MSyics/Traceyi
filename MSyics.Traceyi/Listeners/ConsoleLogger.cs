@@ -1,5 +1,6 @@
 ﻿using MSyics.Traceyi.Layout;
 using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace MSyics.Traceyi.Listeners
@@ -126,7 +127,7 @@ namespace MSyics.Traceyi.Listeners
                 Console.ForegroundColor = defaultColor;
             }
 #if NETCOREAPP
-            TextWriter.WriteLine(span[(start + length)..].ToString());
+                TextWriter.WriteLine(span[(start + length)..].ToString());
 #else
             TextWriter.WriteLine(span.Slice(start + length).ToString());
 #endif
