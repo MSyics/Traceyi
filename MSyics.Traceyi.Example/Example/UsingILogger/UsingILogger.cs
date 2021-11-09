@@ -1,62 +1,58 @@
 ﻿using Microsoft.Extensions.Logging;
-using System;
-using System.IO;
-using System.Threading.Tasks;
 
-namespace MSyics.Traceyi
+namespace MSyics.Traceyi;
+
+class UsingILogger : Example
 {
-    class UsingILogger : Example
+    ILogger logger;
+
+    public override string Name => nameof(UsingILogger);
+
+    public override void Setup()
     {
-        ILogger logger;
-
-        public override string Name => nameof(UsingILogger);
-
-        public override void Setup()
-        {
-            logger = LoggerFactory.
-                Create(builder =>
-                {
-                    builder.ClearProviders();
-                    builder.SetMinimumLevel(LogLevel.Trace);
-                    builder.AddTraceyi(@"Example\UsingILogger\traceyi.json");
-                }).
-                CreateLogger<UsingILogger>();
-        }
-
-        public override void Teardown()
-        {
-            Traceable.Shutdown();
-        }
-
-        public override async Task ShowAsync()
-        {
-            logger.GetContext().ActivityId = "AAA";
-            using var _ = logger.BeginScope(label: Name);
-            
-            await Task.Run(() =>
+        logger = LoggerFactory.
+            Create(builder =>
             {
-                logger.LogInformation("test:{test}", 1);
-                logger.LogCritical("test:{test}", x => x.test = 2);
-                logger.LogWarning(3, "test:{test}", 3);
-                logger.LogError(x => x.test = 4);
-                try
-                {
-                    File.Open("", FileMode.Open);
-                }
-                catch (Exception ex)
-                {
-                    logger.LogTrace(ex, "test:{test}", 5);
-                }
+                builder.ClearProviders();
+                builder.SetMinimumLevel(LogLevel.Trace);
+                builder.AddTraceyi(@"Example\UsingILogger\traceyi.json");
+            }).
+            CreateLogger<UsingILogger>();
+    }
 
-                try
-                {
-                    File.Open("", FileMode.Open);
-                }
-                catch (Exception ex)
-                {
-                    logger.LogDebug(6, ex, "test:{test}", x => x.test = 6);
-                }
-            });
-        }
+    public override void Teardown()
+    {
+        Traceable.Shutdown();
+    }
+
+    public override async Task ShowAsync()
+    {
+        logger.GetContext().ActivityId = "AAA";
+        using var _ = logger.BeginScope(label: Name);
+
+        await Task.Run(() =>
+        {
+            logger.LogInformation("test:{test}", 1);
+            logger.LogCritical("test:{test}", x => x.test = 2);
+            logger.LogWarning(3, "test:{test}", 3);
+            logger.LogError(x => x.test = 4);
+            try
+            {
+                File.Open("", FileMode.Open);
+            }
+            catch (Exception ex)
+            {
+                logger.LogTrace(ex, "test:{test}", 5);
+            }
+
+            try
+            {
+                File.Open("", FileMode.Open);
+            }
+            catch (Exception ex)
+            {
+                logger.LogDebug(6, ex, "test:{test}", x => x.test = 6);
+            }
+        });
     }
 }

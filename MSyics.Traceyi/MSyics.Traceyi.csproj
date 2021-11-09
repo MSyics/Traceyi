@@ -1,49 +1,53 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netcoreapp3.1;</TargetFrameworks>
-    <LangVersion>latest</LangVersion>
-    <SignAssembly>false</SignAssembly>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>6.0.0</Version>
-    <PackageId>Traceyi</PackageId>
-    <Authors>MSyics</Authors>
-    <Company>MSyics</Company>
-    <Product>Traceyi</Product>
-    <PackageProjectUrl>https://github.com/MSyics/Traceyi</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/MSyics/Traceyi</RepositoryUrl>
-    <PackageLicenseUrl></PackageLicenseUrl>
-    <Copyright>Copyright (c) 2021 MSyics</Copyright>
-    <Description>Traceyi is an asynchronous logging library</Description>
-    <Platforms>AnyCPU;x64</Platforms>
-    <PackageTags>logging trace async</PackageTags>
-    <AssemblyVersion>6.0.0.0</AssemblyVersion>
-    <FileVersion>6.0.0.0</FileVersion>
-    <PackageVersion>6.0.0-alpha4</PackageVersion>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;netcoreapp3.1;net6.0;</TargetFrameworks>
+		<LangVersion>latest</LangVersion>
+		<SignAssembly>false</SignAssembly>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<Version>6.0.0</Version>
+		<PackageId>Traceyi</PackageId>
+		<Authors>MSyics</Authors>
+		<Company>MSyics</Company>
+		<Product>Traceyi</Product>
+		<PackageProjectUrl>https://github.com/MSyics/Traceyi</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/MSyics/Traceyi</RepositoryUrl>
+		<PackageLicenseUrl></PackageLicenseUrl>
+		<Copyright>Copyright (c) 2021 MSyics</Copyright>
+		<Description>Traceyi is an asynchronous logging library</Description>
+		<Platforms>AnyCPU;x64</Platforms>
+		<PackageTags>logging trace async</PackageTags>
+		<AssemblyVersion>6.0.0.0</AssemblyVersion>
+		<FileVersion>6.0.0.0</FileVersion>
+		<PackageVersion>6.0.0</PackageVersion>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<Nullable>disable</Nullable>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<DebugType>embedded</DebugType>
+		<UserSecretsId>5afdd721-5a02-4b78-b691-de5ab01c0f15</UserSecretsId>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-    <DocumentationFile>bin\Release\netcoreapp3.1\MSyics.Traceyi.xml</DocumentationFile>
-    <NoWarn>1701;1702;1705,1591</NoWarn>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+		<DocumentationFile>bin\Release\netcoreapp3.1\MSyics.Traceyi.xml</DocumentationFile>
+		<NoWarn>1701;1702;1705,1591</NoWarn>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DebugType>portable</DebugType>
-    <DebugSymbols>true</DebugSymbols>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+		<DebugType>portable</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="5.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="5.0.0" />
-    <PackageReference Include="System.Threading.Channels" Version="5.0.0" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="6.0.0" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Configuration" Version="6.0.0" />
+		<PackageReference Include="System.Threading.Channels" Version="6.0.0" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Update="Traceyi.json">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+	<ItemGroup>
+		<None Update="Traceyi.json">
+			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
 
 </Project>

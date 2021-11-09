@@ -4,7 +4,7 @@ namespace MSyics.Traceyi
 {
     class Program : ExampleAggregator
     {
-        static async Task Main(string[] args)
+        static async Task Main()
         {
             await new Program().
 
@@ -18,12 +18,12 @@ namespace MSyics.Traceyi
                 //Add<UsingLayout>().
                 //Add<UsingCustomTraceListener>().
                 //Add<UsingShiftJIS>().
-                Add<UsingAsync>().
-                //Add<UsingArchive>().
-
+                //Add<UsingAsync>().
+                Add<UsingArchive>().
                 //Add<UsingILogger>().
+                //Add<UsingDatabase>().
 
-                Add<UsingDatabase>().
+                //Add<DebugCheck>().
 
                 ShowAsync();
         }

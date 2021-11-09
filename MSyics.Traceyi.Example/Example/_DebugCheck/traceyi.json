@@ -11,7 +11,7 @@
         {
           "Name": "console",
           "Layout": {
-            "Format": "{@=>json}"
+            "Format": "{action| ,8:L} {traced} {@=>json}"
           }
         }
       ]

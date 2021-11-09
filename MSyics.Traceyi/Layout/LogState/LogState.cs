@@ -1,49 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 using System.Text.Json.Serialization;
 
-namespace MSyics.Traceyi.Layout
+namespace MSyics.Traceyi.Layout;
+
+/// <summary>
+/// 記録データを表します。
+/// </summary>
+public class LogState
 {
     /// <summary>
-    /// 記録データを表します。
+    /// 記録データのメンバー一覧を取得または設定します。
     /// </summary>
-    public class LogState
+    [JsonExtensionData]
+    public IDictionary<string, object> Members { get; set; }
+
+    public override string ToString()
     {
-        /// <summary>
-        /// 記録データのメンバー一覧を取得または設定します。
-        /// </summary>
-        [JsonExtensionData]
-        public IDictionary<string, object> Members { get; set; }
+        if (Members.Count == 0) return string.Empty;
 
-        public override string ToString()
+        StringBuilder sb = new();
+        Format(Members.First());
+        foreach (var item in Members.Skip(1))
         {
-            if (Members.Count == 0) return string.Empty;
+            sb.Append('\t');
+            Format(item);
+        }
+        return sb.ToString();
 
-            StringBuilder sb = new();
-            Format(Members.First());
-            foreach (var item in Members.Skip(1))
+        void Format(KeyValuePair<string, object> item)
+        {
+            switch (item.Value)
             {
-                sb.Append('\t');
-                Format(item);
-            }
-            return sb.ToString();
-
-            void Format(KeyValuePair<string, object> item)
-            {
-                switch (item.Value)
-                {
-                    case TimeSpan:
-                        sb.AppendFormat("{0:d\\.hh\\:mm\\:ss\\.fffffff}", item.Value);
-                        break;
-                    case DateTimeOffset:
-                        sb.AppendFormat("{0:yyyy-MM-ddTHH:mm:ss.fffffffzzz}", item.Value);
-                        break;
-                    default:
-                        sb.AppendFormat("{0}", item.Value);
-                        break;
-                }
+                case TimeSpan:
+                    sb.AppendFormat("{0:d\\.hh\\:mm\\:ss\\.fffffff}", item.Value);
+                    break;
+                case DateTimeOffset:
+                    sb.AppendFormat("{0:yyyy-MM-ddTHH:mm:ss.fffffffzzz}", item.Value);
+                    break;
+                default:
+                    sb.AppendFormat("{0}", item.Value);
+                    break;
             }
         }
     }

@@ -1,54 +1,51 @@
-﻿using System.Threading.Tasks;
+﻿namespace MSyics.Traceyi;
 
-namespace MSyics.Traceyi
+class UsingScope : Example
 {
-    class UsingScope : Example
+    public override string Name => nameof(UsingScope);
+
+    public override void Setup()
     {
-        public override string Name => nameof(UsingScope);
+        Traceable.Add(@"example\UsingScope\traceyi.json");
+        Tracer = Traceable.Get();
+    }
 
-        public override void Setup()
+    public override Task ShowAsync()
+    {
+        Tracer.Information("out of scope");
+
+        using (Tracer.Scope(label: nameof(ShowAsync)))
         {
-            Traceable.Add(@"example\UsingScope\traceyi.json");
-            Tracer = Traceable.Get();
+            FireOne();
         }
+        Tracer.Stop("out of scope");
 
-        public override Task ShowAsync()
-        {
-            Tracer.Information("out of scope");
+        return Task.CompletedTask;
+    }
 
-            using (Tracer.Scope(label: nameof(ShowAsync)))
-            { 
-                Method_001();
-            }
-            Tracer.Stop("out of scope");
+    private void FireOne()
+    {
+        using var _ = Tracer.Scope(label: nameof(FireOne));
 
-            return Task.CompletedTask;
-        }
+        FireTwo();
 
-        private void Method_001()
-        {
-            using var _ = Tracer.Scope(label: nameof(Method_001));
+        Tracer.Stop();
+        Tracer.Start(label: $"{nameof(FireOne)}`");
+    }
 
-            Method_002();
+    private void FireTwo()
+    {
+        using var _ = Tracer.Scope(label: nameof(FireTwo));
+        FireThree();
+    }
 
-            Tracer.Stop();
-            Tracer.Start(label: $"{nameof(Method_001)}`");
-        }
+    private void FireThree()
+    {
+        using var _ = Tracer.Scope(label: nameof(FireThree));
+    }
 
-        private void Method_002()
-        {
-            using var _ = Tracer.Scope(label: nameof(Method_002));
-            Method_003();
-        }
-
-        private void Method_003()
-        {
-            using var _ = Tracer.Scope(label: nameof(Method_003));
-        }
-
-        public override void Teardown()
-        {
-            Traceable.Shutdown();
-        }
+    public override void Teardown()
+    {
+        Traceable.Shutdown();
     }
 }

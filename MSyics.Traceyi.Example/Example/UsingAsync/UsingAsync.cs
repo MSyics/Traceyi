@@ -3,65 +3,64 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace MSyics.Traceyi
+namespace MSyics.Traceyi;
+
+class UsingAsync : Example
 {
-    class UsingAsync : Example
+    public override string Name => nameof(UsingAsync);
+
+    public override void Setup()
     {
-        public override string Name => nameof(UsingAsync);
+        Traceable.Add(@"example\UsingAsync\traceyi.json");
+        Tracer = Traceable.Get();
+    }
 
-        public override void Setup()
+    private readonly Stopwatch sw = new();
+
+    public override async Task ShowAsync()
+    {
+        sw.Start();
+
+        Tracer.Context.ActivityId = "A1";
+        Tracer.Information("{i}", x => x.i = 100);
+
+        using (Tracer.Scope("{i}", x => x.i = 1))
         {
-            Traceable.Add(@"example\UsingAsync\traceyi.json");
-            Tracer = Traceable.Get();
+            await Task.
+                WhenAll(Enumerable.
+                Range(1, 10000).
+                Select(x => Hoge(x)).
+                ToArray());
+
+            Tracer.Information("{i}", x => x.i = 1);
+            Tracer.Start("{i}", x => x.i = 1.1);
         }
+        Console.WriteLine(sw.ElapsedMilliseconds);
+    }
 
-        private readonly Stopwatch sw = new();
-
-        public override async Task ShowAsync()
+    public async Task Hoge(object obj)
+    {
+        Tracer.Context.ActivityId = "A2";
+        using (Tracer.Scope("{i}", x => x.i = 2))
         {
-            sw.Start();
-
-            Tracer.Context.ActivityId = "A1";
-            Tracer.Information("{i}", x => x.i = 100);
-
-            using (Tracer.Scope("{i}", x => x.i = 1))
+            await Task.Run(() =>
             {
-                await Task.
-                    WhenAll(Enumerable.
-                    Range(1, 10000).
-                    Select(x => Hoge(x)).
-                    ToArray());
-
-                Tracer.Information("{i}", x => x.i = 1);
-                Tracer.Start("{i}", x => x.i = 1.1);
-            }
-            Console.WriteLine(sw.ElapsedMilliseconds);
-        }
-
-        public async Task Hoge(object obj)
-        {
-            Tracer.Context.ActivityId = "A2";
-            using (Tracer.Scope("{i}", x => x.i = 2))
-            {
-                await Task.Run(() =>
+                Tracer.Context.ActivityId = "A3";
+                using (Tracer.Scope("{i}", x => x.i = 3))
                 {
-                    Tracer.Context.ActivityId = "A3";
-                    using (Tracer.Scope("{i}", x => x.i = 3))
-                    {
-                        Tracer.Information("3 {i}", x => x.i = obj);
-                    }
-                });
+                    Tracer.Information("3 {i}", x => x.i = obj);
+                }
+            });
 
-                Tracer.Information("2 {i}", x => x.i = obj);
-                Tracer.Start("{i}", x => x.i = 2.2);
-            }
+            Tracer.Information("2 {i}", x => x.i = obj);
+            Tracer.Start("{i}", x => x.i = 2.2);
         }
+    }
 
-        public override void Teardown()
-        {
-            Traceable.Shutdown();
-            sw.Stop();
-            Console.WriteLine(sw.ElapsedMilliseconds);
-        }
+    public override void Teardown()
+    {
+        Traceable.Shutdown();
+        sw.Stop();
+        Console.WriteLine(sw.ElapsedMilliseconds);
     }
 }

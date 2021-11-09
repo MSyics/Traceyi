@@ -1,39 +1,36 @@
-﻿using System.Threading.Tasks;
+﻿namespace MSyics.Traceyi;
 
-namespace MSyics.Traceyi
+class UsingTraceMethod : Example
 {
-    class UsingTraceMethod : Example
+    public override string Name => nameof(UsingTraceMethod);
+
+    public override void Setup()
     {
-        public override string Name => nameof(UsingTraceMethod);
+        Traceable.Add(@"Example\UsingTraceMethod\traceyi.json");
+        Tracer = Traceable.Get();
+    }
 
-        public override void Setup()
+    public override void Teardown()
+    {
+        Traceable.Shutdown();
+    }
+
+    public override Task ShowAsync()
+    {
+        using (Tracer.Scope(label: Name))
         {
-            Traceable.Add(@"Example\UsingTraceMethod\traceyi.json");
-            Tracer = Traceable.Get();
+            Tracer.Start(Name);
+
+            Tracer.Trace(Name);
+            Tracer.Debug(Name);
+            Tracer.Information(Name);
+            Tracer.Warning(Name);
+            Tracer.Error(Name);
+            Tracer.Critical(Name);
+
+            Tracer.Stop(Name);
         }
 
-        public override void Teardown()
-        {
-            Traceable.Shutdown();
-        }
-
-        public override Task ShowAsync()
-        {
-            using (Tracer.Scope(label: Name))
-            {
-                Tracer.Start(Name);
-                
-                Tracer.Trace(Name);
-                Tracer.Debug(Name);
-                Tracer.Information(Name);
-                Tracer.Warning(Name);
-                Tracer.Error(Name);
-                Tracer.Critical(Name);
-
-                Tracer.Stop(Name);
-            }
-
-            return Task.CompletedTask;
-        }
+        return Task.CompletedTask;
     }
 }
