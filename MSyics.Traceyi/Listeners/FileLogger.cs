@@ -80,7 +80,7 @@ public class FileLogger : TextLogger
             formatProvider,
             FormattedPath,
             DateTimeOffset.Now,
-            Thread.CurrentThread.ManagedThreadId,
+            Environment.CurrentManagedThreadId,
             e.ProcessId,
             e.ProcessName,
             e.MachineName,

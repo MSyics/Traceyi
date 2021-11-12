@@ -24,9 +24,9 @@
           "UseLock": false,
           "UseAsync": true,
           "UseMutex": true,
-          "KeepFilesOpen": true,
-          "MaxLength": 10240,
-          "MaxArchiveCount": 10000,
+          "KeepFilesOpen": false,
+          "MaxLength": 102400,
+          "MaxArchiveCount": 3,
           "Path": "UsingArchive\\app.log"
         },
         {
@@ -35,9 +35,9 @@
           "UseLock": false,
           "UseAsync": true,
           "UseMutex": true,
-          "KeepFilesOpen": true,
-          "MaxLength": 10240,
-          "MaxArchiveCount": 10000,
+          "KeepFilesOpen": false,
+          "MaxLength": 102400,
+          "MaxArchiveCount": 4,
           "Path": "UsingArchive\\app.log"
         }
       ]

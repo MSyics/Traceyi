@@ -13,14 +13,14 @@ public class ConsoleLogger : TextLogger
     /// クラスのインスタンスを初期化します。
     /// </summary>
     public ConsoleLogger(ILogLayout layout) :
-        base(System.IO.TextWriter.Null, layout)
+        base(TextWriter.Null, layout)
     {
     }
 
     /// <summary>
     /// クラスのインスタンスを初期化します。
     /// </summary>
-    public ConsoleLogger() : base(System.IO.TextWriter.Null)
+    public ConsoleLogger() : base(TextWriter.Null)
     {
     }
 

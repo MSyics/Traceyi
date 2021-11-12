@@ -5,7 +5,7 @@ namespace MSyics.Traceyi.Listeners;
 /// <summary>
 /// トレースイベントを受信します。これは抽象クラスです。
 /// </summary>
-public abstract class TraceEventListener : ITraceEventListener, IDisposable
+public abstract class TraceEventListener : ITraceEventListener, IDisposable, IAsyncDisposable
 {
     #region Static Members
     protected static readonly object GlobalLock = new();
@@ -111,9 +111,6 @@ public abstract class TraceEventListener : ITraceEventListener, IDisposable
     /// </summary>
     public bool Disposed { get; private set; } = false;
 
-    /// <summary>
-    /// 使用しているリソースを破棄します。
-    /// </summary>
     public void Dispose()
     {
         Dispose(true);
@@ -127,6 +124,24 @@ public abstract class TraceEventListener : ITraceEventListener, IDisposable
 
         cts.Cancel(false);
         channel.Close(CloseTimeout);
+
+        if (disposing) { DisposeManagedResources(); }
+        DisposeUnmanagedResources();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        await DisposeAsync(true);
+        GC.SuppressFinalize(this);
+    }
+
+    private async ValueTask DisposeAsync(bool disposing)
+    {
+        if (Disposed) { return; }
+        Disposed = true;
+
+        cts.Cancel(false);
+        await channel.CloseAsync(CloseTimeout);
 
         if (disposing) { DisposeManagedResources(); }
         DisposeUnmanagedResources();

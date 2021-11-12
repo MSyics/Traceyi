@@ -10,6 +10,10 @@
       "Console": [
         {
           "Name": "console",
+          "Coloring": {
+            "start": 0,
+            "length": 3
+          },
           "Layout": {
             "Format": "{action| ,8:L} {traced} {@=>json}"
           }

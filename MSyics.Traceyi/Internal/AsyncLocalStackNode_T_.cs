@@ -6,7 +6,7 @@ internal sealed class AsyncLocalStackNode<T>
     {
         Element = element;
         Prev = prev;
-        Count = prev == null ? 1 : prev.Count + 1;
+        Count = prev is null ? 1 : prev.Count + 1;
     }
 
     public int Count { get; }

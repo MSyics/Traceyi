@@ -15,7 +15,7 @@ internal class TraceEventChannel
     {
         try
         {
-            while (await reader.WaitToReadAsync(token))
+            while (await reader.WaitToReadAsync(token).ConfigureAwait(false))
             {
                 while (reader.TryRead(out var item))
                 {
@@ -57,7 +57,9 @@ internal class TraceEventChannel
         }
     }
 
-    public void Close(TimeSpan timeout)
+    public void Close(TimeSpan timeout) => CloseAsync(timeout).GetAwaiter().GetResult();
+
+    public async Task CloseAsync(TimeSpan timeout)
     {
         if (!Running) return;
         Running = false;
@@ -66,7 +68,7 @@ internal class TraceEventChannel
         cts.CancelAfter(timeout);
         try
         {
-            Task.WhenAll(tasks).GetAwaiter().GetResult();
+            await Task.WhenAll(tasks).ConfigureAwait(false);
         }
         catch (OperationCanceledException) { }
         catch (Exception ex)
@@ -87,12 +89,12 @@ internal class TraceEventChannel
                 int index = 0;
                 try
                 {
-                    while (await reader.WaitToReadAsync(cts.Token))
+                    while (await reader.WaitToReadAsync(cts.Token).ConfigureAwait(false))
                     {
                         while (reader.TryRead(out var item))
                         {
                             if (cts.Token.IsCancellationRequested) return;
-                            await channels[index].Writer.WriteAsync(item);
+                            await channels[index].Writer.WriteAsync(item).ConfigureAwait(false);
                             index = (index + 1) % demux;
                         }
                     }

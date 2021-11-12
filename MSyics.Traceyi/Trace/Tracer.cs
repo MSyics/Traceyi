@@ -10,7 +10,7 @@ public sealed class Tracer
     /// <summary>
     /// スレッドに関連付いたトレース基本情報を取得します。
     /// </summary>
-    public TraceContext Context => Traceable.Context;
+    public static TraceContext Context => Traceable.Context;
 
     /// <summary>
     /// 名前を取得します。
@@ -31,7 +31,7 @@ public sealed class Tracer
     {
         if (!Filters.Contains(action)) return;
 
-        Tracing?.Invoke(this, new TraceEventArgs(Context.CurrentScope, DateTimeOffset.Now, action, message, extensions));
+        Tracing?.Invoke(this, new TraceEventArgs(Tracer.Context.CurrentScope, DateTimeOffset.Now, action, message, extensions));
     }
 
     internal void RaiseTracing(TraceScope scope, DateTimeOffset traced, TraceAction action, object message, Action<dynamic> extensions)
@@ -128,14 +128,14 @@ public sealed class Tracer
     {
         var scope = new TraceScope(withEntry)
         {
-            Label = label ?? Context.CurrentScope.Label,
+            Label = label ?? Tracer.Context.CurrentScope.Label,
             Id = $"{DateTimeOffset.Now.Ticks:x16}",
-            ParentId = Context.CurrentScope.Id,
-            Depth = Context.ScopeStack.Count + 1,
+            ParentId = Tracer.Context.CurrentScope.Id,
+            Depth = Tracer.Context.ScopeStack.Count + 1,
             Started = DateTimeOffset.Now,
         };
 
-        Context.ScopeStack.Push(scope);
+        Tracer.Context.ScopeStack.Push(scope);
         RaiseTracing(scope, scope.Started, TraceAction.Start, message, extensions);
         return scope.Id;
     }
@@ -147,14 +147,14 @@ public sealed class Tracer
     /// </summary>
     public void Stop(object message, Action<dynamic> extensions = null)
     {
-        var scope = Context.CurrentScope;
+        var scope = Tracer.Context.CurrentScope;
 
         RaiseTracing(scope, DateTimeOffset.Now, TraceAction.Stop, message, extensions);
 
         if (scope.WithEntry) return;
-        if (Context.ScopeStack.Count == 0) return;
+        if (Tracer.Context.ScopeStack.Count == 0) return;
 
-        Context.ScopeStack.TryPop();
+        Tracer.Context.ScopeStack.TryPop();
     }
 
     /// <summary>
@@ -166,7 +166,7 @@ public sealed class Tracer
     {
         for (; ; )
         {
-            var scope = Context.CurrentScope;
+            var scope = Tracer.Context.CurrentScope;
 
             if (scopeId == scope.Id)
             {
@@ -177,9 +177,9 @@ public sealed class Tracer
                 RaiseTracing(scope, stopped, TraceAction.Stop, null, null);
             }
 
-            if (Context.ScopeStack.Count == 0) break;
+            if (Tracer.Context.ScopeStack.Count == 0) break;
 
-            Context.ScopeStack.TryPop();
+            Tracer.Context.ScopeStack.TryPop();
 
             if (scopeId == scope.Id) break;
         }

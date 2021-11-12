@@ -20,7 +20,7 @@ internal sealed class AsyncLocalStack<T> : IEnumerable<T>, IReadOnlyCollection<T
     public T Pop()
     {
         var node = local.Value;
-        if (node == null)
+        if (node is null)
         {
             throw new InvalidOperationException("Stack is empty.");
         }
@@ -34,7 +34,7 @@ internal sealed class AsyncLocalStack<T> : IEnumerable<T>, IReadOnlyCollection<T
     public bool TryPop(out T value)
     {
         var node = local.Value;
-        if (node == null)
+        if (node is null)
         {
             value = default;
             return false;
@@ -51,7 +51,7 @@ internal sealed class AsyncLocalStack<T> : IEnumerable<T>, IReadOnlyCollection<T
     public bool TryPop()
     {
         var node = local.Value;
-        if (node == null)
+        if (node is null)
         {
             return false;
         }
@@ -69,7 +69,7 @@ internal sealed class AsyncLocalStack<T> : IEnumerable<T>, IReadOnlyCollection<T
     /// スタックの先頭にあるオブジェクトを削除しないで返します。
     /// </summary>
     /// <returns></returns>
-    public T Peek() => local.Value == null ? default : local.Value.Element;
+    public T Peek() => local.Value is null ? default : local.Value.Element;
 
     /// <summary>
     /// スタックからすべてのオブジェクトを削除します。
@@ -79,7 +79,7 @@ internal sealed class AsyncLocalStack<T> : IEnumerable<T>, IReadOnlyCollection<T
     /// <summary>
     /// スタックが持つオブジェクト数を取得します。
     /// </summary>
-    public int Count => local.Value == null ? 0 : local.Value.Count;
+    public int Count => local.Value is null ? 0 : local.Value.Count;
 
     int ICollection.Count => Count;
 
@@ -98,7 +98,7 @@ internal sealed class AsyncLocalStack<T> : IEnumerable<T>, IReadOnlyCollection<T
 
     IEnumerator<T> IEnumerable<T>.GetEnumerator()
     {
-        for (var node = local.Value; node != null; node = node.Prev)
+        for (var node = local.Value; node is not null; node = node.Prev)
         {
             yield return node.Element;
         }

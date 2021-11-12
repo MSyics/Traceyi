@@ -18,8 +18,8 @@ namespace MSyics.Traceyi
                 //Add<UsingLayout>().
                 //Add<UsingCustomTraceListener>().
                 //Add<UsingShiftJIS>().
-                //Add<UsingAsync>().
-                Add<UsingArchive>().
+                Add<UsingAsync>().
+                //Add<UsingArchive>().
                 //Add<UsingILogger>().
                 //Add<UsingDatabase>().
 

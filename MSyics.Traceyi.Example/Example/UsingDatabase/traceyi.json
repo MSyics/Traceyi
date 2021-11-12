@@ -2,7 +2,7 @@
   "Traceyi": {
     "Tracer": [
       {
-        "Listeners": [ "db", "console" ],
+        "Listeners": [ "db", "1console" ],
         "Filters": "all"
       }
     ],
@@ -12,7 +12,7 @@
           "Name": "db",
           "UseAsync": true,
           "UseLock": false,
-          "Demun": 4,
+          "Demux": 4,
           "Chunk": 100,
           "ChunkTimeout": "0:0:1.00"
         }

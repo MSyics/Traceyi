@@ -19,23 +19,16 @@ namespace MSyics.Traceyi
 
         public override Task ShowAsync()
         {
-            //Tracer.Information();
-
-
-
-
-
+            Tracer.Information($"hogehoge");
             using (Tracer.Scope(label: Name))
             {
                 Tracer.Start(Name);
-                
                 Tracer.Trace(Name);
                 Tracer.Debug(Name);
                 Tracer.Information(Name);
                 Tracer.Warning(Name);
                 Tracer.Error(Name);
                 Tracer.Critical(Name);
-
                 Tracer.Stop(Name);
             }
 

@@ -57,5 +57,10 @@ namespace MSyics.Traceyi
         public void Dispose()
         {
         }
+
+        public ValueTask DisposeAsync()
+        {
+            return ValueTask.CompletedTask;
+        }
     }
 }

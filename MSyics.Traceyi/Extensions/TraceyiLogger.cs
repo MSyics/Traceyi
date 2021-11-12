@@ -78,7 +78,7 @@ internal class TraceyiLogger : ILogger
     }
     #endregion
 
-    private bool TryGetTraceAction(LogLevel logLevel, out TraceAction traceAction)
+    private static bool TryGetTraceAction(LogLevel logLevel, out TraceAction traceAction)
     {
         switch (logLevel)
         {
@@ -139,9 +139,9 @@ internal class TraceyiLogger : ILogger
         return true;
     }
 
-    private void MakeExtensions(ref dynamic x, IEnumerable<KeyValuePair<string, object>> items, EventId eventId = default, Exception exception = null)
+    private static void MakeExtensions(ref dynamic x, IEnumerable<KeyValuePair<string, object>> items, EventId eventId = default, Exception exception = null)
     {
-        MakeExtensions(ref x, eventId, exception);
+        TraceyiLogger.MakeExtensions(ref x, eventId, exception);
 
         var extensions = ((DictionaryedDynamicObject)x).Members;
         foreach (var item in items.Where(x => x.Key != OriginalFormatKeyName).ToArray())
@@ -157,7 +157,7 @@ internal class TraceyiLogger : ILogger
         }
     }
 
-    private void MakeExtensions(ref dynamic x, EventId eventId = default, Exception exception = null)
+    private static void MakeExtensions(ref dynamic x, EventId eventId = default, Exception exception = null)
     {
         if (eventId != default)
         {
@@ -169,7 +169,7 @@ internal class TraceyiLogger : ILogger
             }
         }
 
-        if (exception != null)
+        if (exception is not null)
         {
             x.exception = exception;
         }

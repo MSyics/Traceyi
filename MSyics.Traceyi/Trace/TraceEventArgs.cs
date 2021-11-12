@@ -87,7 +87,7 @@ public sealed class TraceEventArgs : EventArgs
     /// <summary>
     /// マネージスレッドの一意な識別子を取得します。
     /// </summary>
-    public int ThreadId { get; } = Thread.CurrentThread.ManagedThreadId;
+    public int ThreadId { get; } = Environment.CurrentManagedThreadId;
 
     /// <summary>
     /// プロセスの一意な識別子を取得します。
@@ -111,7 +111,7 @@ public sealed class TraceEventArgs : EventArgs
     {
         get
         {
-            if (_message == null && messageLayout != null)
+            if (_message is null && messageLayout is not null)
             {
                 var parts = Extensions.
                     Select(x => new LogLayoutPart
@@ -149,7 +149,7 @@ public sealed class TraceEventArgs : EventArgs
     {
         get
         {
-            if (_extensions == null)
+            if (_extensions is null)
             {
                 var obj = new DictionaryedDynamicObject();
                 try

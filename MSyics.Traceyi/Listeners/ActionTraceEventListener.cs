@@ -11,4 +11,10 @@ internal class ActionTraceEventListener : ITraceEventListener
     public void OnTracing(object sender, TraceEventArgs e) => Listener?.Invoke(e);
 
     public void Dispose() => Listener = null;
+
+    public ValueTask DisposeAsync()
+    {
+        Dispose();
+        return default;
+    }
 }

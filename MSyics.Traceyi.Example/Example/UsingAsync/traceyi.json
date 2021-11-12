@@ -24,10 +24,10 @@
           "MaxArchiveCount": 0,
           //"CloseTimeout": "0:0:0.200",
           //"Path": "app_{index}.log",
-          "Path": "app.log",
-          "Layout": {
-            //"format": "{action} {elapsed}"
-          }
+          "Path": "app.log"//,
+          //"Layout": {
+          //  "format": "{action} {elapsed} {@=>json}"
+          //}
         }
       ]
     }

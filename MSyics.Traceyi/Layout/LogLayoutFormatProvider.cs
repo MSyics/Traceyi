@@ -55,7 +55,7 @@ public sealed class LogLayoutFormatProvider : IFormatProvider, ICustomFormatter
     /// <param name="arg">書式指定するオブジェクト。</param>
     private static string Format(string format, object arg)
     {
-        if (arg == null) return string.Empty;
+        if (arg is null) return string.Empty;
 
         return arg switch
         {

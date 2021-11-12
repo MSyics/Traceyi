@@ -35,7 +35,7 @@ public static class Traceable
     {
         try
         {
-            Task.WhenAll(Listeners.Select(x => Task.Run(x.Dispose))).GetAwaiter().GetResult();
+            Task.WhenAll(Listeners.Select(x => x.DisposeAsync().AsTask())).GetAwaiter().GetResult();
         }
         catch (Exception ex)
         {
@@ -90,7 +90,7 @@ public static class Traceable
     /// <param name="usable">カスタムリスナーを登録することで構成情報からリスナーオブジェクトを取得できるようにします。</param>
     public static void Add(IConfiguration configuration, Action<ITraceEventListenerElementConfiguration> usable = null)
     {
-        if (configuration == null) return;
+        if (configuration is null) return;
 
         var tracerSection = configuration.GetSection("Traceyi:Tracer");
         if (!tracerSection.Exists()) return;

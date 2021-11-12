@@ -9,10 +9,12 @@ internal class FileStreamStore
 {
     readonly IFileStreamFactory factory;
     readonly Dictionary<string, FileStream> streams = new();
+    readonly object syncRoot;
 
     public FileStreamStore(IFileStreamFactory factory)
     {
         this.factory = factory;
+        syncRoot = ((ICollection)streams).SyncRoot;
     }
 
     /// <summary>
@@ -30,7 +32,7 @@ internal class FileStreamStore
     /// </summary>
     public bool TryGetLength(string path, out long length)
     {
-        lock (((ICollection)streams).SyncRoot)
+        lock (syncRoot)
         {
             if (streams.TryGetValue(path, out var stream) && stream.CanWrite)
             {
@@ -55,7 +57,7 @@ internal class FileStreamStore
     /// </summary>
     public FileStream GetOrAdd(string path)
     {
-        lock (((ICollection)streams).SyncRoot)
+        lock (syncRoot)
         {
             if (streams.TryGetValue(path, out var stream) && stream.CanWrite)
             {
@@ -77,7 +79,7 @@ internal class FileStreamStore
     {
         if (string.IsNullOrEmpty(path)) return;
 
-        lock (((ICollection)streams).SyncRoot)
+        lock (syncRoot)
         {
             if (!streams.TryGetValue(path, out var stream)) return;
 
@@ -93,7 +95,7 @@ internal class FileStreamStore
     {
         if (streams.Count == 0) return;
 
-        lock (((ICollection)streams).SyncRoot)
+        lock (syncRoot)
         {
             foreach (var stream in streams.Values)
             {
