@@ -10,9 +10,8 @@ public sealed class Tracer
     /// <summary>
     /// スレッドに関連付いたトレース基本情報を取得します。
     /// </summary>
-#pragma warning disable CA1822 // メンバーを static に設定します
-    public TraceContext Context => Traceable.Context;
-#pragma warning restore CA1822 // メンバーを static に設定します
+    public TraceContext Context => _context;
+    readonly TraceContext _context = Traceable.Context;
 
     /// <summary>
     /// 名前を取得します。

@@ -216,11 +216,12 @@ public sealed class LogLayoutFormatProvider : IFormatProvider, ICustomFormatter
     {
         if (arg is TraceEventArgs e)
         {
-            arg = logStateBuilder.SetEvent(e, GetLogStateMembersOfTraceEvent(left)).Build();
-            if (arg is null)
+            var logState = logStateBuilder.SetEvent(e, GetLogStateMembersOfTraceEvent(left)).Build();
+            if (logState is null)
             {
                 return Format(format, arg);
             }
+            arg = logState;
         }
 
         var options = right.Length > 1 && right[1].Trim().ToUpperInvariant() == IndentSpecifier
