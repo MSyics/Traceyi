@@ -32,7 +32,7 @@ namespace MSyics.Traceyi
             //    Tracer.Stop(Name);
             //}
 
-            var _ = Scope(0).Take(10).ToArray();
+            var _ = Scope(0).Take(5).ToArray();
 
             return Task.CompletedTask;
         }
@@ -41,6 +41,9 @@ namespace MSyics.Traceyi
         {
             using (Tracer.Scope(label: $"{count:00000}"))
             {
+                Tracer.Start($"{count:00000}-1");
+                Tracer.Start($"{count:00000}-2");
+                Tracer.Start($"{count:00000}-3");
                 yield return count;
 
                 foreach (var item in Scope(++count))
