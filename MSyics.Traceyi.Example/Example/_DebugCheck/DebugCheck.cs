@@ -17,18 +17,18 @@ class DebugCheck : Example
 
     public override Task ShowAsync()
     {
-        //Tracer.Information($"hogehoge");
-        //using (Tracer.Scope(label: Name))
-        //{
-        //    Tracer.Start(Name);
-        //    Tracer.Trace(Name);
-        //    Tracer.Debug(Name);
-        //    Tracer.Information(Name);
-        //    Tracer.Warning(Name);
-        //    Tracer.Error(Name);
-        //    Tracer.Critical(Name);
-        //    Tracer.Stop(Name);
-        //}
+        Tracer.Information($"hogehoge");
+        using (Tracer.Scope(label: Name))
+        {
+            Tracer.Start(Name);
+            Tracer.Trace(Name);
+            Tracer.Debug(Name);
+            Tracer.Information(Name);
+            Tracer.Warning(Name);
+            Tracer.Error(Name);
+            Tracer.Critical(Name);
+            Tracer.Stop(Name);
+        }
 
         //var _ = Scope(0).Take(5).ToArray();
 

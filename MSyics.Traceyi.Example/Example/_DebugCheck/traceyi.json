@@ -2,21 +2,35 @@
   "Traceyi": {
     "Tracer": [
       {
-        "Listeners": [ "console" ],
+        "Listeners": [ "console", "console2" ],
         "Filters": "all"
       }
     ],
     "Listener": {
       "Console": [
         {
+          "useLock": true,
           "Name": "console",
           "Coloring": {
             "start": 0,
             "length": 3
           },
           "Layout": {
-            //"Format": "{@[action,traced,message,elapsed]=>json}{message=>json}{@[all]=>json}"
-            "Format": "{message}{@[extensions]=>json}"
+            "Format": "{@[action,traced,message,elapsed]=>json}{message=>json}{@[all]=>json}"
+            //"Format": "{message}{@[extensions]=>json}"
+          }
+        },
+        {
+          "useLock": true,
+          "Name": "console2",
+          "Coloring": {
+            "start": 0,
+            "length": 3
+          },
+          "Layout": {
+            "Format": "{action| ,12:L} {@}"
+            //"Format": "{action=>json}"
+            //"Format": "{message}{@[extensions]=>json}"
           }
         }
       ]

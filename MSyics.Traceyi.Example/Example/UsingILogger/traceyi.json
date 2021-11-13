@@ -16,7 +16,8 @@
             "length": 10
           },
           "Layout": {
-            "format": "{@=>json,indent}"
+            //"format": "{@=>json,indent}"
+            "format": "{@=>json}"
           }
         }
       ]

@@ -34,13 +34,13 @@ public sealed class LogLayoutFormatProvider : IFormatProvider, ICustomFormatter
             WriteIndented = true,
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
             Converters =
-                {
-                    new JsonStringEnumConverter(),
-                    new JsonStringTimeSpanConverter(),
-                    new JsonStringPolymorphicConverter<Exception>(),
-                    new JsonStringPolymorphicConverter<MemberInfo>(),
-                    new JsonStringIfWriteFailureConverter(),
-                }
+            {
+                new JsonStringEnumConverter(),
+                new JsonStringTimeSpanConverter(),
+                new JsonStringPolymorphicConverter<Exception>(),
+                new JsonStringPolymorphicConverter<MemberInfo>(),
+                new JsonStringIfWriteFailureConverter(),
+            }
         };
         NotIndentedOptions = new(IndentedOptions)
         {
@@ -101,7 +101,7 @@ public sealed class LogLayoutFormatProvider : IFormatProvider, ICustomFormatter
 
         if (arg is TraceEventArgs e)
         {
-            return logStateBuilder.SetEvent(e, GetLogStateMembersOfTraceEvent(format.AsSpan())).Build().ToString();
+            return logStateBuilder.SetEvent(e, GetLogStateMembersOfTraceEvent(ref format, format.AsSpan())).Build().ToString();
         }
 
         return Format(format, arg);
@@ -216,7 +216,7 @@ public sealed class LogLayoutFormatProvider : IFormatProvider, ICustomFormatter
     {
         if (arg is TraceEventArgs e)
         {
-            var logState = logStateBuilder.SetEvent(e, GetLogStateMembersOfTraceEvent(left)).Build();
+            var logState = logStateBuilder.SetEvent(e, GetLogStateMembersOfTraceEvent(ref format, left)).Build();
             if (logState is null)
             {
                 return Format(format, arg);
@@ -239,11 +239,15 @@ public sealed class LogLayoutFormatProvider : IFormatProvider, ICustomFormatter
         }
     }
 
-    private LogStateMembersOfTraceEvent GetLogStateMembersOfTraceEvent(ReadOnlySpan<char> span)
+    private LogStateMembersOfTraceEvent GetLogStateMembersOfTraceEvent(ref string format, ReadOnlySpan<char> span)
     {
-        LogStateMembersOfTraceEvent members = LogStateMembersOfTraceEvent.All;
+        if (logStateMembers.TryGetValue(format, out LogStateMembersOfTraceEvent members))
+        {
+            return members;
+        }
 
-        // TODO: cache
+        members = LogStateMembersOfTraceEvent.All;
+
         var startIndex = span.IndexOf('[');
         if (startIndex >= 0)
         {
@@ -259,6 +263,9 @@ public sealed class LogLayoutFormatProvider : IFormatProvider, ICustomFormatter
             }
         }
 
+        logStateMembers[format] = members;
         return members;
     }
+
+    private readonly Dictionary<string, LogStateMembersOfTraceEvent> logStateMembers = new();
 }
