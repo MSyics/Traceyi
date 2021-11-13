@@ -1,4 +1,5 @@
 ﻿using MSyics.Traceyi;
+using System.Runtime.CompilerServices;
 
 namespace Microsoft.Extensions.Logging;
 

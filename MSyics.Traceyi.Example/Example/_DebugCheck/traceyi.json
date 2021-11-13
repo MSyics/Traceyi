@@ -15,7 +15,7 @@
             "length": 3
           },
           "Layout": {
-            "Format": "{action| ,8:L} {traced} {@=>json}"
+            "Format": "{@[action,traced,elapsed]=>json}"
           }
         }
       ]

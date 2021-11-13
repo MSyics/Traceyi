@@ -8,8 +8,7 @@ public class JsonStringTimeSpanConverter : JsonConverter<TimeSpan>
 {
     readonly string format;
 
-    public JsonStringTimeSpanConverter(string format = "d\\.hh\\:mm\\:ss\\.fffffff") =>
-        this.format = format;
+    public JsonStringTimeSpanConverter(string format = "d\\.hh\\:mm\\:ss\\.fffffff") => this.format = format;
 
     public override TimeSpan Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) => throw new NotImplementedException();
 

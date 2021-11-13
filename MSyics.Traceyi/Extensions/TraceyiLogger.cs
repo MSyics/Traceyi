@@ -141,7 +141,7 @@ internal class TraceyiLogger : ILogger
 
     private static void MakeExtensions(ref dynamic x, IEnumerable<KeyValuePair<string, object>> items, EventId eventId = default, Exception exception = null)
     {
-        TraceyiLogger.MakeExtensions(ref x, eventId, exception);
+        MakeExtensions(ref x, eventId, exception);
 
         var extensions = ((DictionaryedDynamicObject)x).Members;
         foreach (var item in items.Where(x => x.Key != OriginalFormatKeyName).ToArray())
