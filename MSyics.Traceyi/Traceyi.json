@@ -118,7 +118,16 @@
             // 着色開始位置（省略：0）
             "start": 0,
             // 着色文字数（省略：1）
-            "length": 10
+            "length": 10,
+            // ConsoleColor 列挙型を文字列か数値で指定可
+            "forTrace": "DarkGreen",
+            "forDebug": "DarkGray",
+            "forInfo": "White",
+            "forWarning": "DarkYellow",
+            "forError": "Red",
+            "forCritical": "DarkRed",
+            "forStart": "DarkCyan",
+            "forStop": "DarkCyan"
           }
         }
       ],

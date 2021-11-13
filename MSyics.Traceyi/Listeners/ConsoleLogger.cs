@@ -1,4 +1,5 @@
-﻿using MSyics.Traceyi.Layout;
+﻿using MSyics.Traceyi.Configration;
+using MSyics.Traceyi.Layout;
 
 namespace MSyics.Traceyi.Listeners;
 
@@ -32,50 +33,62 @@ public class ConsoleLogger : TextLogger
     /// <summary>
     /// 文字の着色位置を取得または設定します。
     /// </summary>
-    public (int start, int length) Coloring { get; set; } = (0, 1);
+    public ConsoleColoringSettings Coloring { get; set; } = new ConsoleColoringSettings
+    {
+        Start = 0,
+        Length = 1,
+        ForTrace = ConsoleColor.DarkGreen,
+        ForDebug = ConsoleColor.DarkGray,
+        ForInfo = ConsoleColor.White,
+        ForWarning = ConsoleColor.DarkYellow,
+        ForError = ConsoleColor.Red,
+        ForCritical = ConsoleColor.DarkRed,
+        ForStart = ConsoleColor.DarkCyan,
+        ForStop = ConsoleColor.DarkCyan,
+    };
 
-    private bool TryGetColoringSettings(ReadOnlySpan<char> span, out int start, out int length, out bool toLast)
+    private bool TryGetColoringPosition(ReadOnlySpan<char> span, out int start, out int length, out bool toLast)
     {
         start = 0;
         length = 0;
         toLast = false;
 
-        if (Coloring.start < 0)
+        if (Coloring.Start < 0)
         {
-            if (Coloring.length < 0) return false;
+            if (Coloring.Length < 0) return false;
 
-            length = Coloring.start + Coloring.length;
+            length = Coloring.Start + Coloring.Length;
         }
         else
         {
-            if (Coloring.length < 0)
+            if (Coloring.Length < 0)
             {
-                double i = Coloring.start + Coloring.length;
+                double i = Coloring.Start + Coloring.Length;
                 if (i > span.Length) return false;
 
                 if (i < 0)
                 {
-                    length = Coloring.start;
+                    length = Coloring.Start;
                 }
                 else
                 {
-                    start = Coloring.start + Coloring.length;
-                    length = Math.Abs(Coloring.length);
+                    start = Coloring.Start + Coloring.Length;
+                    length = Math.Abs(Coloring.Start);
                 }
             }
             else
             {
-                if (Coloring.start > span.Length) return false;
+                if (Coloring.Start > span.Length) return false;
 
-                start = Coloring.start;
-                double i = Coloring.start + Coloring.length;
+                start = Coloring.Start;
+                double i = Coloring.Start + Coloring.Length;
                 if (i > span.Length - start)
                 {
                     length = span.Length - start;
                 }
                 else
                 {
-                    length = Coloring.length;
+                    length = Coloring.Length;
                 }
             }
         }
@@ -97,7 +110,7 @@ public class ConsoleLogger : TextLogger
         TextWriter = UseErrorStream ? Console.Error : Console.Out;
 
         var span = log.AsSpan();
-        if (!TryGetColoringSettings(span, out var start, out var length, out var toLast))
+        if (!TryGetColoringPosition(span, out var start, out var length, out var toLast))
         {
             TextWriter.WriteLine(log);
             return;
@@ -127,6 +140,7 @@ public class ConsoleLogger : TextLogger
         {
             Console.ForegroundColor = defaultColor;
         }
+
 #if NETCOREAPP
         TextWriter.WriteLine(span[(start + length)..].ToString());
 #else
@@ -142,15 +156,21 @@ public class ConsoleLogger : TextLogger
 
     protected void SetConsoleColor(TraceAction traceAction)
     {
-        Console.ForegroundColor = traceAction switch
+        var color = traceAction switch
         {
-            TraceAction.Trace => ConsoleColor.DarkGreen,
-            TraceAction.Debug => ConsoleColor.DarkGray,
-            TraceAction.Warning => ConsoleColor.DarkYellow,
-            TraceAction.Error => ConsoleColor.Red,
-            TraceAction.Critical => ConsoleColor.DarkRed,
-            TraceAction.Start or TraceAction.Stop => ConsoleColor.DarkCyan,
+            TraceAction.Trace => Coloring.ForTrace,
+            TraceAction.Debug => Coloring.ForDebug,
+            TraceAction.Info => Coloring.ForInfo,
+            TraceAction.Warning => Coloring.ForWarning,
+            TraceAction.Error => Coloring.ForError,
+            TraceAction.Critical => Coloring.ForCritical,
+            TraceAction.Start => Coloring.ForStart,
+            TraceAction.Stop => Coloring.ForStop,
             _ => defaultColor,
         };
+
+        if (!Enum.IsDefined(typeof(ConsoleColor), color)) return;
+
+        Console.ForegroundColor = color;
     }
 }

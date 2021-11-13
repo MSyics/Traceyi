@@ -15,7 +15,19 @@ public class ConsoleLoggerElement : TextLoggerElement
     /// <summary>
     /// 出力文字の色付け設定を取得または設定します。
     /// </summary>
-    public ConsoleColoringSettings Coloring { get; set; } = new() { Start = 0, Length = 1 };
+    public ConsoleColoringSettings Coloring { get; set; } = new()
+    {
+        Start = 0,
+        Length = 1,
+        ForTrace = ConsoleColor.DarkGreen,
+        ForDebug = ConsoleColor.DarkGray,
+        ForInfo = ConsoleColor.White,
+        ForWarning = ConsoleColor.DarkYellow,
+        ForError = ConsoleColor.Red,
+        ForCritical = ConsoleColor.DarkRed,
+        ForStart = ConsoleColor.DarkCyan,
+        ForStop = ConsoleColor.DarkCyan,
+    };
 
     /// <summary>
     /// 実行オブジェクトを取得します。
@@ -24,7 +36,7 @@ public class ConsoleLoggerElement : TextLoggerElement
          new ConsoleLogger(Layout.GetRuntimeObject())
          {
              CloseTimeout = CloseTimeout,
-             Coloring = (Coloring.Start, Coloring.Length),
+             Coloring = Coloring,
              Encoding = GetEncoding(),
              Name = Name,
              NewLine = NewLine,
