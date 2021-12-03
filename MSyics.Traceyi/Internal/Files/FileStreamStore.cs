@@ -93,7 +93,7 @@ internal class FileStreamStore
     /// </summary>
     public void Clear()
     {
-        if (streams.Count == 0) return;
+        if (streams.Count is 0) return;
 
         lock (syncRoot)
         {

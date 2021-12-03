@@ -23,7 +23,7 @@ public sealed class TraceContext
     /// <summary>
     /// 現在の操作スコープ情報を取得します。
     /// </summary>
-    public TraceScope CurrentScope => ScopeStack.Count == 0 ? TraceScope.NullScope : ScopeStack.Peek();
+    public TraceScope CurrentScope => ScopeStack.Count is 0 ? TraceScope.NullScope : ScopeStack.Peek();
 
     /// <summary>
     /// トレース操作スコープの一覧を取得します。

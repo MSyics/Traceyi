@@ -88,7 +88,7 @@ public sealed class LogLayoutConverter
 #else
         value = value.Slice(part.Name.Length).Trim();
 #endif
-        if (value.Length == 0) return true;
+        if (value.Length is 0) return true;
 
         var c = value[0];
         if (c is ':' or ',' or '|' or '[') return true;

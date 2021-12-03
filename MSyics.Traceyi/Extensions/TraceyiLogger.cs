@@ -109,7 +109,7 @@ internal class TraceyiLogger : ILogger
     private static bool GetKey(ReadOnlySpan<char> format, out string key)
     {
         var length = format.IndexOf("=>".AsSpan());
-        if (length == -1)
+        if (length is -1)
         {
             length = format.Length;
         }
@@ -125,7 +125,7 @@ internal class TraceyiLogger : ILogger
             ++i;
         }
 
-        if (i == 0)
+        if (i is 0)
         {
             key = string.Empty;
             return false;

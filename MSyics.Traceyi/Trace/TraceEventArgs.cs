@@ -31,7 +31,7 @@ public sealed class TraceEventArgs : EventArgs
         Traced = traced;
         Action = action;
         this.scope = scope;
-        Elapsed = scope.Depth == 0 || action == TraceAction.Start ? TimeSpan.Zero : traced - scope.Started;
+        Elapsed = scope.Depth is 0 || action is TraceAction.Start ? TimeSpan.Zero : traced - scope.Started;
 
         this.extensions = extensions;
         if (extensions is null)

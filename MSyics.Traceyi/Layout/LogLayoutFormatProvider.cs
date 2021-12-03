@@ -119,7 +119,7 @@ public sealed class LogLayoutFormatProvider : IFormatProvider, ICustomFormatter
         var customFormat = formats[1];
         var customFormats = customFormat.Split(',', ':');
 
-        if (customFormats.Length != 3)
+        if (customFormats.Length is not 3)
         {
             Debug.WriteLine($"The input string [{format}] is not in the correct format.");
             return Format(format, arg);
@@ -151,7 +151,7 @@ public sealed class LogLayoutFormatProvider : IFormatProvider, ICustomFormatter
 
         // 文字位置の取得
         var position = customFormats[2].ToUpperInvariant();
-        if (position.Length != 1)
+        if (position.Length is not 1)
         {
             Debug.WriteLine($"The input string [{format}] is not in the correct format.");
             return Format(format, arg);
@@ -253,9 +253,9 @@ public sealed class LogLayoutFormatProvider : IFormatProvider, ICustomFormatter
         {
             var endIndex = span.LastIndexOf(']');
 #if NETCOREAPP
-            var value = (endIndex == -1 ? span[startIndex..] : span[startIndex..endIndex]);
+            var value = (endIndex is -1 ? span[startIndex..] : span[startIndex..endIndex]);
 #else
-            var value = (endIndex == -1 ? span.Slice(startIndex) : span.Slice(startIndex, endIndex - startIndex));
+            var value = (endIndex is -1 ? span.Slice(startIndex) : span.Slice(startIndex, endIndex - startIndex));
 #endif
             if (Enum.TryParse<LogStateMembersOfTraceEvent>(value.TrimStart('[').TrimEnd(']').ToString(), true, out var result))
             {

@@ -49,7 +49,7 @@ public abstract class ChunkTraceEventListener : TraceEventListener
 
     private bool TryStartTimer()
     {
-        if (Interlocked.CompareExchange(ref timerRunning, 1, 0) == 0)
+        if (Interlocked.CompareExchange(ref timerRunning, 1, 0) is 0)
         {
             timer.Change(ChunkTimeout, Timeout.InfiniteTimeSpan);
             return true;
@@ -59,7 +59,7 @@ public abstract class ChunkTraceEventListener : TraceEventListener
 
     private bool TryStopTimer()
     {
-        if (Interlocked.CompareExchange(ref timerRunning, 0, 1) == 1)
+        if (Interlocked.CompareExchange(ref timerRunning, 0, 1) is 1)
         {
             timer.Change(Timeout.InfiniteTimeSpan, Timeout.InfiniteTimeSpan);
             return true;

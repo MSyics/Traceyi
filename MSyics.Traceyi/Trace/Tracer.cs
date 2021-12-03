@@ -153,7 +153,7 @@ public sealed class Tracer
         RaiseTracing(scope, DateTimeOffset.Now, TraceAction.Stop, message, extensions);
 
         if (scope.WithEntry) return;
-        if (Context.ScopeStack.Count == 0) return;
+        if (Context.ScopeStack.Count is 0) return;
 
         Context.ScopeStack.TryPop();
     }
@@ -178,7 +178,7 @@ public sealed class Tracer
                 RaiseTracing(scope, stopped, TraceAction.Stop, null, null);
             }
 
-            if (Context.ScopeStack.Count == 0) break;
+            if (Context.ScopeStack.Count is 0) break;
             
             Context.ScopeStack.TryPop();
             

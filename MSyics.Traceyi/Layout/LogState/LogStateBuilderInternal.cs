@@ -62,7 +62,7 @@ internal class LogStateBuilderInternal : ILogStateBuilder
 
     public LogState Build()
     {
-        if (members.Count == 0) return null;
+        if (members.Count is 0) return null;
         return new() { Members = members };
     }
 }

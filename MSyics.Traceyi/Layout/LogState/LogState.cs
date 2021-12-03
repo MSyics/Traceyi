@@ -16,7 +16,7 @@ public class LogState
 
     public override string ToString()
     {
-        if (Members.Count == 0) return string.Empty;
+        if (Members.Count is 0) return string.Empty;
 
         StringBuilder sb = new();
         Format(Members.First());

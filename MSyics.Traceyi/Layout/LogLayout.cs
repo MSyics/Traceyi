@@ -111,7 +111,7 @@ public sealed class LogLayout : ILogLayout
     private IDictionary<string, object> GetExtensions(ref TraceEventArgs e)
     {
         if (!hasExtensions) return null;
-        return e.Extensions.Count == 0 ? null : e.Extensions;
+        return e.Extensions.Count is 0 ? null : e.Extensions;
     }
 
     private TraceEventArgs GetEvnetArgs(ref TraceEventArgs e)
