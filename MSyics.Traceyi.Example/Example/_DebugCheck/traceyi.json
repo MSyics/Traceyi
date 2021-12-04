@@ -30,7 +30,7 @@
             "length": 3
           },
           "Layout": {
-            "Format": "{action| ,12:L} {@}"
+            //"Format": "{action| ,12:L} {@}"
             //"Format": "{action=>json}"
             //"Format": "{message}{@[extensions]=>json}"
           }

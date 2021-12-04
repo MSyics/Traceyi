@@ -17,13 +17,13 @@ namespace MSyics.Traceyi
                 //Add<UsingExtensions>().
                 //Add<UsingLayout>().
                 //Add<UsingCustomTraceListener>().
-                //Add<UsingShiftJIS>().
-                //Add<UsingAsync>().
+                Add<UsingShiftJIS>().
+                Add<UsingAsync>().
                 //Add<UsingArchive>().
                 //Add<UsingILogger>().
                 //Add<UsingDatabase>().
 
-                Add<DebugCheck>().
+                //Add<DebugCheck>().
 
                 ShowAsync();
         }

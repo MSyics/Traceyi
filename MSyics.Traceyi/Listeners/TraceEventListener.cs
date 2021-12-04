@@ -46,19 +46,12 @@ public abstract class TraceEventListener : ITraceEventListener, IDisposable, IAs
     /// <summary>
     /// トレースイベントを処理します。
     /// </summary>
-    public async void OnTracing(object sender, TraceEventArgs e)
+    public void OnTracing(object sender, TraceEventArgs e)
     {
-        if (cts.IsCancellationRequested) return;
+        if (cts.IsCancellationRequested) { return; }
         if (UseAsync)
         {
-            try
-            {
-                await WriteAsync(e).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex);
-            }
+            _ = WriteAsync(e);
         }
         else
         {
@@ -80,15 +73,17 @@ public abstract class TraceEventListener : ITraceEventListener, IDisposable, IAs
         {
             lock (GlobalLock)
             {
-                Write();
+                try
+                {
+                    WriteCore(e, index);
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex);
+                }
             }
         }
         else
-        {
-            Write();
-        }
-
-        void Write()
         {
             try
             {
@@ -104,7 +99,17 @@ public abstract class TraceEventListener : ITraceEventListener, IDisposable, IAs
     /// <summary>
     /// トレースイベント情報を書き込みます。
     /// </summary>
-    private ValueTask WriteAsync(TraceEventArgs e) => channel.WriteAsync(e);
+    private async ValueTask WriteAsync(TraceEventArgs e)
+    {
+        try
+        {
+            await channel.WriteAsync(e).ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex);
+        }
+    }
 
     /// <summary>
     /// リソースを破棄したかどうかを示す値を取得します。
