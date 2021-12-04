@@ -1,31 +1,30 @@
 ﻿using System.Threading.Tasks;
 
-namespace MSyics.Traceyi
+namespace MSyics.Traceyi;
+
+class Program : ExampleAggregator
 {
-    class Program : ExampleAggregator
+    static async Task Main()
     {
-        static async Task Main()
-        {
-            await new Program().
+        await new Program().
 
-                //Add<SetupByManual>().
-                //Add<SetupByJsonFile>().
-                //Add<SetupByConfiguration>().
+            //Add<SetupByManual>().
+            //Add<SetupByJsonFile>().
+            //Add<SetupByConfiguration>().
 
-                //Add<UsingTraceMethod>().
-                //Add<UsingScope>().
-                //Add<UsingExtensions>().
-                //Add<UsingLayout>().
-                //Add<UsingCustomTraceListener>().
-                Add<UsingShiftJIS>().
-                Add<UsingAsync>().
-                //Add<UsingArchive>().
-                //Add<UsingILogger>().
-                //Add<UsingDatabase>().
+            //Add<UsingTraceMethod>().
+            //Add<UsingScope>().
+            //Add<UsingExtensions>().
+            //Add<UsingLayout>().
+            //Add<UsingCustomTraceListener>().
+            Add<UsingShiftJIS>().
+            Add<UsingAsync>().
+            //Add<UsingArchive>().
+            //Add<UsingILogger>().
+            //Add<UsingDatabase>().
 
-                //Add<DebugCheck>().
+            //Add<DebugCheck>().
 
-                ShowAsync();
-        }
+            ShowAsync();
     }
 }

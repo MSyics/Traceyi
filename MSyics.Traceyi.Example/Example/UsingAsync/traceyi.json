@@ -26,7 +26,7 @@
           //"Path": "app_{index}.log",
           "Path": "app.log",
           "Layout": {
-            //"format": "{action} {elapsed} {@[action, extensions]=>json}"
+            "format": "{action} {elapsed} {@[action, extensions]=>json}"
           }
         }
       ]
