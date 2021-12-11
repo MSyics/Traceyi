@@ -68,6 +68,7 @@ public static class TracerExtensions
             default:
                 return false;
         }
+
         return (filter & filters) == filter;
     }
 }

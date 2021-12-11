@@ -13,14 +13,15 @@ namespace MSyics.Traceyi.Layout;
 /// </summary>
 public sealed class LogLayoutFormatProvider : IFormatProvider, ICustomFormatter
 {
+    public const string JsonFormatSpecifier = "JSON";
+    public const string IndentSpecifier = "INDENT";
+
     #region Static Members
     /// <summary>
     /// 書式内の区切り文字を示す固定値です。
     /// </summary>
     public static readonly string CustomFormatSpecifier = "|";
     public static readonly string SerializeFormatSpecifier = "=>";
-    public static readonly string JsonFormatSpecifier = "JSON";
-    public static readonly string IndentSpecifier = "INDENT";
     static readonly ILogStateBuilder logStateBuilder = new LogStateBuilder();
     static readonly JsonSerializerOptions IndentedOptions;
     static readonly JsonSerializerOptions NotIndentedOptions;
@@ -101,7 +102,7 @@ public sealed class LogLayoutFormatProvider : IFormatProvider, ICustomFormatter
 
         if (arg is TraceEventArgs e)
         {
-            return logStateBuilder.SetEvent(e, GetLogStateMembersOfTraceEvent(ref format, format.AsSpan())).Build().ToString();
+            return logStateBuilder.SetEvent(e, GetLogStateMembersOfTraceEvent(ref format, format.AsSpan())).Build()?.ToString() ?? "";
         }
 
         return Format(format, arg);
@@ -193,22 +194,25 @@ public sealed class LogLayoutFormatProvider : IFormatProvider, ICustomFormatter
 
     private string BySerializing(string format, object arg)
     {
-        if (arg is null)
-        {
-            return Format(format, arg);
-        }
+        if (arg is null) { return ""; }
 
+#if NETCOREAPP
+        var formats = format.Split(SerializeFormatSpecifier, StringSplitOptions.None);
+        var right = formats[1].Split(',', StringSplitOptions.None);
+#else
         var formats = format.Split(new[] { SerializeFormatSpecifier }, StringSplitOptions.None);
         var right = formats[1].Split(new[] { "," }, StringSplitOptions.None);
+#endif
 
         var specifier = right[0].ToUpperInvariant().Trim();
-        if (specifier == JsonFormatSpecifier)
+        if (specifier is JsonFormatSpecifier or "")
         {
             return ByJson(format, arg, formats[0].AsSpan(), right);
         }
         else
         {
-            return Format(format, arg);
+            Debug.WriteLine("No format is specified.");
+            return "";
         }
     }
 
@@ -217,14 +221,11 @@ public sealed class LogLayoutFormatProvider : IFormatProvider, ICustomFormatter
         if (arg is TraceEventArgs e)
         {
             var logState = logStateBuilder.SetEvent(e, GetLogStateMembersOfTraceEvent(ref format, left)).Build();
-            if (logState is null)
-            {
-                return Format(format, arg);
-            }
+            if (logState is null) { return ""; }
             arg = logState;
         }
 
-        var options = right.Length > 1 && right[1].Trim().ToUpperInvariant() == IndentSpecifier
+        var options = right.Length > 1 && right[1].Trim().ToUpperInvariant() is IndentSpecifier
             ? IndentedOptions
             : NotIndentedOptions;
 

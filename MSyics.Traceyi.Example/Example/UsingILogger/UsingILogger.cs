@@ -32,6 +32,10 @@ class UsingILogger : Example
 
         await Task.Run(() =>
         {
+            logger.LogCritical(new EventId(12345, "hogehoge"), "abc");
+
+            logger.LogInformation("test:{test}", x => x.test = new[] { "hogehoge", "piyopiyo" });
+
             logger.LogInformation("test:{test}", 1);
             logger.LogCritical("test:{test}", x => x.test = 2);
             logger.LogWarning(3, "test:{test}", 3);

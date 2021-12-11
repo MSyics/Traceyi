@@ -59,6 +59,7 @@ class UsingAsync : Example
 
     public override void Teardown()
     {
+        Console.WriteLine(sw.ElapsedMilliseconds);
         Traceable.Shutdown();
         sw.Stop();
         Console.WriteLine(sw.ElapsedMilliseconds);

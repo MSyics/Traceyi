@@ -113,25 +113,32 @@ public sealed class TraceEventArgs : EventArgs
         {
             if (_message is null && messageLayout is not null)
             {
-                var parts = Extensions.
-                    Select(x => new LogLayoutPart
-                    {
-                        Name = x.Key,
-                        CanFormat = true
-                    }).
-                    ToArray();
+                if (messageLayout is string layout)
+                {
+                    var parts = Extensions.
+                        Select(x => new LogLayoutPart
+                        {
+                            Name = x.Key,
+                            CanFormat = true
+                        }).
+                        ToArray();
 
-                try
-                {
-                    var format = new LogLayoutConverter(parts).Convert(messageLayout.ToString());
-                    _message = string.Format(
-                        new LogLayoutFormatProvider(),
-                        format,
-                        Extensions.Values.ToArray());
+                    try
+                    {
+                        var format = new LogLayoutConverter(parts).Convert(layout.AsSpan());
+                        _message = string.Format(
+                            new LogLayoutFormatProvider(),
+                            format,
+                            Extensions.Values.ToArray());
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex);
+                        _message = messageLayout;
+                    }
                 }
-                catch (Exception ex)
+                else
                 {
-                    Debug.WriteLine(ex);
                     _message = messageLayout;
                 }
             }

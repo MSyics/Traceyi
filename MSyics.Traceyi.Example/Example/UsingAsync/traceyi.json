@@ -2,19 +2,22 @@
   "Traceyi": {
     "Tracer": [
       {
-        "Listeners": [ "console2", "file" ],
+        "Listeners": [ "console1", "file" ],
         "Filters": "all"
       }
     ],
-    "Listener": {
-      //"Console": [
-      //  {
-      //    "Name": "console"
-      //  }
-      //],
-      "File": [
+    "listener": {
+      "console": [
         {
-          "Name": "file",
+          "Name": "console",
+          "layout": {
+            "format": "{action} {elapsed} {@[action, extensions]=>json}"
+          }
+        }
+      ],
+      "file": [
+        {
+          "name": "file",
           "Demux": 1,
           "UseLock": false,
           "UseAsync": true,
@@ -25,8 +28,10 @@
           //"CloseTimeout": "0:0:0.200",
           //"Path": "app_{index}.log",
           "Path": "app.log",
-          "Layout": {
-            "format": "{action} {elapsed} {@[action, extensions]=>json}"
+          "layout": {
+            //"format": "{action} {elapsed} {@[action, extensions]=>json}"
+            //"format": "     {@=>json,indent}\n\n\n"
+            //"format": "{action| ,8:R}\n"
           }
         }
       ]

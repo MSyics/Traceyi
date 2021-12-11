@@ -21,11 +21,10 @@ public sealed class LogLayoutConverter
     /// <summary>
     /// 指定されたレイアウトを認識できるフォーマットに変換します。
     /// </summary>
-    public string Convert(string layout)
+    public string Convert(ReadOnlySpan<char> span)
     {
         partPlacements.Clear();
         StringBuilder sb = new();
-        var span = layout.AsSpan();
         for (int layoutIndex = 0; layoutIndex < span.Length; layoutIndex++)
         {
             if (span[layoutIndex] is '{')
@@ -79,6 +78,11 @@ public sealed class LogLayoutConverter
         }
         return sb.ToString();
     }
+
+    /// <summary>
+    /// 指定されたレイアウトを認識できるフォーマットに変換します。
+    /// </summary>
+    public string Convert(string layout) => Convert(layout.AsSpan());
 
     private static bool CanReplacePart(ReadOnlySpan<char> value, LogLayoutPart part)
     {

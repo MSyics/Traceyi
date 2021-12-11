@@ -72,8 +72,7 @@ public sealed class LogLayout : ILogLayout
             e.MachineName,
             e.Message,
             GetExtensions(ref e),
-            GetEvnetArgs(ref e)).
-            TrimEnd('\r', '\n');
+            GetEvnetArgs(ref e));
     }
     #endregion
 
@@ -100,7 +99,7 @@ public sealed class LogLayout : ILogLayout
             new LogLayoutPart { Name = "extensions", CanFormat = true },
             new LogLayoutPart { Name = "@", CanFormat = true });
 
-        actualFormat = converter.Convert(Format.Trim());
+        actualFormat = converter.Convert(Format.AsSpan());
 
         hasExtensions = converter.IsPartPlaced("extensions");
         hasEventArgs = converter.IsPartPlaced("@");

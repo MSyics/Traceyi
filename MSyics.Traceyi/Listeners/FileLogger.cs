@@ -68,7 +68,7 @@ public class FileLogger : TextLogger
             new LogLayoutPart { Name = "machineName", CanFormat = true },
             new LogLayoutPart { Name = "index", CanFormat = true });
 
-        return converter.Convert(Path.Trim());
+        return converter.Convert(Path.AsSpan().Trim());
     }
 
     /// <summary>

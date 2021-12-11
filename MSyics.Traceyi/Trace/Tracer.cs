@@ -179,9 +179,9 @@ public sealed class Tracer
             }
 
             if (Context.ScopeStack.Count is 0) break;
-            
+
             Context.ScopeStack.TryPop();
-            
+
             if (scopeId == scope.Id) break;
         }
     }

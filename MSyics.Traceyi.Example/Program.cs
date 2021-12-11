@@ -17,7 +17,7 @@ class Program : ExampleAggregator
             //Add<UsingExtensions>().
             //Add<UsingLayout>().
             //Add<UsingCustomTraceListener>().
-            Add<UsingShiftJIS>().
+            //Add<UsingShiftJIS>().
             Add<UsingAsync>().
             //Add<UsingArchive>().
             //Add<UsingILogger>().

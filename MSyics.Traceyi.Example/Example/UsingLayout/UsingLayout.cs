@@ -10,9 +10,9 @@ namespace MSyics.Traceyi
 
         public override void Setup()
         {
-            Traceable.Add("default", TraceFilters.All, new ConsoleLogger());
-            Traceable.Add("json", TraceFilters.All, new ConsoleLogger(new LogLayout("{@=>json}")));
-            Traceable.Add("jsonIndented", TraceFilters.All, new ConsoleLogger(new LogLayout("{@=>json,indent}")));
+            Traceable.Add("default", TraceFilters.All, new ConsoleLogger { UseLock = true });
+            Traceable.Add("json", TraceFilters.All, new ConsoleLogger(new LogLayout("{@=>json}")) { UseLock = true });
+            Traceable.Add("jsonIndented", TraceFilters.All, new ConsoleLogger(new LogLayout("{@=>json,indent}")) { UseLock = true });
             defaultTracer = Traceable.Get("default");
             jsonTracer = Traceable.Get("json");
             jsonIndentedTracer = Traceable.Get("jsonIndented");

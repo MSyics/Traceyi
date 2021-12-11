@@ -17,25 +17,35 @@ class DebugCheck : Example
 
     public override Task ShowAsync()
     {
-        Tracer.Information($"hogehoge");
-        using (Tracer.Scope(label: Name))
-        {
-            Tracer.Start(Name);
-            Tracer.Trace(Name);
-            Tracer.Debug(Name);
-            Tracer.Information(Name);
-            Tracer.Warning(Name);
-            Tracer.Error(Name);
-            Tracer.Critical(Name);
-            Tracer.Stop(Name);
-        }
+        var person = new Person { Name = "hogehoge", Age = 20 };
+
+        //Tracer.Information($"hogehoge");
+
+        //using (Tracer.Scope(label: Name))
+        //{
+        //    Tracer.Start(Name);
+        //    Tracer.Trace(Name);
+        //    Tracer.Debug(Name);
+        //    Tracer.Information(Name);
+        //    Tracer.Warning(Name);
+        //    Tracer.Error(Name);
+        //    Tracer.Critical(Name);
+        //    Tracer.Stop(Name);
+
+        //    using (Tracer.Scope(label: 1))
+        //    {
+        //        Tracer.Information(100);
+                Tracer.Information(person, x => x.person = 100);
+                Tracer.Information("abc");
+                Tracer.Information("{person}", x => x.person = 100);
+        //    }
+        //}
 
         //var _ = Scope(0).Take(5).ToArray();
 
-        var person = new Person { Name = "hogehoge", Age = 20 };
         //Tracer.Information(person);
         //Tracer.Information("{person=>json}", ex => ex.person = person);
-        Tracer.Information(ex => ex.person = person);
+        //Tracer.Information(ex => ex.person = person);
 
         return Task.CompletedTask;
     }

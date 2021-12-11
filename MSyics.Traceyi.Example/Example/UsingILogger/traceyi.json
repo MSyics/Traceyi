@@ -17,7 +17,7 @@
           },
           "Layout": {
             //"format": "{@=>json,indent}"
-            "format": "{@=>json}"
+            "format": "{@[action,extensions]=>json}"
           }
         }
       ]
