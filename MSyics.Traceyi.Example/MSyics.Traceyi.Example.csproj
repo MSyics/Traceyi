@@ -11,9 +11,9 @@
 
   <ItemGroup>
     <PackageReference Include="Exampleyi" Version="3.1.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
-    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.113.7" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="6.0.0" />
+    <PackageReference Include="System.Data.SQLite.Core" Version="1.0.115.5" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,9 +41,6 @@
     </None>
     <None Update="Example\UsingLayout\traceyi.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Example\_DebugCheck\traceyi.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Example\UsingTraceMethod\traceyi.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

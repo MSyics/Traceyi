@@ -16,13 +16,11 @@ public class LogState
 
     public override string ToString()
     {
-        if (Members.Count is 0) return string.Empty;
+        if (Members.Count is 0) return "";
 
         StringBuilder sb = new();
-        Format(Members.First());
-        foreach (var item in Members.Skip(1))
+        foreach (var item in Members)
         {
-            sb.Append('\t');
             Format(item);
         }
         return sb.ToString();
@@ -32,13 +30,13 @@ public class LogState
             switch (item.Value)
             {
                 case TimeSpan:
-                    sb.AppendFormat("{0:d\\.hh\\:mm\\:ss\\.fffffff}", item.Value);
+                    sb.AppendFormat("[{0},{1:d\\.hh\\:mm\\:ss\\.fffffff}]", item.Key, item.Value);
                     break;
                 case DateTimeOffset:
-                    sb.AppendFormat("{0:yyyy-MM-ddTHH:mm:ss.fffffffzzz}", item.Value);
+                    sb.AppendFormat("[{0},{1:yyyy-MM-ddTHH:mm:ss.fffffffzzz}]", item.Key, item.Value);
                     break;
                 default:
-                    sb.AppendFormat("{0}", item.Value);
+                    sb.AppendFormat("[{0},{1}]", item.Key, item.Value);
                     break;
             }
         }

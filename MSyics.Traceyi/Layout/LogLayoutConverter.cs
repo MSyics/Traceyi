@@ -16,6 +16,11 @@ public sealed class LogLayoutConverter
     /// <param name="parts">ログの記録項目</param>
     public LogLayoutConverter(params LogLayoutPart[] parts) => this.parts = parts;
 
+    /// <summary>
+    /// 指定した名前と一致するログの記録項目が変換した変換後のフォーマットに配置されているかどうかを判定します。
+    /// 配置されている場合は true、それ以外は false を返します。
+    /// </summary>
+    /// <param name="name">記録項目の名前</param>
     public bool IsPartPlaced(string name) => partPlacements.Contains(name);
 
     /// <summary>

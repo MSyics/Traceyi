@@ -62,7 +62,7 @@ public sealed class LogLayoutFormatProvider : IFormatProvider, ICustomFormatter
         {
             IFormattable formattable => formattable.ToString(format, CultureInfo.CurrentCulture),
             TraceEventArgs e => logStateBuilder.SetEvent(e).Build().ToString(),
-            IDictionary<string, object> keyValuePairs => logStateBuilder.SetExtensions(keyValuePairs).Build().ToString(),
+            IDictionary<string, object> keyValuePairs => logStateBuilder.SetExtensions(keyValuePairs).Build()?.ToString() ?? "",
             _ => arg.ToString(),
         };
     }
