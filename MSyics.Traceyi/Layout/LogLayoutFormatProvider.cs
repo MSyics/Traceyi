@@ -225,7 +225,7 @@ public sealed class LogLayoutFormatProvider : IFormatProvider, ICustomFormatter
             arg = logState;
         }
 
-        var options = right.Length > 1 && right[1].Trim().ToUpperInvariant() is IndentSpecifier
+        var options = right.Length > 1 && right[1].Trim().Equals(IndentSpecifier, StringComparison.OrdinalIgnoreCase)
             ? IndentedOptions
             : NotIndentedOptions;
 
