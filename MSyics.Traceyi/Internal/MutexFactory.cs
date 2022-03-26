@@ -26,7 +26,7 @@ internal sealed class MutexFactory
         var key = source.ToUpperInvariant();
         if (created.key != key)
         {
-            using var hash = new HashRingDeriveBytes(SHA256.Create(), Encoding.UTF8.GetBytes(key));
+            using var hash = HashRingDeriveBytes.Create(key);
             var length = maxLength - prefix.Length;
 #if NETCOREAPP
             var name = Convert.ToBase64String(hash.GetBytes(length))[..length];
