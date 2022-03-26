@@ -8,7 +8,7 @@ public sealed class LogLayout : ILogLayout
     /// <summary>
     /// 初期レイアウトを示す固定値です。
     /// </summary>
-    public readonly static string DefaultFormat = "{action}{tab}{traced:yyyy-MM-ddTHH:mm:ss.fffffffzzz}{tab}{elapsed:d\\.hh\\:mm\\:ss\\.fffffff}{tab}{scopeId|-,16:R}{tab}{scopeParentId|-,16:R}{tab}{scopeDepth}{tab}{scopeLabel}{tab}{activityId}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}{tab}{extensions=>json}";
+    public readonly static string DefaultFormat = "{action}{tab}{traced:yyyy-MM-ddTHH:mm:ss.fffffffzzz}{tab}{elapsed:d\\.hh\\:mm\\:ss\\.fffffff}{tab}{scopeId|-,16:R}{tab}{scopeParentId|-,16:R}{tab}{scopeDepth}{tab}{scopeLabel}{tab}{activityId}{tab}{threadId}{tab}{processId}{tab}{processName}{tab}{machineName}{tab}{message}{tab}{extensions}";
 
     private readonly IFormatProvider formatProvider = new LogLayoutFormatProvider();
     private bool initialized;
