@@ -19,7 +19,7 @@
 		<PackageTags>logging trace async</PackageTags>
 		<AssemblyVersion>6.0.3.0</AssemblyVersion>
 		<FileVersion>6.0.3.0</FileVersion>
-		<PackageVersion>6.0.3-alpha.1</PackageVersion>
+		<PackageVersion>6.0.3</PackageVersion>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<Nullable>disable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
